@@ -19,6 +19,8 @@
 
 #include "power_supply.h"
 
+//#undef dev_dbg
+//#define dev_dbg  dev_err
 /*
  * This is because the name "current" breaks the device attr macro.
  * The "current" word resolves to "(get_current())" so instead of
@@ -46,8 +48,7 @@ static const char * const power_supply_type_text[] = {
 	"USB_PD", "USB_PD_DRP", "BrickID",
 	"USB_HVDCP", "USB_HVDCP_3", "USB_HVDCP_3P5", "Wireless", "USB_FLOAT",
 	"BMS", "Parallel", "Main", "USB_C_UFP", "USB_C_DFP",
-	"Charge_Pump",
-	"Batt_Verify",
+	"Charge_Pump","Batt_Verify"
 };
 
 static const char * const power_supply_usb_type_text[] = {
@@ -269,7 +270,7 @@ static ssize_t power_supply_show_property(struct device *dev,
 		ret = scnprintf(buf, PAGE_SIZE, "%x\n",
 				value.intval);
 		break;
-#ifdef CONFIG_BATT_VERIFY_BY_DS28E16
+#if (defined CONFIG_BATT_VERIFY_BY_DS28E16 || defined CONFIG_BATT_VERIFY_BY_DS28E16_PIPA)
 	case POWER_SUPPLY_PROP_ROMID:
 	case POWER_SUPPLY_PROP_DS_STATUS:
 		ret = scnprintf(buf, PAGE_SIZE, "%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
@@ -473,6 +474,7 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(usb_otg),
 	POWER_SUPPLY_ATTR(charge_enabled),
 	POWER_SUPPLY_ATTR(set_ship_mode),
+        POWER_SUPPLY_ATTR(shipmode_count_reset),
 	POWER_SUPPLY_ATTR(real_type),
 	POWER_SUPPLY_ATTR(hvdcp3_type),
 	POWER_SUPPLY_ATTR(fake_hvdcp3),
@@ -556,6 +558,9 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(die_health),
 	POWER_SUPPLY_ATTR(connector_health),
 	POWER_SUPPLY_ATTR(connector_temp),
+#ifdef CONFIG_BATT_VERIFY_BY_DS28E16_PIPA
+	POWER_SUPPLY_ATTR(batt_slave_temp),
+#endif
 	POWER_SUPPLY_ATTR(vbus_disable),
 	POWER_SUPPLY_ATTR(arti_vbus_enable),
 	POWER_SUPPLY_ATTR(ctm_current_max),
@@ -695,7 +700,7 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(eq1_tx),
 	POWER_SUPPLY_ATTR(eq2_tx),
 	POWER_SUPPLY_ATTR(tx_gain),
-#ifdef CONFIG_BATT_VERIFY_BY_DS28E16
+#if (defined CONFIG_BATT_VERIFY_BY_DS28E16 || defined CONFIG_BATT_VERIFY_BY_DS28E16_PIPA)
 	/* battery verify properties */
 	POWER_SUPPLY_ATTR(romid),
 	POWER_SUPPLY_ATTR(ds_status),

@@ -1,4 +1,4 @@
-/*
+ /*
   * Goodix Touchscreen Driver
   * Copyright (C) 2020 - 2021 Goodix, Inc.
   *
@@ -23,23 +23,22 @@
 #include <linux/of_gpio.h>
 #include <linux/err.h>
 #include "goodix_ts_core.h"
-#define TS_DRIVER_NAME "gtx8_spi"
+#define TS_DRIVER_NAME		"gtx8_spi"
 
-#define SPI_TRANS_PREFIX_LEN 1
-#define REGISTER_WIDTH 4
-#define SPI_READ_DUMMY_LEN 4
-#define SPI_READ_PREFIX_LEN                                                    \
-	(SPI_TRANS_PREFIX_LEN + REGISTER_WIDTH + SPI_READ_DUMMY_LEN)
+#define SPI_TRANS_PREFIX_LEN    1
+#define REGISTER_WIDTH          4
+#define SPI_READ_DUMMY_LEN      4
+#define SPI_READ_PREFIX_LEN  (SPI_TRANS_PREFIX_LEN + REGISTER_WIDTH + SPI_READ_DUMMY_LEN)
 #define SPI_WRITE_PREFIX_LEN (SPI_TRANS_PREFIX_LEN + REGISTER_WIDTH)
 
-#define SPI_WRITE_FLAG 0xF0
-#define SPI_READ_FLAG 0xF1
+#define SPI_WRITE_FLAG  0xF0
+#define SPI_READ_FLAG   0xF1
 
 static struct platform_device *goodix_pdev;
 struct goodix_bus_interface goodix_spi_bus;
 struct device *global_spi_parent_device;
 bool display_name_status = false;
-static int __init setup_get_display_cmdline(char *str)
+static __maybe_unused int __init setup_get_display_cmdline(char *str)
 {
 	pr_info("get display cmdline");
 	if (str == NULL)
@@ -62,7 +61,7 @@ __setup(" msm_drm.dsi_display0=", setup_get_display_cmdline);
  * return: 0 - read ok, < 0 - spi transter error
  */
 static int goodix_spi_read_bra(struct device *dev, unsigned int addr,
-			       unsigned char *data, unsigned int len)
+	unsigned char *data, unsigned int len)
 {
 	struct spi_device *spi = to_spi_device(dev);
 	u8 *rx_buf = NULL;
@@ -75,7 +74,7 @@ static int goodix_spi_read_bra(struct device *dev, unsigned int addr,
 	tx_buf = kzalloc(SPI_READ_PREFIX_LEN + len, GFP_KERNEL);
 	if (!rx_buf || !tx_buf) {
 		ts_err("alloc tx/rx_buf failed, size:%d",
-		       SPI_READ_PREFIX_LEN + len);
+			SPI_READ_PREFIX_LEN + len);
 		return -ENOMEM;
 	}
 
@@ -100,7 +99,7 @@ static int goodix_spi_read_bra(struct device *dev, unsigned int addr,
 	spi_message_add_tail(&xfers, &spi_msg);
 	ret = spi_sync(spi, &spi_msg);
 	if (ret < 0) {
-		ts_err("spi transfer error:%d", ret);
+		ts_err("spi transfer error:%d",ret);
 		goto exit;
 	}
 	memcpy(data, &rx_buf[SPI_READ_PREFIX_LEN], len);
@@ -112,7 +111,7 @@ exit:
 }
 
 static int goodix_spi_read(struct device *dev, unsigned int addr,
-			   unsigned char *data, unsigned int len)
+	unsigned char *data, unsigned int len)
 {
 	struct spi_device *spi = to_spi_device(dev);
 	u8 *rx_buf = NULL;
@@ -125,7 +124,7 @@ static int goodix_spi_read(struct device *dev, unsigned int addr,
 	tx_buf = kzalloc(SPI_READ_PREFIX_LEN - 1 + len, GFP_KERNEL);
 	if (!rx_buf || !tx_buf) {
 		ts_err("alloc tx/rx_buf failed, size:%d",
-		       SPI_READ_PREFIX_LEN - 1 + len);
+			SPI_READ_PREFIX_LEN - 1 + len);
 		return -ENOMEM;
 	}
 
@@ -149,7 +148,7 @@ static int goodix_spi_read(struct device *dev, unsigned int addr,
 	spi_message_add_tail(&xfers, &spi_msg);
 	ret = spi_sync(spi, &spi_msg);
 	if (ret < 0) {
-		ts_err("spi transfer error:%d", ret);
+		ts_err("spi transfer error:%d",ret);
 		goto exit;
 	}
 	memcpy(data, &rx_buf[SPI_READ_PREFIX_LEN - 1], len);
@@ -169,7 +168,7 @@ exit:
  * return: 0 - write ok; < 0 - spi transter error.
  */
 static int goodix_spi_write(struct device *dev, unsigned int addr,
-			    unsigned char *data, unsigned int len)
+		unsigned char *data, unsigned int len)
 {
 	struct spi_device *spi = to_spi_device(dev);
 	u8 *tx_buf = NULL;
@@ -180,7 +179,7 @@ static int goodix_spi_write(struct device *dev, unsigned int addr,
 	tx_buf = kzalloc(SPI_WRITE_PREFIX_LEN + len, GFP_KERNEL);
 	if (!tx_buf) {
 		ts_err("alloc tx_buf failed, size:%d",
-		       SPI_WRITE_PREFIX_LEN + len);
+			SPI_WRITE_PREFIX_LEN + len);
 		return -ENOMEM;
 	}
 
@@ -199,7 +198,7 @@ static int goodix_spi_write(struct device *dev, unsigned int addr,
 	spi_message_add_tail(&xfers, &spi_msg);
 	ret = spi_sync(spi, &spi_msg);
 	if (ret < 0)
-		ts_err("spi transfer error:%d", ret);
+		ts_err("spi transfer error:%d",ret);
 
 	kfree(tx_buf);
 	return ret;
@@ -241,8 +240,8 @@ static int goodix_spi_probe(struct spi_device *spi)
 	ts_info("goodix spi probe in");
 
 	/* init spi_device */
-	spi->mode = SPI_MODE_0;
-	spi->bits_per_word = 8;
+	spi->mode            = SPI_MODE_0;
+	spi->bits_per_word   = 8;
 
 	ret = spi_setup(spi);
 	if (ret) {
@@ -309,27 +308,17 @@ static int goodix_spi_remove(struct spi_device *spi)
 
 #ifdef CONFIG_OF
 static const struct of_device_id spi_matchs[] = {
-	{
-		.compatible = "goodix,gt9897S",
-	},
-	{
-		.compatible = "goodix,gt9897T",
-	},
-	{
-		.compatible = "goodix,gt9966S",
-	},
-	{
-		.compatible = "goodix,gt9916S",
-	},
-	{
-		.compatible = "tp,spi",
-	},
+	{.compatible = "goodix,gt9897S",},
+	{.compatible = "goodix,gt9897T",},
+	{.compatible = "goodix,gt9966S",},
+	{.compatible = "goodix,gt9916S",},
+	{.compatible = "tp,spi",},
 	{},
 };
 #endif
 
 static const struct spi_device_id spi_id_table[] = {
-	{ TS_DRIVER_NAME, 0 },
+	{TS_DRIVER_NAME, 0},
 	{},
 };
 

@@ -232,7 +232,7 @@ struct smb5 {
 
 static struct smb_charger *__smbchg;
 
-static int __debug_mask;
+static int __debug_mask = PR_MISC | PR_WLS | PR_OEM | PR_PARALLEL;
 
 static ssize_t pd_disabled_show(struct device *dev, struct device_attribute
 				*attr, char *buf)
@@ -4987,6 +4987,7 @@ static int smb5_probe(struct platform_device *pdev)
 	chg->thermal_fcc_override = 0;
 	chg->pd_disabled = 0;
 	chg->apdo_max = 0;
+	chg->quick_charge_type_info = 0;
 	chg->weak_chg_icl_ua = 500000;
 	chg->mode = PARALLEL_MASTER;
 	chg->irq_info = smb5_irqs;

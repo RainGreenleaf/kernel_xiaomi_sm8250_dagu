@@ -12,56 +12,60 @@
 /********************************************
  * print information control
  *******************************************/
-#define aw_err(format, ...) pr_err("[haptic_hv]" format, ##__VA_ARGS__)
+#define aw_err(format, ...) \
+			pr_err("[haptic_hv]" format, ##__VA_ARGS__)
 
-#define aw_info(format, ...) pr_info("[haptic_hv]" format, ##__VA_ARGS__)
+#define aw_info(format, ...) \
+			pr_info("[haptic_hv]" format, ##__VA_ARGS__)
 
-#define aw_dbg(format, ...) pr_debug("[haptic_hv]" format, ##__VA_ARGS__)
+#define aw_dbg(format, ...) \
+			pr_debug("[haptic_hv]" format, ##__VA_ARGS__)
 
 /*********************************************************
 *
 * normal macro
 *
 ********************************************************/
-#define AW_I2C_NAME "awinic_haptic"
-#define AW_HAPTIC_NAME "awinic_haptic"
+#define AW_I2C_NAME			"awinic_haptic"
+#define AW_HAPTIC_NAME			"awinic_haptic"
 
-#define AW8695_CHIP_ID (0x95)
-#define AW8697_CHIP_ID (0x97)
-#define AW86907_CHIP_ID (0x04)
-#define AW86927_CHIP_ID (0x9270)
-#define AW_REG_IDH (0x57)
-#define AW_REG_IDL (0x58)
-#define AW_VBAT_REFER (4200)
-#define AW_VBAT_MIN (3000)
-#define AW_VBAT_MAX (4500)
-#define AW_READ_CHIPID_RETRIES (5)
-#define AW_I2C_RETRIES (2)
-#define AW_I2C_RETRY_DELAY (2)
-#define AW_RAMDATA_WR_BUFFER_SIZE (2048)
-#define AW_RAMDATA_RD_BUFFER_SIZE (1024)
-#define AW_PROTECT_EN (0X01)
-#define AW_PROTECT_OFF (0X00)
-#define AW_PROTECT_VAL (0X00)
-#define AWINIC_RTP_NAME_MAX (64)
-#define PM_QOS_VALUE_VB (400)
-#define OSC_CALIBRATION_T_LENGTH (5100000)
+#define AW8695_CHIP_ID			(0x95)
+#define AW8697_CHIP_ID			(0x97)
+#define AW86907_CHIP_ID			(0x04)
+#define AW86927_CHIP_ID			(0x9270)
+#define AW_REG_IDH			(0x57)
+#define AW_REG_IDL			(0x58)
+#define AW_VBAT_REFER			(4200)
+#define AW_VBAT_MIN			(3000)
+#define AW_VBAT_MAX			(4500)
+#define AW_READ_CHIPID_RETRIES		(5)
+#define AW_I2C_RETRIES			(2)
+#define AW_I2C_RETRY_DELAY		(2)
+#define AW_RAMDATA_WR_BUFFER_SIZE	(2048)
+#define AW_RAMDATA_RD_BUFFER_SIZE	(1024)
+#define AW_PROTECT_EN			(0X01)
+#define AW_PROTECT_OFF			(0X00)
+#define AW_PROTECT_VAL			(0X00)
+#define AWINIC_RTP_NAME_MAX		(64)
+#define PM_QOS_VALUE_VB			(400)
+#define OSC_CALIBRATION_T_LENGTH	(5100000)
 
-#define REG_NONE_ACCESS (0)
-#define REG_RD_ACCESS (1 << 0)
-#define REG_WR_ACCESS (1 << 1)
+#define REG_NONE_ACCESS			(0)
+#define REG_RD_ACCESS			(1 << 0)
+#define REG_WR_ACCESS			(1 << 1)
 
-#define FF_EFFECT_COUNT_MAX (32)
-#define HAP_BRAKE_PATTERN_MAX (4)
-#define HAP_WAVEFORM_BUFFER_MAX (8)
-#define HAP_PLAY_RATE_US_DEFAULT (5715)
-#define HAP_PLAY_RATE_US_MAX (20475)
+#define FF_EFFECT_COUNT_MAX		(32)
+#define HAP_BRAKE_PATTERN_MAX		(4)
+#define HAP_WAVEFORM_BUFFER_MAX		(8)
+#define HAP_PLAY_RATE_US_DEFAULT	(5715)
+#define HAP_PLAY_RATE_US_MAX		(20475)
 /*********************************************************
 *
 * macro control
 *
 ********************************************************/
 #define INPUT_DEV
+#define DEBUG
 /* #define TEST_RTP */
 #define AW_RAM_UPDATE_DELAY
 #define ENABLE_PIN_CONTROL
@@ -181,6 +185,7 @@ struct awinic {
 #endif
 };
 
+
 struct ram {
 	unsigned char version;
 	unsigned char ram_shift;
@@ -211,6 +216,7 @@ struct haptic_audio {
 	unsigned char ori_gain;
 };
 
+
 /*********************************************************
 *
 * extern
@@ -220,5 +226,7 @@ extern int CUSTOME_WAVE_ID;
 extern char awinic_rtp_name[][AWINIC_RTP_NAME_MAX];
 extern int awinic_rtp_name_len;
 extern char *awinic_ram_name;
+extern int aw_i2c_read(struct awinic *, unsigned char, unsigned char *);
+extern int aw_i2c_write(struct awinic *, unsigned char, unsigned char);
 
 #endif

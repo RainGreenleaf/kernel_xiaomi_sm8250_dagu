@@ -11,6 +11,8 @@ menuconfig INPUT_KEYBOARD
 	  If unsure, say Y.
 
 if INPUT_KEYBOARD
+source "drivers/input/keyboard/nanosic_driver/Kconfig"
+source "drivers/input/keyboard/nanosic_driver_v2/Kconfig"
 
 config KEYBOARD_ADC
 	tristate "ADC Ladder Buttons"
@@ -755,7 +757,5 @@ config KEYBOARD_MTK_PMIC
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called pmic-keys.
-
-source "drivers/input/keyboard/nanosic_driver/Kconfig"
 
 endif

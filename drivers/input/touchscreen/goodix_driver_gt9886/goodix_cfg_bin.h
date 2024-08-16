@@ -4,23 +4,22 @@
 #include "goodix_ts_core.h"
 
 #define TS_DEFAULT_CFG_BIN "goodix_gt9886_cfg_J2.bin"
-#define TS_BIN_VERSION_START_INDEX 5
-#define TS_BIN_VERSION_LEN 4
-#define TS_CFG_BIN_HEAD_RESERVED_LEN 6
-#define TS_CFG_OFFSET_LEN 2
-#define TS_IC_TYPE_NAME_MAX_LEN 15
-#define TS_CFG_BIN_HEAD_LEN                                                    \
-	(sizeof(struct goodix_cfg_bin_head) + TS_CFG_BIN_HEAD_RESERVED_LEN)
-#define TS_PKG_CONST_INFO_LEN (sizeof(struct goodix_cfg_pkg_const_info))
+#define TS_BIN_VERSION_START_INDEX	5
+#define TS_BIN_VERSION_LEN	4
+#define TS_CFG_BIN_HEAD_RESERVED_LEN	6
+#define TS_CFG_OFFSET_LEN	2
+#define TS_IC_TYPE_NAME_MAX_LEN	15
+#define TS_CFG_BIN_HEAD_LEN (sizeof(struct goodix_cfg_bin_head) + TS_CFG_BIN_HEAD_RESERVED_LEN)
+#define TS_PKG_CONST_INFO_LEN  (sizeof(struct goodix_cfg_pkg_const_info))
 #define TS_PKG_REG_INFO_LEN (sizeof(struct goodix_cfg_pkg_reg_info))
 #define TS_PKG_HEAD_LEN (TS_PKG_CONST_INFO_LEN + TS_PKG_REG_INFO_LEN)
 
 /*cfg block definitin*/
-#define TS_CFG_BLOCK_PID_LEN 8
-#define TS_CFG_BLOCK_VID_LEN 8
-#define TS_CFG_BLOCK_FW_MASK_LEN 9
-#define TS_CFG_BLOCK_FW_PATCH_LEN 4
-#define TS_CFG_BLOCK_RESERVED_LEN 9
+#define TS_CFG_BLOCK_PID_LEN	8
+#define TS_CFG_BLOCK_VID_LEN	8
+#define TS_CFG_BLOCK_FW_MASK_LEN	9
+#define TS_CFG_BLOCK_FW_PATCH_LEN	4
+#define TS_CFG_BLOCK_RESERVED_LEN	9
 
 #define TS_NORMAL_CFG 0x01
 #define TS_HIGH_SENSE_CFG 0x03
@@ -81,6 +80,8 @@ struct goodix_cfg_package {
 	const u8 *cfg;
 	u32 pkg_len;
 };
+
+
 
 struct goodix_cfg_bin {
 	unsigned char *bin_data;

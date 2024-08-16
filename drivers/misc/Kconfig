@@ -4,6 +4,13 @@
 
 menu "Misc devices"
 
+config SPI_XIAOMI_TP
+        bool
+        depends on SPI
+        default y if TOUCHSCREEN_NT36xxx_HOSTDL_SPI
+        help
+        Say Y if want use xiaomi touch panel.
+
 config SENSORS_LIS3LV02D
 	tristate
 	depends on INPUT
@@ -577,6 +584,26 @@ config OKL4_RINGBUF
 	  Say Y here if you want to test communication between OKL4 guests
 	  using virtual interrupts and shared memory.
 
+config HALL_AKM09970
+	tristate "HALL_AK09970 digital hall sensor support"
+	depends on I2C
+        default n
+        help
+	  Say Y here if you have AKM Sensortec's AK09970 magnet
+	  sensor hooked to an I2C bus.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called akm09970.
+
+config MOTOR_DRV8846
+	tristate "TI step motor driver IC"
+	depends on PWM
+        default n
+        help
+	  Say Y here to include support for the H-Bridge Stepper
+	  Motor Driver. The MISC peripheral holds the pwm and the
+	  driver provides an API to drive stepper motor.
+
 config TEST_IRQ_REQUESTER
 	tristate "Receive interrupt notifications in user-space"
 	depends on DEBUG_FS
@@ -631,22 +658,23 @@ config KINECTICS_XR_NORDIC
 	  this also parses the gpios and interrupts from device tree and sets
 	  the gpios and interrupt handler for handling the interrupt.
 
-config HALL_AKM09970
-	tristate "AKM09970 HALL sensor driver"
+config PERF_HELPER
+	tristate "Record perflock messages"
+	default n
 	help
-	  Say Y here if you want to enable AKM09970 HALL sensor driver.
+	  this module support record perf lock history and other perf messages.
 
-config MOTOR_DRV8846
-	tristate "TI-drv8846 Stepper motor"
+config MI_GAMEKEY
+	tristate "xiaomi physical game key"
+	default n
 	help
-	  Say Y here if you want to enable TI-drv8846 Stepper motor.
+	  xiaomi physical game key, can detect press on the key and key whether pop.
 
-config SPI_XIAOMI_TP
-	bool
-	depends on SPI
-	default y if TOUCHSCREEN_NT36xxx_HOSTDL_SPI
+config MMHARDWARE_OTHER_DETECTION
+	tristate "Register xiaomi mmhardware detection module"
+	default n
 	help
-	  Say Y if want use xiaomi touch panel.
+	  This adds support for mmhardware detection
 
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
@@ -684,3 +712,15 @@ config OKL4_LINK_SHBUF
 	      transport. This driver presents the link to Linux as a character device
 	      which can be written to or read from to access the shared memory. An ioctl
 	      on the device is used to send a virtual interrupt to the partner cell.
+
+config GPIO_TESTING_MODE
+	tristate "A simple GPIO testing mode driver"
+	default y if BOARD_XIAOMI
+	help
+	  Enable driver for a simple testing mode detection
+
+config BOOTUP_RECLAIM
+        bool "bootup reclaim"
+        default n
+        help
+          reclaim global memory when bootup

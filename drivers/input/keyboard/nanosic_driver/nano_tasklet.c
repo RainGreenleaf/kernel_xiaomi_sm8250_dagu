@@ -19,6 +19,7 @@
  *
  */
 
+
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include "nano_macro.h"
@@ -45,11 +46,12 @@ void Nanosic_tasklet_handler()
         dbgprint(INFO_LEVEL,"other context\n");
 #endif
 
-	if (gTaskletFunc) {
-		dbgprint(INFO_LEVEL, "[softirq] run tasklet handler\n");
-		atomic_inc(&gTasklet_schedule_cnt);
-		gTaskletFunc();
-	}
+    if(gTaskletFunc)
+    {
+        dbgprint(INFO_LEVEL,"[softirq] run tasklet handler\n");
+        atomic_inc(&gTasklet_schedule_cnt);
+        gTaskletFunc();
+    }
 }
 
 /* disable our tasklet default*/
@@ -65,8 +67,8 @@ static DECLARE_TASKLET(Nanosic_tasklet, Nanosic_tasklet_handler, 0);
  ** */
 void Nanosic_tasklet_schedule(void)
 {
-	dbgprint(DEBUG_LEVEL, "Nano_tasklet_schedule\n");
-	tasklet_schedule(&Nanosic_tasklet);
+    dbgprint(DEBUG_LEVEL,"Nano_tasklet_schedule\n");
+    tasklet_schedule(&Nanosic_tasklet);
 }
 //EXPORT_SYMBOL_GPL(Nano_tasklet_schedule);
 
@@ -77,8 +79,8 @@ void Nanosic_tasklet_schedule(void)
  ** */
 void Nanosic_tasklet_register(handler_tasklet func)
 {
-	atomic_set(&gTasklet_schedule_cnt, 0);
-	gTaskletFunc = func;
+    atomic_set(&gTasklet_schedule_cnt,0);
+    gTaskletFunc = func;
 }
 
 /** **************************************************************************
@@ -88,7 +90,8 @@ void Nanosic_tasklet_register(handler_tasklet func)
  ** */
 void Nanosic_tasklet_release(void)
 {
-	tasklet_disable(&Nanosic_tasklet);
-	tasklet_kill(&Nanosic_tasklet);
+    tasklet_disable(&Nanosic_tasklet);
+    tasklet_kill(&Nanosic_tasklet);
 }
 //EXPORT_SYMBOL_GPL(Nano_tasklet_release);
+

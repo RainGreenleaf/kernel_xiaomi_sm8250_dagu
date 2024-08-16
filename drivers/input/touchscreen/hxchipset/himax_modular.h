@@ -66,15 +66,15 @@ extern uint32_t CFG_TABLE_FLASH_ADDR;
 extern uint32_t CFG_TABLE_FLASH_ADDR_T;
 
 #if defined(HX_TP_PROC_2T2R)
-// static bool Is_2T2R;
+	// static bool Is_2T2R;
 #endif
 
 #if defined(HX_USB_DETECT_GLOBAL)
-extern void(himax_cable_detect_func)(bool force_renew);
+	extern void (himax_cable_detect_func)(bool force_renew);
 #endif
 
 #if defined(HX_RST_PIN_FUNC)
-extern void(himax_rst_gpio_set)(int pinnum, uint8_t value);
+	extern void (himax_rst_gpio_set)(int pinnum, uint8_t value);
 #endif
 
 extern struct himax_ts_data *private_ts;
@@ -96,7 +96,7 @@ extern void himax_parse_assign_cmd(uint32_t addr, uint8_t *cmd, int len);
 
 extern int himax_bus_read(uint8_t cmd, uint8_t *buf, uint32_t len);
 extern int himax_bus_write(uint8_t cmd, uint8_t *addr, uint8_t *data,
-			   uint32_t len);
+	uint32_t len);
 
 extern void himax_int_enable(int enable);
 

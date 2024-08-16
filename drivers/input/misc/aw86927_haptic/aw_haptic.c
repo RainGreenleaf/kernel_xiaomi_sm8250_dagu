@@ -30,20 +30,20 @@
 #include <linux/syscalls.h>
 #include <linux/power_supply.h>
 #include <linux/pm_qos.h>
-#include "ringbuffer.h"
+#include  "ringbuffer.h"
 #include "aw_haptic.h"
 #include "aw869x.h"
 #include "aw86927.h"
 #include "aw86907.h"
 
-#define AW_DRIVER_VERSION "v0.5.1.3"
+#define AW_DRIVER_VERSION		"v0.5.1.5"
 
 /******************************************************
  *
  * Value
  *
  ******************************************************/
-#ifdef ENABLE_PIN_CONTROL
+#ifdef	ENABLE_PIN_CONTROL
 static const char *const pctl_names[] = {
 	"awinic_reset_low",
 	"awinic_reset_high",
@@ -55,199 +55,199 @@ char *awinic_ram_name = "aw8697_haptic.bin";
 
 #ifdef TEST_RTP
 char awinic_rtp_name[][AWINIC_RTP_NAME_MAX] = {
-	{ "aw86927_rtp_1.bin" },
+	{"aw86927_rtp_1.bin"},
 };
 #else
 char awinic_rtp_name[][AWINIC_RTP_NAME_MAX] = {
-	{ "aw8697_rtp_1.bin" }, /*8*/
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
+	{"aw8697_rtp_1.bin"}, /*8*/
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
 	/*{"aw8697_rtp_1.bin"},*/
 	/*{"aw8697_rtp_1.bin"},*/
-	{ "AcousticGuitar_RTP.bin" }, /*21*/
-	{ "Blues_RTP.bin" },
-	{ "Candy_RTP.bin" },
-	{ "Carousel_RTP.bin" },
-	{ "Celesta_RTP.bin" },
-	{ "Childhood_RTP.bin" },
-	{ "Country_RTP.bin" },
-	{ "Cowboy_RTP.bin" },
-	{ "Echo_RTP.bin" },
-	{ "Fairyland_RTP.bin" },
-	{ "Fantasy_RTP.bin" },
-	{ "Field_Trip_RTP.bin" },
-	{ "Glee_RTP.bin" },
-	{ "Glockenspiel_RTP.bin" },
-	{ "Ice_Latte_RTP.bin" },
-	{ "Kung_Fu_RTP.bin" },
-	{ "Leisure_RTP.bin" },
-	{ "Lollipop_RTP.bin" },
-	{ "MiMix2_RTP.bin" },
-	{ "Mi_RTP.bin" },
-	{ "MiHouse_RTP.bin" },
-	{ "MiJazz_RTP.bin" },
-	{ "MiRemix_RTP.bin" },
-	{ "Mountain_Spring_RTP.bin" },
-	{ "Orange_RTP.bin" },
-	{ "Raindrops_RTP.bin" },
-	{ "Space_Age_RTP.bin" },
-	{ "ToyRobot_RTP.bin" },
-	{ "Vigor_RTP.bin" },
-	{ "Bottle_RTP.bin" },
-	{ "Bubble_RTP.bin" },
-	{ "Bullfrog_RTP.bin" },
-	{ "Burst_RTP.bin" },
-	{ "Chirp_RTP.bin" },
-	{ "Clank_RTP.bin" },
-	{ "Crystal_RTP.bin" },
-	{ "FadeIn_RTP.bin" },
-	{ "FadeOut_RTP.bin" },
-	{ "Flute_RTP.bin" },
-	{ "Fresh_RTP.bin" },
-	{ "Frog_RTP.bin" },
-	{ "Guitar_RTP.bin" },
-	{ "Harp_RTP.bin" },
-	{ "IncomingMessage_RTP.bin" },
-	{ "MessageSent_RTP.bin" },
-	{ "Moment_RTP.bin" },
-	{ "NotificationXylophone_RTP.bin" },
-	{ "Potion_RTP.bin" },
-	{ "Radar_RTP.bin" },
-	{ "Spring_RTP.bin" },
-	{ "Swoosh_RTP.bin" }, /*71*/
-	{ "Gesture_UpSlide_RTP.bin" },
-	{ "FOD_Motion_Planet_RTP.bin" },
-	{ "Charge_Wire_RTP.bin" },
-	{ "Charge_Wireless_RTP.bin" },
-	{ "Unlock_Failed_RTP.bin" },
-	{ "FOD_Motion1_RTP.bin" },
-	{ "FOD_Motion2_RTP.bin" },
-	{ "FOD_Motion3_RTP.bin" },
-	{ "FOD_Motion4_RTP.bin" },
-	{ "FOD_Motion_Aurora_RTP.bin" },
-	{ "FaceID_Wrong2_RTP.bin" }, /*82*/
-	{ "uninstall_animation_rtp.bin" },
-	{ "uninstall_dialog_rtp.bin" },
-	{ "screenshot_rtp.bin" },
-	{ "lockscreen_camera_entry_rtp.bin" },
-	{ "launcher_edit_rtp.bin" },
-	{ "launcher_icon_selection_rtp.bin" },
-	{ "taskcard_remove_rtp.bin" },
-	{ "task_cleanall_rtp.bin" },
-	{ "new_iconfolder_rtp.bin" },
-	{ "notification_remove_rtp.bin" },
-	{ "notification_cleanall_rtp.bin" },
-	{ "notification_setting_rtp.bin" },
-	{ "game_turbo_rtp.bin" },
-	{ "NFC_card_rtp.bin" },
-	{ "wakeup_voice_assistant_rtp.bin" },
-	{ "NFC_card_slow_rtp.bin" },
-	{ "aw8697_rtp_1.bin" }, /*99*/
-	{ "aw8697_rtp_1.bin" }, /*100*/
-	{ "offline_countdown_RTP.bin" },
-	{ "scene_bomb_injury_RTP.bin" },
-	{ "scene_bomb_RTP.bin" }, /*103*/
-	{ "door_open_RTP.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "scene_step_RTP.bin" }, /*106*/
-	{ "crawl_RTP.bin" },
-	{ "scope_on_RTP.bin" },
-	{ "scope_off_RTP.bin" },
-	{ "magazine_quick_RTP.bin" },
-	{ "grenade_RTP.bin" },
-	{ "scene_getshot_RTP.bin" }, /*112*/
-	{ "grenade_explosion_RTP.bin" },
-	{ "punch_RTP.bin" },
-	{ "pan_RTP.bin" },
-	{ "bandage_RTP.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "scene_jump_RTP.bin" },
-	{ "vehicle_plane_RTP.bin" }, /*119*/
-	{ "scene_openparachute_RTP.bin" }, /*120*/
-	{ "scene_closeparachute_RTP.bin" }, /*121*/
-	{ "vehicle_collision_RTP.bin" },
-	{ "vehicle_buggy_RTP.bin" }, /*123*/
-	{ "vehicle_dacia_RTP.bin" }, /*124*/
-	{ "vehicle_moto_RTP.bin" }, /*125*/
-	{ "firearms_akm_RTP.bin" }, /*126*/
-	{ "firearms_m16a4_RTP.bin" }, /*127*/
-	{ "aw8697_rtp_1.bin" },
-	{ "firearms_awm_RTP.bin" }, /*129*/
-	{ "firearms_mini14_RTP.bin" }, /*130*/
-	{ "firearms_vss_RTP.bin" }, /*131*/
-	{ "firearms_qbz_RTP.bin" }, /*132*/
-	{ "firearms_ump9_RTP.bin" }, /*133*/
-	{ "firearms_dp28_RTP.bin" }, /*134*/
-	{ "firearms_s1897_RTP.bin" }, /*135*/
-	{ "aw8697_rtp_1.bin" },
-	{ "firearms_p18c_RTP.bin" }, /*137*/
-	{ "aw8697_rtp_1.bin" },
-	{ "aw8697_rtp_1.bin" },
-	{ "CFM_KillOne_RTP.bin" },
-	{ "CFM_Headshot_RTP.bin" }, /*141*/
-	{ "CFM_MultiKill_RTP.bin" },
-	{ "CFM_KillOne_Strong_RTP.bin" },
-	{ "CFM_Headshot_Strong_RTP.bin" },
-	{ "CFM_MultiKill_Strong_RTP.bin" },
-	{ "CFM_Weapon_Grenade_Explode_RTP.bin" },
-	{ "CFM_Weapon_Grenade_KillOne_RTP.bin" },
-	{ "CFM_ImpactFlesh_Normal_RTP.bin" },
-	{ "CFM_Weapon_C4_Installed_RTP.bin" },
-	{ "CFM_Hero_Appear_RTP.bin" },
-	{ "CFM_UI_Reward_OpenBox_RTP.bin" },
-	{ "CFM_UI_Reward_Task_RTP.bin" },
-	{ "CFM_Weapon_BLT_Shoot_RTP.bin" }, /*153*/
-	{ "Atlantis_RTP.bin" },
-	{ "DigitalUniverse_RTP.bin" },
-	{ "Reveries_RTP.bin" },
-	{ "FOD_Motion_Triang_RTP.bin" },
-	{ "FOD_Motion_Flare_RTP.bin" },
-	{ "FOD_Motion_Ripple_RTP.bin" },
-	{ "FOD_Motion_Spiral_RTP.bin" },
-	{ "gamebox_launch_rtp.bin" }, /*161*/
-	{ "Gesture_Back_Pull_RTP.bin" }, /*162*/
-	{ "Gesture_Back_Release_RTP.bin" }, /*163*/
-	{ "alert_rtp.bin" }, /*164*/
-	{ "feedback_negative_light_rtp.bin" }, /*165*/
-	{ "feedback_neutral_rtp.bin" }, /*166*/
-	{ "feedback_positive_rtp.bin" }, /*167*/
-	{ "fingerprint_record_rtp.bin" }, /*168*/
-	{ "lockdown_rtp.bin" }, /*169*/
-	{ "sliding_damping_rtp.bin" }, /*170*/
-	{ "todo_alldone_rtp.bin" }, /*171*/
-	{ "uninstall_animation_icon_rtp.bin" }, /*172*/
-	{ "signal_button_highlight_rtp.bin" }, /*173*/
-	{ "signal_button_negative_rtp.bin" },
-	{ "signal_button_rtp.bin" },
-	{ "signal_clock_high_rtp.bin" }, /*176*/
-	{ "signal_clock_rtp.bin" },
-	{ "signal_clock_unit_rtp.bin" },
-	{ "signal_inputbox_rtp.bin" },
-	{ "signal_key_high_rtp.bin" },
-	{ "signal_key_unit_rtp.bin" }, /*181*/
-	{ "signal_list_highlight_rtp.bin" },
-	{ "signal_list_rtp.bin" },
-	{ "signal_picker_rtp.bin" },
-	{ "signal_popup_rtp.bin" },
-	{ "signal_seekbar_rtp.bin" }, /*186*/
-	{ "signal_switch_rtp.bin" },
-	{ "signal_tab_rtp.bin" },
-	{ "signal_text_rtp.bin" },
-	{ "signal_transition_light_rtp.bin" },
-	{ "signal_transition_rtp.bin" }, /*191*/
-	{ "haptics_video_rtp.bin" }, /*192*/
-	{ "keyboard_clicky_down_rtp.bin" },
-	{ "keyboard_clicky_up_rtp.bin" },
-	{ "keyboard_linear_down_rtp.bin" },
-	{ "keyboard_linear_up_rtp.bin" }, /*196*/
+	{"AcousticGuitar_RTP.bin"}, /*21*/
+	{"Blues_RTP.bin"},
+	{"Candy_RTP.bin"},
+	{"Carousel_RTP.bin"},
+	{"Celesta_RTP.bin"},
+	{"Childhood_RTP.bin"},
+	{"Country_RTP.bin"},
+	{"Cowboy_RTP.bin"},
+	{"Echo_RTP.bin"},
+	{"Fairyland_RTP.bin"},
+	{"Fantasy_RTP.bin"},
+	{"Field_Trip_RTP.bin"},
+	{"Glee_RTP.bin"},
+	{"Glockenspiel_RTP.bin"},
+	{"Ice_Latte_RTP.bin"},
+	{"Kung_Fu_RTP.bin"},
+	{"Leisure_RTP.bin"},
+	{"Lollipop_RTP.bin"},
+	{"MiMix2_RTP.bin"},
+	{"Mi_RTP.bin"},
+	{"MiHouse_RTP.bin"},
+	{"MiJazz_RTP.bin"},
+	{"MiRemix_RTP.bin"},
+	{"Mountain_Spring_RTP.bin"},
+	{"Orange_RTP.bin"},
+	{"Raindrops_RTP.bin"},
+	{"Space_Age_RTP.bin"},
+	{"ToyRobot_RTP.bin"},
+	{"Vigor_RTP.bin"},
+	{"Bottle_RTP.bin"},
+	{"Bubble_RTP.bin"},
+	{"Bullfrog_RTP.bin"},
+	{"Burst_RTP.bin"},
+	{"Chirp_RTP.bin"},
+	{"Clank_RTP.bin"},
+	{"Crystal_RTP.bin"},
+	{"FadeIn_RTP.bin"},
+	{"FadeOut_RTP.bin"},
+	{"Flute_RTP.bin"},
+	{"Fresh_RTP.bin"},
+	{"Frog_RTP.bin"},
+	{"Guitar_RTP.bin"},
+	{"Harp_RTP.bin"},
+	{"IncomingMessage_RTP.bin"},
+	{"MessageSent_RTP.bin"},
+	{"Moment_RTP.bin"},
+	{"NotificationXylophone_RTP.bin"},
+	{"Potion_RTP.bin"},
+	{"Radar_RTP.bin"},
+	{"Spring_RTP.bin"},
+	{"Swoosh_RTP.bin"}, /*71*/
+	{"Gesture_UpSlide_RTP.bin"},
+	{"FOD_Motion_Planet_RTP.bin"},
+	{"Charge_Wire_RTP.bin"},
+	{"Charge_Wireless_RTP.bin"},
+	{"Unlock_Failed_RTP.bin"},
+	{"FOD_Motion1_RTP.bin"},
+	{"FOD_Motion2_RTP.bin"},
+	{"FOD_Motion3_RTP.bin"},
+	{"FOD_Motion4_RTP.bin"},
+	{"FOD_Motion_Aurora_RTP.bin"},
+	{"FaceID_Wrong2_RTP.bin"}, /*82*/
+	{"uninstall_animation_rtp.bin"},
+	{"uninstall_dialog_rtp.bin"},
+	{"screenshot_rtp.bin"},
+	{"lockscreen_camera_entry_rtp.bin"},
+	{"launcher_edit_rtp.bin"},
+	{"launcher_icon_selection_rtp.bin"},
+	{"taskcard_remove_rtp.bin"},
+	{"task_cleanall_rtp.bin"},
+	{"new_iconfolder_rtp.bin"},
+	{"notification_remove_rtp.bin"},
+	{"notification_cleanall_rtp.bin"},
+	{"notification_setting_rtp.bin"},
+	{"game_turbo_rtp.bin"},
+	{"NFC_card_rtp.bin"},
+	{"wakeup_voice_assistant_rtp.bin"},
+	{"NFC_card_slow_rtp.bin"},
+	{"aw8697_rtp_1.bin"}, /*99*/
+	{"aw8697_rtp_1.bin"}, /*100*/
+	{"offline_countdown_RTP.bin"},
+	{"scene_bomb_injury_RTP.bin"},
+	{"scene_bomb_RTP.bin"}, /*103*/
+	{"door_open_RTP.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"scene_step_RTP.bin"}, /*106*/
+	{"crawl_RTP.bin"},
+	{"scope_on_RTP.bin"},
+	{"scope_off_RTP.bin"},
+	{"magazine_quick_RTP.bin"},
+	{"grenade_RTP.bin"},
+	{"scene_getshot_RTP.bin"}, /*112*/
+	{"grenade_explosion_RTP.bin"},
+	{"punch_RTP.bin"},
+	{"pan_RTP.bin"},
+	{"bandage_RTP.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"scene_jump_RTP.bin"},
+	{"vehicle_plane_RTP.bin"}, /*119*/
+	{"scene_openparachute_RTP.bin"}, /*120*/
+	{"scene_closeparachute_RTP.bin"}, /*121*/
+	{"vehicle_collision_RTP.bin"},
+	{"vehicle_buggy_RTP.bin"}, /*123*/
+	{"vehicle_dacia_RTP.bin"}, /*124*/
+	{"vehicle_moto_RTP.bin"}, /*125*/
+	{"firearms_akm_RTP.bin"}, /*126*/
+	{"firearms_m16a4_RTP.bin"}, /*127*/
+	{"aw8697_rtp_1.bin"},
+	{"firearms_awm_RTP.bin"}, /*129*/
+	{"firearms_mini14_RTP.bin"}, /*130*/
+	{"firearms_vss_RTP.bin"}, /*131*/
+	{"firearms_qbz_RTP.bin"}, /*132*/
+	{"firearms_ump9_RTP.bin"}, /*133*/
+	{"firearms_dp28_RTP.bin"}, /*134*/
+	{"firearms_s1897_RTP.bin"}, /*135*/
+	{"aw8697_rtp_1.bin"},
+	{"firearms_p18c_RTP.bin"}, /*137*/
+	{"aw8697_rtp_1.bin"},
+	{"aw8697_rtp_1.bin"},
+	{"CFM_KillOne_RTP.bin"},
+	{"CFM_Headshot_RTP.bin"}, /*141*/
+	{"CFM_MultiKill_RTP.bin"},
+	{"CFM_KillOne_Strong_RTP.bin"},
+	{"CFM_Headshot_Strong_RTP.bin"},
+	{"CFM_MultiKill_Strong_RTP.bin"},
+	{"CFM_Weapon_Grenade_Explode_RTP.bin"},
+	{"CFM_Weapon_Grenade_KillOne_RTP.bin"},
+	{"CFM_ImpactFlesh_Normal_RTP.bin"},
+	{"CFM_Weapon_C4_Installed_RTP.bin"},
+	{"CFM_Hero_Appear_RTP.bin"},
+	{"CFM_UI_Reward_OpenBox_RTP.bin"},
+	{"CFM_UI_Reward_Task_RTP.bin"},
+	{"CFM_Weapon_BLT_Shoot_RTP.bin"}, /*153*/
+	{"Atlantis_RTP.bin"},
+	{"DigitalUniverse_RTP.bin"},
+	{"Reveries_RTP.bin"},
+	{"FOD_Motion_Triang_RTP.bin"},
+	{"FOD_Motion_Flare_RTP.bin"},
+	{"FOD_Motion_Ripple_RTP.bin"},
+	{"FOD_Motion_Spiral_RTP.bin"},
+	{"gamebox_launch_rtp.bin"}, /*161*/
+	{"Gesture_Back_Pull_RTP.bin"}, /*162*/
+	{"Gesture_Back_Release_RTP.bin"}, /*163*/
+	{"alert_rtp.bin"}, /*164*/
+	{"feedback_negative_light_rtp.bin"}, /*165*/
+	{"feedback_neutral_rtp.bin"}, /*166*/
+	{"feedback_positive_rtp.bin"}, /*167*/
+	{"fingerprint_record_rtp.bin"}, /*168*/
+	{"lockdown_rtp.bin"}, /*169*/
+	{"sliding_damping_rtp.bin"}, /*170*/
+	{"todo_alldone_rtp.bin"}, /*171*/
+	{"uninstall_animation_icon_rtp.bin"}, /*172*/
+	{"signal_button_highlight_rtp.bin"}, /*173*/
+	{"signal_button_negative_rtp.bin"},
+	{"signal_button_rtp.bin"},
+	{"signal_clock_high_rtp.bin"}, /*176*/
+	{"signal_clock_rtp.bin"},
+	{"signal_clock_unit_rtp.bin"},
+	{"signal_inputbox_rtp.bin"},
+	{"signal_key_high_rtp.bin"},
+	{"signal_key_unit_rtp.bin"}, /*181*/
+	{"signal_list_highlight_rtp.bin"},
+	{"signal_list_rtp.bin"},
+	{"signal_picker_rtp.bin"},
+	{"signal_popup_rtp.bin"},
+	{"signal_seekbar_rtp.bin"}, /*186*/
+	{"signal_switch_rtp.bin"},
+	{"signal_tab_rtp.bin"},
+	{"signal_text_rtp.bin"},
+	{"signal_transition_light_rtp.bin"},
+	{"signal_transition_rtp.bin"}, /*191*/
+	{"haptics_video_rtp.bin"}, /*192*/
+	{"keyboard_clicky_down_rtp.bin"},
+	{"keyboard_clicky_up_rtp.bin"},
+	{"keyboard_linear_down_rtp.bin"},
+	{"keyboard_linear_up_rtp.bin"}, /*196*/
 };
 #endif
 int awinic_rtp_name_len = sizeof(awinic_rtp_name) / AWINIC_RTP_NAME_MAX;
@@ -257,8 +257,8 @@ int CUSTOME_WAVE_ID;
  * i2c read/write
  *
  ******************************************************/
-static int aw_i2c_read(struct awinic *awinic, unsigned char reg_addr,
-		       unsigned char *reg_data)
+int aw_i2c_read(struct awinic *awinic,
+		unsigned char reg_addr, unsigned char *reg_data)
 {
 	int ret = -1;
 	unsigned char cnt = 0;
@@ -266,8 +266,8 @@ static int aw_i2c_read(struct awinic *awinic, unsigned char reg_addr,
 	while (cnt < AW_I2C_RETRIES) {
 		ret = i2c_smbus_read_byte_data(awinic->i2c, reg_addr);
 		if (ret < 0) {
-			aw_err("%s: i2c_read cnt=%d error=%d\n", __func__, cnt,
-			       ret);
+			aw_err("%s: i2c_read cnt=%d error=%d\n",
+				__func__, cnt, ret);
 		} else {
 			*reg_data = ret;
 			break;
@@ -279,18 +279,18 @@ static int aw_i2c_read(struct awinic *awinic, unsigned char reg_addr,
 	return ret;
 }
 
-static int aw_i2c_write(struct awinic *awinic, unsigned char reg_addr,
-			unsigned char reg_data)
+int aw_i2c_write(struct awinic *awinic,
+		 unsigned char reg_addr, unsigned char reg_data)
 {
 	int ret = -1;
 	unsigned char cnt = 0;
 
 	while (cnt < AW_I2C_RETRIES) {
-		ret = i2c_smbus_write_byte_data(awinic->i2c, reg_addr,
-						reg_data);
+		ret =
+		i2c_smbus_write_byte_data(awinic->i2c, reg_addr, reg_data);
 		if (ret < 0) {
-			aw_err("%s: i2c_write cnt=%d error=%d\n", __func__, cnt,
-			       ret);
+			aw_err("%s: i2c_write cnt=%d error=%d\n",
+				__func__, cnt, ret);
 		} else {
 			break;
 		}
@@ -373,6 +373,7 @@ static int aw_hw_reset(struct awinic *awinic)
 {
 	int rc = 0;
 
+	aw_info("%s enter\n", __func__);
 	if (!awinic->enable_pin_control) {
 		if (awinic && gpio_is_valid(awinic->reset_gpio)) {
 			gpio_set_value_cansleep(awinic->reset_gpio, 0);
@@ -400,9 +401,8 @@ static int aw_hw_reset(struct awinic *awinic)
  ******************************************************/
 static int aw_read_chipid(struct awinic *awinic, unsigned int *reg_val)
 {
-	unsigned char value[2] = { 0 };
-	unsigned char chipid_addr[2] = { AW_REG_IDH, AW_REG_IDL };
-	unsigned char i = 0;
+	unsigned char value[2] = {0};
+	unsigned char chipid_addr[2] = {AW_REG_IDH, AW_REG_IDL};
 	int ret = -1;
 
 	aw_info("%s enter!\n", __func__);
@@ -424,11 +424,14 @@ static int aw_read_chipid(struct awinic *awinic, unsigned int *reg_val)
 		return 0;
 	}
 	/* try to read aw86927 chip id */
-	for (i = 0; i < 2; i++) {
-		ret = aw_i2c_read(awinic, chipid_addr[i], &value[i]);
-		if (ret < 0)
+	aw_i2c_read(awinic, chipid_addr[0], &value[0]);
+	if (value[0] == 0x92) {
+		if (aw86927_check_qualify(awinic)) {
+			aw_err("%s:unqualified chip!\n", __func__);
 			return ret;
+		}
 	}
+	aw_i2c_read(awinic, chipid_addr[1], &value[1]);
 	*reg_val = value[0] << 8 | value[1];
 	return 0;
 }
@@ -438,6 +441,7 @@ static int aw_parse_chipid(struct awinic *awinic)
 	int ret = -1;
 	unsigned char cnt = 0;
 	unsigned int reg_val = 0;
+
 
 	while (cnt < AW_READ_CHIPID_RETRIES) {
 		/* hardware reset */
@@ -449,8 +453,8 @@ static int aw_parse_chipid(struct awinic *awinic)
 
 		ret = aw_read_chipid(awinic, &reg_val);
 		if (ret < 0) {
-			aw_err("%s: failed to read AW_REG_ID: %d\n", __func__,
-			       ret);
+			aw_err("%s: failed to read AW_REG_ID: %d\n",
+				__func__, ret);
 			break;
 		}
 
@@ -502,7 +506,7 @@ static int aw_parse_dt(struct awinic *awinic, struct device *dev,
 	} else {
 		awinic->reset_gpio = -1;
 		aw_err("%s: no reset gpio provided, will not HW reset device\n",
-		       __func__);
+			__func__);
 		return -ERANGE;
 	}
 
@@ -522,7 +526,8 @@ static int aw_parse_dt(struct awinic *awinic, struct device *dev,
  * i2c driver
  *
  ******************************************************/
-static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
+static int aw_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
 {
 	struct awinic *awinic;
 	struct input_dev *input_dev;
@@ -560,7 +565,7 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		ret = aw_parse_dt(awinic, &i2c->dev, np);
 		if (ret) {
 			aw_err("%s: failed to parse device tree node\n",
-			       __func__);
+				__func__);
 			goto err_parse_dt;
 		}
 	} else {
@@ -595,6 +600,7 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 			continue;
 		}
 		aw_info("%s cannot find '%s'\n", __func__, n);
+
 	}
 #endif
 	if (!awinic->enable_pin_control) {
@@ -627,8 +633,8 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 
 	/* aw869x */
 	if (awinic->name == AW8695 || awinic->name == AW8697) {
-		awinic->aw869x = devm_kzalloc(&i2c->dev, sizeof(struct aw869x),
-					      GFP_KERNEL);
+		awinic->aw869x = devm_kzalloc(&i2c->dev,
+					sizeof(struct aw869x), GFP_KERNEL);
 		if (awinic->aw869x == NULL) {
 			if (gpio_is_valid(awinic->irq_gpio))
 				devm_gpio_free(&i2c->dev, awinic->irq_gpio);
@@ -649,7 +655,7 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 			ret = aw869x_parse_dt(&i2c->dev, awinic->aw869x, np);
 			if (ret) {
 				aw_err("%s: failed to parse device tree node\n",
-				       __func__);
+					__func__);
 				goto err_aw869x_parse_dt;
 			}
 		}
@@ -660,16 +666,15 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 			/* register irq handler */
 			aw869x_interrupt_setup(awinic->aw869x);
 			irq_flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
-			ret = devm_request_threaded_irq(
-				&i2c->dev,
-				gpio_to_irq(awinic->aw869x->irq_gpio), NULL,
-				aw869x_irq, irq_flags, "aw869x",
-				awinic->aw869x);
+			ret = devm_request_threaded_irq(&i2c->dev,
+					gpio_to_irq(awinic->aw869x->irq_gpio),
+					NULL, aw869x_irq, irq_flags,
+					"aw869x", awinic->aw869x);
 			if (ret != 0) {
 				aw_err("%s: failed to request IRQ %d: %d\n",
-				       __func__,
-				       gpio_to_irq(awinic->aw869x->irq_gpio),
-				       ret);
+					__func__,
+					gpio_to_irq(awinic->aw869x->irq_gpio),
+					ret);
 				goto err_aw869x_irq;
 			}
 		} else {
@@ -679,11 +684,10 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 			aw_info("%s: aw869x_irq failed.\n", __func__);
 		}
 
-		awinic->aw869x->work_queue = create_singlethread_workqueue(
-			"aw869x_vibrator_work_queue");
+		awinic->aw869x->work_queue = create_singlethread_workqueue("aw869x_vibrator_work_queue");
 		if (!awinic->aw869x->work_queue) {
 			aw_err("%s: Error creating aw869x_vibrator_work_queue\n",
-			       __func__);
+				__func__);
 			goto err_aw869x_sysfs;
 		}
 
@@ -709,7 +713,7 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		rc = input_ff_create(input_dev, effect_count_max);
 		if (rc < 0) {
 			aw_err("%s create FF input device failed, rc=%d\n",
-			       __func__, rc);
+				__func__, rc);
 			goto err_aw869x_input_ff;
 		}
 		INIT_WORK(&awinic->aw869x->set_gain_work,
@@ -722,12 +726,12 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		rc = input_register_device(input_dev);
 		if (rc < 0) {
 			aw_err("%s register input device failed, rc=%d\n",
-			       __func__, rc);
+				__func__, rc);
 			goto aw869x_destroy_ff;
 		}
 	} else if (awinic->name == AW86927) {
-		awinic->aw86927 = devm_kzalloc(
-			&i2c->dev, sizeof(struct aw86927), GFP_KERNEL);
+		awinic->aw86927 = devm_kzalloc(&i2c->dev,
+					sizeof(struct aw86927), GFP_KERNEL);
 		if (awinic->aw86927 == NULL) {
 			if (gpio_is_valid(awinic->irq_gpio))
 				devm_gpio_free(&i2c->dev, awinic->irq_gpio);
@@ -742,19 +746,12 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		awinic->aw86927->i2c = awinic->i2c;
 		awinic->aw86927->reset_gpio = awinic->reset_gpio;
 		awinic->aw86927->irq_gpio = awinic->irq_gpio;
-		/* chip qualify */
-#ifdef AW_CHECK_QUAL
-		if (aw86927_check_qualify(awinic->aw86927)) {
-			aw_err("%s:unqualified chip!\n", __func__);
-			goto err_aw86927_check_qualify;
-		}
-#endif
 		/* aw86927 rst & int */
 		if (np) {
 			ret = aw86927_parse_dt(awinic->aw86927, &i2c->dev, np);
 			if (ret) {
 				aw_err("%s: failed to parse device tree node\n",
-				       __func__);
+					__func__);
 				goto err_aw86927_parse_dt;
 			}
 		}
@@ -765,16 +762,15 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 			/* register irq handler */
 			aw86927_interrupt_setup(awinic->aw86927);
 			irq_flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
-			ret = devm_request_threaded_irq(
-				&i2c->dev,
-				gpio_to_irq(awinic->aw86927->irq_gpio), NULL,
-				aw86927_irq, irq_flags, "aw86927",
-				awinic->aw86927);
+			ret = devm_request_threaded_irq(&i2c->dev,
+					gpio_to_irq(awinic->aw86927->irq_gpio),
+					NULL, aw86927_irq, irq_flags,
+					"aw86927", awinic->aw86927);
 			if (ret != 0) {
 				aw_err("%s: failed to request IRQ %d: %d\n",
-				       __func__,
-				       gpio_to_irq(awinic->aw86927->irq_gpio),
-				       ret);
+					__func__,
+					gpio_to_irq(awinic->aw86927->irq_gpio),
+					ret);
 				goto err_aw86927_irq;
 			}
 		} else {
@@ -784,11 +780,10 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 			aw_info("%s: aw86927_irq failed.\n", __func__);
 		}
 
-		awinic->aw86927->work_queue = create_singlethread_workqueue(
-			"aw86927_vibrator_work_queue");
+		awinic->aw86927->work_queue = create_singlethread_workqueue("aw86927_vibrator_work_queue");
 		if (!awinic->aw86927->work_queue) {
 			aw_err("%s: Error creating aw86927_vibrator_work_queue\n",
-			       __func__);
+				__func__);
 			goto err_aw86927_sysfs;
 		}
 
@@ -814,7 +809,7 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		rc = input_ff_create(input_dev, effect_count_max);
 		if (rc < 0) {
 			aw_err("%s create FF input device failed, rc=%d\n",
-			       __func__, rc);
+				__func__, rc);
 			goto err_aw86927_input_ff;
 		}
 		INIT_WORK(&awinic->aw86927->set_gain_work,
@@ -827,13 +822,13 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		rc = input_register_device(input_dev);
 		if (rc < 0) {
 			aw_err("%s register input device failed, rc=%d\n",
-			       __func__, rc);
+				__func__, rc);
 			goto aw86927_destroy_ff;
 		}
 
 	} else if (awinic->name == AW86907) {
-		awinic->aw86907 = devm_kzalloc(
-			&i2c->dev, sizeof(struct aw86907), GFP_KERNEL);
+		awinic->aw86907 = devm_kzalloc(&i2c->dev,
+					sizeof(struct aw86907), GFP_KERNEL);
 		if (awinic->aw86907 == NULL) {
 			if (gpio_is_valid(awinic->irq_gpio))
 				devm_gpio_free(&i2c->dev, awinic->irq_gpio);
@@ -860,7 +855,7 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 			ret = aw86907_parse_dt(awinic->aw86907, &i2c->dev, np);
 			if (ret) {
 				aw_err("%s: failed to parse device tree node\n",
-				       __func__);
+					__func__);
 				goto err_aw86907_parse_dt;
 			}
 		}
@@ -871,16 +866,15 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 			/* register irq handler */
 			aw86907_interrupt_setup(awinic->aw86907);
 			irq_flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
-			ret = devm_request_threaded_irq(
-				&i2c->dev,
-				gpio_to_irq(awinic->aw86907->irq_gpio), NULL,
-				aw86907_irq, irq_flags, "aw86907",
-				awinic->aw86907);
+			ret = devm_request_threaded_irq(&i2c->dev,
+					gpio_to_irq(awinic->aw86907->irq_gpio),
+					NULL, aw86907_irq, irq_flags,
+					"aw86907", awinic->aw86907);
 			if (ret != 0) {
 				aw_err("%s: failed to request IRQ %d: %d\n",
-				       __func__,
-				       gpio_to_irq(awinic->aw86907->irq_gpio),
-				       ret);
+					__func__,
+					gpio_to_irq(awinic->aw86907->irq_gpio),
+					ret);
 				goto err_aw86907_irq;
 			}
 		} else {
@@ -890,11 +884,10 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 			aw_info("%s: aw86907_irq failed.\n", __func__);
 		}
 
-		awinic->aw86907->work_queue = create_singlethread_workqueue(
-			"aw86907_vibrator_work_queue");
+		awinic->aw86907->work_queue = create_singlethread_workqueue("aw86907_vibrator_work_queue");
 		if (!awinic->aw86907->work_queue) {
 			aw_err("%s: Error creating aw86907_vibrator_work_queue\n",
-			       __func__);
+				__func__);
 			goto err_aw86907_sysfs;
 		}
 
@@ -920,7 +913,7 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		rc = input_ff_create(input_dev, effect_count_max);
 		if (rc < 0) {
 			aw_err("%s create FF input device failed, rc=%d\n",
-			       __func__, rc);
+				__func__, rc);
 			goto err_aw86907_input_ff;
 		}
 		INIT_WORK(&awinic->aw86907->set_gain_work,
@@ -933,7 +926,7 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		rc = input_register_device(input_dev);
 		if (rc < 0) {
 			aw_err("%s register input device failed, rc=%d\n",
-			       __func__, rc);
+				__func__, rc);
 			goto aw86907_destroy_ff;
 		}
 
@@ -942,7 +935,7 @@ static int aw_i2c_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 	}
 
 	dev_set_drvdata(&i2c->dev, awinic);
-	ret = create_rb();
+	ret =  create_rb();
 	if (ret < 0) {
 		aw_info("%s error creating ringbuffer\n", __func__);
 		goto err_rb;
@@ -978,9 +971,6 @@ err_aw86927_sysfs:
 			      awinic->aw86927);
 err_aw86927_irq:
 err_aw86927_parse_dt:
-#ifdef AW_CHECK_QUAL
-err_aw86927_check_qualify:
-#endif
 	if (awinic->name == AW86927) {
 		devm_kfree(&i2c->dev, awinic->aw86927);
 		awinic->aw86927 = NULL;
@@ -1012,6 +1002,7 @@ err_parse_dt:
 	awinic = NULL;
 	return ret;
 }
+
 
 static int aw_i2c_remove(struct i2c_client *i2c)
 {
@@ -1082,12 +1073,16 @@ static int aw_i2c_remove(struct i2c_client *i2c)
 	return 0;
 }
 
-static const struct i2c_device_id aw_i2c_id[] = { { AW_I2C_NAME, 0 }, {} };
+
+static const struct i2c_device_id aw_i2c_id[] = {
+	{AW_I2C_NAME, 0},
+	{}
+};
 
 MODULE_DEVICE_TABLE(i2c, aw_i2c_id);
 
 static const struct of_device_id aw_dt_match[] = {
-	{ .compatible = "awinic,awinic_haptic" },
+	{.compatible = "awinic,awinic_haptic"},
 	{},
 };
 

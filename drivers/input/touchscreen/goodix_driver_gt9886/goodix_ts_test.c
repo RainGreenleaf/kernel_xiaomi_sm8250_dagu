@@ -27,165 +27,150 @@
 
 #include <linux/fs.h>
 /* test switch */
-#define RAWDATA_TEST_16_FRAMES /* test 16 frames of rawdata */
+#define RAWDATA_TEST_16_FRAMES	/* test 16 frames of rawdata */
 /*#define NOISE_DATA_TEST*/
 /*#define SELF_DATA_TEST*/
 
 /*static u8 save_path[200] = "/sdcard/goodix_config.csv";*/
-#define MAX_LINE_LEN 1024 * 3 * 5
+#define MAX_LINE_LEN                             1024*3*5
 
-#define TOTAL_FRAME_NUM 16
-#define GTX8_RETRY_NUM_3 3
-#define GTX8_CONFIG_REFRESH_DATA 0x01
-#define GTX8_TEST_FILE_NAME "gtx8_test_limits.csv"
-#define STRTOL_LEN 10
-#define STRTOL_HEX_LEN 16
+#define TOTAL_FRAME_NUM				 16
+#define GTX8_RETRY_NUM_3			 3
+#define GTX8_CONFIG_REFRESH_DATA		 0x01
+#define GTX8_TEST_FILE_NAME			"gtx8_test_limits.csv"
+#define STRTOL_LEN				 10
+#define STRTOL_HEX_LEN				 16
 
-#define GTX8_TEST_FILE_NAME_LEN 64
-#define MAX_STR_LEN 32
+#define GTX8_TEST_FILE_NAME_LEN			 64
+#define MAX_STR_LEN				 32
 
-#define FLOAT_AMPLIFIER 1000
-#define MAX_U16_VALUE 65535
-#define RAWDATA_TEST_TIMES 10
+#define FLOAT_AMPLIFIER				 1000
+#define MAX_U16_VALUE				 65535
+#define RAWDATA_TEST_TIMES			 10
 
-#define STATISTICS_DATA_LEN 32
-#define MAX_TEST_ITEMS 10 /* 0P-1P-2P-3P-5P total test items */
+#define STATISTICS_DATA_LEN			 32
+#define MAX_TEST_ITEMS				 10	/* 0P-1P-2P-3P-5P total test items */
 
-#define GTP_CAP_TEST 1
-#define GTP_DELTA_TEST 2
-#define GTP_NOISE_TEST 3
-#define GTP_SHORT_TEST 5
-#define GTP_SELFCAP_TEST 6
-#define GTP_SELFNOISE_TEST 7
+#define GTP_CAP_TEST				 1
+#define GTP_DELTA_TEST				 2
+#define GTP_NOISE_TEST				 3
+#define GTP_SHORT_TEST				 5
+#define GTP_SELFCAP_TEST			 6
+#define GTP_SELFNOISE_TEST			 7
 
-#define GTP_TEST_PASS 1
-#define GTP_PANEL_REASON 2
-#define SYS_SOFTWARE_REASON 3
+#define GTP_TEST_PASS				 1
+#define GTP_PANEL_REASON			 2
+#define SYS_SOFTWARE_REASON			 3
 
 /* error code */
-#define NO_ERR 0
-#define RESULT_ERR -1
-#define RAWDATA_SIZE_LIMIT -2
+#define NO_ERR					 0
+#define RESULT_ERR				-1
+#define RAWDATA_SIZE_LIMIT			-2
 
 /*param key word in .csv */
-#define CSV_TP_UNIFIED_LIMIT "unified_raw_limit"
-#define CSV_TP_NOISE_LIMIT "noise_data_limit"
-#define CSV_TP_SPECIAL_RAW_MIN "specail_raw_min"
-#define CSV_TP_SPECIAL_RAW_MAX "specail_raw_max"
-#define CSV_TP_SPECIAL_RAW_DELTA "special_raw_delta"
-#define CSV_TP_SHORT_THRESHOLD "shortciurt_threshold"
-#define CSV_TP_SELF_UNIFIED_LIMIT "unified_selfraw_limit"
-#define CSV_TP_SPECIAL_SELFRAW_MAX "special_selfraw_max"
-#define CSV_TP_SPECIAL_SELFRAW_MIN "special_selfraw_min"
-#define CSV_TP_SELFNOISE_LIMIT "noise_selfdata_limit"
-#define CSV_TP_TEST_CONFIG "test_config"
-#define CSV_TP_NOISE_CONFIG "noise_config"
+#define CSV_TP_UNIFIED_LIMIT		"unified_raw_limit"
+#define CSV_TP_NOISE_LIMIT		"noise_data_limit"
+#define CSV_TP_SPECIAL_RAW_MIN		"specail_raw_min"
+#define CSV_TP_SPECIAL_RAW_MAX		"specail_raw_max"
+#define CSV_TP_SPECIAL_RAW_DELTA	"special_raw_delta"
+#define CSV_TP_SHORT_THRESHOLD		"shortciurt_threshold"
+#define CSV_TP_SELF_UNIFIED_LIMIT	"unified_selfraw_limit"
+#define CSV_TP_SPECIAL_SELFRAW_MAX	"special_selfraw_max"
+#define CSV_TP_SPECIAL_SELFRAW_MIN	"special_selfraw_min"
+#define CSV_TP_SELFNOISE_LIMIT		"noise_selfdata_limit"
+#define CSV_TP_TEST_CONFIG		"test_config"
+#define CSV_TP_NOISE_CONFIG		"noise_config"
 
 /*GTX8 CMD*/
-#define GTX8_CMD_NORMAL 0x00
-#define GTX8_CMD_RAWDATA 0x01
+#define GTX8_CMD_NORMAL				0x00
+#define GTX8_CMD_RAWDATA			0x01
 /* Regiter for rawdata test*/
-#define GTP_RAWDATA_ADDR_9886 0x8FA0
-#define GTP_NOISEDATA_ADDR_9886 0x9D20
-#define GTP_BASEDATA_ADDR_9886 0xA980
-#define GTP_SELF_RAWDATA_ADDR_9886 0x4C0C
-#define GTP_SELF_NOISEDATA_ADDR_9886 0x4CA4
+#define GTP_RAWDATA_ADDR_9886			0x8FA0
+#define GTP_NOISEDATA_ADDR_9886			0x9D20
+#define GTP_BASEDATA_ADDR_9886			0xA980
+#define GTP_SELF_RAWDATA_ADDR_9886		0x4C0C
+#define GTP_SELF_NOISEDATA_ADDR_9886		0x4CA4
 
-#define GTP_RAWDATA_ADDR_6861 0x9078
-#define GTP_NOISEDATA_ADDR_6861 0x9B92
-#define GTP_BASEDATA_ADDR_6861 0xB0DE
+#define GTP_RAWDATA_ADDR_6861			0x9078
+#define GTP_NOISEDATA_ADDR_6861			0x9B92
+#define GTP_BASEDATA_ADDR_6861			0xB0DE
 
-#define GTP_RAWDATA_ADDR_6862 0x9078
-#define GTP_NOISEDATA_ADDR_6862 0x9B92
-#define GTP_BASEDATA_ADDR_6862 0xB0DE
+#define GTP_RAWDATA_ADDR_6862			0x9078
+#define GTP_NOISEDATA_ADDR_6862			0x9B92
+#define GTP_BASEDATA_ADDR_6862			0xB0DE
 
-#define GTP_IC_INFO_ADDR 0x4014
+#define GTP_IC_INFO_ADDR			0x4014
 
 /*  short  test*/
-#define SHORT_TO_GND_RESISTER(sig)                                             \
-	(div_s64(5266285, (sig) & (~0x8000)) -                                 \
-	 40 * 100) /* (52662.85/code-40) * 100 */
-#define SHORT_TO_VDD_RESISTER(sig, value)                                      \
-	(div_s64(36864 * ((value)-9) * 100, (((sig) & (~0x8000)) * 7)) -       \
-	 40 * 100)
+#define SHORT_TO_GND_RESISTER(sig)  (div_s64(5266285, (sig) & (~0x8000)) - 40 * 100)	/* (52662.85/code-40) * 100 */
+#define SHORT_TO_VDD_RESISTER(sig, value) (div_s64(36864 * ((value) - 9) * 100, (((sig) & (~0x8000)) * 7)) - 40 * 100)
 
-#define DRV_CHANNEL_FLAG 0x80
-#define SHORT_STATUS_REG 0x5095
-#define WATCH_DOG_TIMER_REG 0x20B0
+#define DRV_CHANNEL_FLAG			0x80
+#define SHORT_STATUS_REG			0x5095
+#define WATCH_DOG_TIMER_REG			0x20B0
 
-#define TXRX_THRESHOLD_REG 0x8408
-#define GNDVDD_THRESHOLD_REG 0x840A
-#define ADC_DUMP_NUM_REG 0x840C
+#define TXRX_THRESHOLD_REG			0x8408
+#define GNDVDD_THRESHOLD_REG			0x840A
+#define ADC_DUMP_NUM_REG			0x840C
 
-#define GNDAVDD_SHORT_VALUE 16
-#define ADC_DUMP_NUM 200
-#define SHORT_CAL_SIZE(a) (4 + (a)*2 + 2)
+#define GNDAVDD_SHORT_VALUE			16
+#define ADC_DUMP_NUM				200
+#define SHORT_CAL_SIZE(a)			(4 + (a) * 2 + 2)
 
-#define SHORT_TESTEND_REG 0x8400
-#define TEST_RESTLT_REG 0x8401
-#define TX_SHORT_NUM 0x8402
+#define SHORT_TESTEND_REG			0x8400
+#define TEST_RESTLT_REG				0x8401
+#define TX_SHORT_NUM				0x8402
 
-#define DIFF_CODE_REG 0xA97A
-#define DRV_SELF_CODE_REG 0xA8E0
-#define TX_SHORT_NUM_REG 0x8802
-#define YS_IC_MASK_TYPE_REG 0x2222
+#define DIFF_CODE_REG				0xA97A
+#define DRV_SELF_CODE_REG			0xA8E0
+#define TX_SHORT_NUM_REG			0x8802
+#define YS_IC_MASK_TYPE_REG			0x2222
 
-#define MAX_DRV_NUM 40
-#define MAX_SEN_NUM 36
+#define MAX_DRV_NUM				40
+#define MAX_SEN_NUM				36
 
-#define MAX_DRV_NUM_9886 40
-#define MAX_SEN_NUM_9886 36
+#define MAX_DRV_NUM_9886			40
+#define MAX_SEN_NUM_9886			36
 
-#define MAX_DRV_NUM_6861 47
-#define MAX_SEN_NUM_6861 36
+#define MAX_DRV_NUM_6861			47
+#define MAX_SEN_NUM_6861			36
 
-#define MAX_DRV_NUM_6862 47
-#define MAX_SEN_NUM_6862 29
+#define MAX_DRV_NUM_6862			47
+#define MAX_SEN_NUM_6862			29
 
-#define MAX_DRV_NUM_9896 20
-#define MAX_SEN_NUM_9896 40
+#define MAX_DRV_NUM_9896			20
+#define MAX_SEN_NUM_9896			40
 /*  end  */
 
-static u8 gt9886_drv_map[] = {
-	46,  48,  49,  47,  45,	 50,  56,  52,	51,  53,  55,  54,  59,	 64,
-	57,  60,  62,  58,  65,	 63,  61,  255, 255, 255, 255, 255, 255, 255,
-	255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255
-};
-static u8 gt9886_sen_map[] = { 32, 34, 35, 30, 31, 33, 27, 28, 29, 10, 25, 26,
-			       23, 13, 24, 12, 9,  11, 8,  7,  5,  6,  4,  3,
-			       2,  1,  0,  73, 75, 74, 39, 72, 40, 36, 37, 38 };
+static u8 gt9886_drv_map[] =
+    { 46, 48, 49, 47, 45, 50, 56, 52, 51, 53, 55, 54, 59, 64, 57, 60, 62, 58, 65, 63, 61, 255, 255, 255, 255, 255, 255,
+255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+static u8 gt9886_sen_map[] =
+    { 32, 34, 35, 30, 31, 33, 27, 28, 29, 10, 25, 26, 23, 13, 24, 12, 9, 11, 8, 7, 5, 6, 4, 3, 2, 1, 0, 73, 75, 74, 39,
+72, 40, 36, 37, 38 };
 
-static u8 gt9885_drv_map[] = {
-	45,  47,  49,  48,  46,	 50,  53,  52,	51,  54,  56,  55,  59,	 58,
-	57,  60,  61,  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-	255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255
-};
-static u8 gt9885_sen_map[] = {
-	32, 28, 34, 30, 26, 35, 24, 31, 33, 11, 27, 29, 25, 13, 12, 23, 8,   10,
-	9,  6,	7,  5,	4,  1,	0,  75, 74, 40, 73, 72, 39, 38, 37, 36, 255, 255
-};
+static u8 gt9885_drv_map[] =
+    { 45, 47, 49, 48, 46, 50, 53, 52, 51, 54, 56, 55, 59, 58, 57, 60, 61, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+static u8 gt9885_sen_map[] =
+    { 32, 28, 34, 30, 26, 35, 24, 31, 33, 11, 27, 29, 25, 13, 12, 23, 8, 10, 9, 6, 7, 5, 4, 1, 0, 75, 74, 40, 73, 72,
+39, 38, 37, 36, 255, 255 };
 
-static u8 gt6862_drv_map[] = { 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
-			       48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
-			       60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
-			       72, 73, 74, 75, 0,  1,  2,  3,  4,  5,  6 };
-static u8 gt6862_sen_map[] = { 34, 35, 33, 31, 32, 30, 28, 27, 29, 24,
-			       25, 26, 21, 22, 23, 18, 19, 20, 15, 17,
-			       16, 14, 13, 12, 11, 9,  10, 8,  7 };
-static u8 gt6861_drv_map[] = {
-	255, 255, 255, 255, 255, 255, 255, 255, 255, 56,  46,  47, 48, 49,
-	45,  50,  52,  51,  55,	 53,  54,  64,	59,  57,  60,  62, 58, 65,
-	63,  61,  255, 255, 255, 255, 255, 255, 255, 255, 255, 255
-};
-static u8 gt6861_sen_map[] = { 72, 37, 38, 40, 36, 74, 39, 75, 0,  73, 2,  1,
-			       3,  4,  5,  6,  7,  8,  10, 11, 9,  12, 13, 24,
-			       23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
-static u8 gt9896_drv_map[] = { 45, 46, 47, 49, 48, 50, 52, 51, 53, 55,
-			       56, 54, 59, 58, 57, 62, 61, 60, 64, 63 };
-static u8 gt9896_sen_map[] = { 34, 32, 35, 33, 30, 31, 29, 28, 27, 25,
-			       26, 19, 24, 14, 17, 18, 15, 16, 6,  13,
-			       3,  12, 0,  1,  5,  75, 4,  2,  44, 74,
-			       41, 42, 43, 38, 40, 36, 39, 37, 66, 65 };
+static u8 gt6862_drv_map[] =
+    { 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
+64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 0, 1, 2, 3, 4, 5, 6 };
+static u8 gt6862_sen_map[] =
+    { 34, 35, 33, 31, 32, 30, 28, 27, 29, 24, 25, 26, 21, 22, 23, 18, 19, 20, 15, 17, 16, 14, 13, 12, 11, 9, 10, 8, 7 };
+static u8 gt6861_drv_map[] =
+    { 255, 255, 255, 255, 255, 255, 255, 255, 255, 56, 46, 47, 48, 49, 45, 50, 52, 51, 55, 53, 54, 64, 59, 57, 60, 62,
+58, 65, 63, 61, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+static u8 gt6861_sen_map[] =
+    { 72, 37, 38, 40, 36, 74, 39, 75, 0, 73, 2, 1, 3, 4, 5, 6, 7, 8, 10, 11, 9, 12, 13, 24, 23, 25, 26, 27, 28, 29, 30,
+31, 32, 33, 34, 35 };
+static u8 gt9896_drv_map[] = { 45, 46, 47, 49, 48, 50, 52, 51, 53, 55, 56, 54, 59, 58, 57, 62, 61, 60, 64, 63 };
+static u8 gt9896_sen_map[] =
+    { 34, 32, 35, 33, 30, 31, 29, 28, 27, 25, 26, 19, 24, 14, 17, 18, 15, 16, 6, 13, 3, 12, 0, 1, 5, 75, 4, 2, 44, 74,
+41, 42, 43, 38, 40, 36, 39, 37, 66, 65 };
 
 /**
  * struct ts_test_params - test parameters
@@ -286,8 +271,7 @@ struct short_record {
 	u8 group2;
 };
 
-static void gtx8_check_setting_group(struct gtx8_ts_test *ts_test,
-				     struct short_record *r_data);
+static void gtx8_check_setting_group(struct gtx8_ts_test *ts_test, struct short_record *r_data);
 
 /*******************************csv_parse**********************************************/
 static void copy_this_line(char *dest, char *src)
@@ -301,8 +285,7 @@ static void copy_this_line(char *dest, char *src)
 		*copy_to = *copy_from;
 		copy_from++;
 		copy_to++;
-	} while ((*copy_from != '\n') && (*copy_from != '\r') &&
-		 (*copy_from != '\0'));
+	} while ((*copy_from != '\n') && (*copy_from != '\r') && (*copy_from != '\0'));
 	*copy_to = '\0';
 }
 
@@ -317,7 +300,7 @@ static void goto_next_line(char **ptr)
 	*ptr = *ptr + 1;
 }
 
-s32 getrid_space(s8 *data, s32 len)
+s32 getrid_space(s8 * data, s32 len)
 {
 	u8 *buf = NULL;
 	s32 i;
@@ -346,8 +329,7 @@ s32 getrid_space(s8 *data, s32 len)
 	return count;
 }
 
-static int parse_valid_data(char *buf_start, loff_t buf_size, char *ptr,
-			    int32_t *data, int rows)
+static int parse_valid_data(char *buf_start, loff_t buf_size, char *ptr, int32_t * data, int rows)
 {
 	int i = 0;
 	int j = 0;
@@ -366,8 +348,7 @@ static int parse_valid_data(char *buf_start, loff_t buf_size, char *ptr,
 
 	row_data = (char *)kzalloc(MAX_LINE_LEN, GFP_KERNEL);
 	if (NULL == row_data) {
-		ts_err("%s: kzalloc %d bytes failed.\n", __func__,
-		       MAX_LINE_LEN);
+		ts_err("%s: kzalloc %d bytes failed.\n", __func__, MAX_LINE_LEN);
 		return -ESRCH;
 	}
 
@@ -380,22 +361,18 @@ static int parse_valid_data(char *buf_start, loff_t buf_size, char *ptr,
 		while ((token = strsep(&tok_ptr, ","))) {
 			if (strlen(token) == 0)
 				continue;
-			if (token[0] == '0' &&
-			    (token[1] == 'X' || token[1] == 'x')) {
-				data[j] = (int32_t)simple_strtol(
-					token, NULL, STRTOL_HEX_LEN);
+			if (token[0] == '0' && (token[1] == 'X' || token[1] == 'x')) {
+				data[j] = (int32_t) simple_strtol(token, NULL, STRTOL_HEX_LEN);
 				j++;
 			} else {
-				data[j] = (int32_t)simple_strtol(token, NULL,
-								 STRTOL_LEN);
+				data[j] = (int32_t) simple_strtol(token, NULL, STRTOL_LEN);
 				j++;
 			}
 		}
 		if (i == rows - 1)
 			break;
-		goto_next_line(&ptr); /* next row */
-		if (!ptr || (0 == strlen(ptr)) ||
-		    (ptr >= (buf_start + buf_size))) {
+		goto_next_line(&ptr);	/* next row */
+		if (!ptr || (0 == strlen(ptr)) || (ptr >= (buf_start + buf_size))) {
 			ts_info("invalid ptr, return\n");
 			kfree(row_data);
 			row_data = NULL;
@@ -430,8 +407,7 @@ static void print_data(char* target_name, int32_t* data, int rows, int columns)
 /*parse data from csv
  * @return: length of data
  */
-int parse_csvfile(struct device *dev, char *target_name, int32_t *data,
-		  int rows, int columns)
+int parse_csvfile(struct device *dev, char *target_name, int32_t * data, int rows, int columns)
 {
 	int ret = 0;
 	int i = 0;
@@ -446,17 +422,15 @@ int parse_csvfile(struct device *dev, char *target_name, int32_t *data,
 		goto exit_free;
 	}
 
-	ts_info("%s, file name is %s, target is %s.\n", __func__,
-		GTX8_TEST_FILE_NAME, target_name);
+	ts_info("%s, file name is %s, target is %s.\n", __func__, GTX8_TEST_FILE_NAME, target_name);
 	for (i = 0; i < 3; i++) {
 		ret = request_firmware(&firmware, GTX8_TEST_FILE_NAME, dev);
 		if (ret < 0) {
-			ts_err("limits file [%s] not available,error:%d, try_times:%d",
-			       GTX8_TEST_FILE_NAME, ret, i + 1);
+			ts_err("limits file [%s] not available,error:%d, try_times:%d", GTX8_TEST_FILE_NAME, ret,
+			       i + 1);
 			msleep(1000);
 		} else {
-			ts_info("limits file  [%s] is ready, try_times:%d",
-				GTX8_TEST_FILE_NAME, i + 1);
+			ts_info("limits file  [%s] is ready, try_times:%d", GTX8_TEST_FILE_NAME, i + 1);
 			break;
 		}
 	}
@@ -466,16 +440,14 @@ int parse_csvfile(struct device *dev, char *target_name, int32_t *data,
 	}
 
 	if (firmware->size <= 0) {
-		ts_err("request_firmware, limits param length ERROR,len:%zu",
-		       firmware->size);
+		ts_err("request_firmware, limits param length ERROR,len:%zu", firmware->size);
 		ret = -EINVAL;
 		goto exit_free;
 	}
 
 	buf = (char *)kzalloc(firmware->size + 1, GFP_KERNEL);
 	if (NULL == buf) {
-		ts_err("%s: kzalloc %zu bytes failed.\n", __func__,
-		       firmware->size);
+		ts_err("%s: kzalloc %zu bytes failed.\n", __func__, firmware->size);
 		ret = -ESRCH;
 		goto exit_free;
 	}
@@ -486,33 +458,29 @@ int parse_csvfile(struct device *dev, char *target_name, int32_t *data,
 		ptr = buf;
 		ptr = strstr(ptr, target_name);
 		if (ptr == NULL) {
-			ts_err("%s: load %s failed 1!\n", __func__,
-			       target_name);
+			ts_err("%s: load %s failed 1!\n", __func__, target_name);
 			ret = -EINTR;
 			goto exit_free;
 		}
 		/* walk thru this line*/
 		goto_next_line(&ptr);
 		if ((NULL == ptr) || (0 == strlen(ptr))) {
-			ts_err("%s: load %s failed 2!\n", __func__,
-			       target_name);
+			ts_err("%s: load %s failed 2!\n", __func__, target_name);
 			ret = -EIO;
 			goto exit_free;
 		}
 		/*analyze the data*/
 		if (data) {
-			ret = parse_valid_data(buf, firmware->size, ptr, data,
-					       rows);
+			ret = parse_valid_data(buf, firmware->size, ptr, data, rows);
 			/*print_data(target_name, data,  rows, ret/rows);*/
 		} else {
-			ts_err("%s: load %s failed 3!\n", __func__,
-			       target_name);
+			ts_err("%s: load %s failed 3!\n", __func__, target_name);
 			ret = -EINTR;
 			goto exit_free;
 		}
 	} else {
-		ts_err("%s: ret=%d,read_ret=%d, buf=%p, firmware->size=%zu\n",
-		       __func__, ret, read_ret, buf, firmware->size);
+		ts_err("%s: ret=%d,read_ret=%d, buf=%p, firmware->size=%zu\n", __func__, ret, read_ret, buf,
+		       firmware->size);
 		ret = -ENXIO;
 		goto exit_free;
 	}
@@ -543,8 +511,8 @@ exit_free:
 * offset         : offset inside sub-bag
 * Return         : int(return offset with config[0], < 0 failed)
 *******************************************************************************/
-static int gtx8_get_cfg_value(struct goodix_ts_core *core_data, u8 *config,
-			      u8 *buf, u8 len, u8 sub_bag_num, u8 offset)
+static int gtx8_get_cfg_value(struct goodix_ts_core *core_data, u8 * config, u8 * buf, u8 len, u8 sub_bag_num,
+			      u8 offset)
 {
 	u8 *sub_bag_ptr = NULL;
 	u8 i = 0;
@@ -568,8 +536,7 @@ static int gtx8_get_cfg_value(struct goodix_ts_core *core_data, u8 *config,
 	}
 
 	if (sub_bag_ptr[1] + 2 + chksum_len < offset + len) {
-		ts_err("Sub bag len less then you want to read: %d < %d\n",
-		       sub_bag_ptr[1] + 3, offset + len);
+		ts_err("Sub bag len less then you want to read: %d < %d\n", sub_bag_ptr[1] + 3, offset + len);
 		return -EINVAL;
 	}
 
@@ -583,8 +550,7 @@ static int gtx8_get_cfg_value(struct goodix_ts_core *core_data, u8 *config,
 /*
  * parse driver and sensor num only on screen
  */
-int gtx8_get_channel_num(struct goodix_ts_core *core_data, u32 *sen_num,
-			 u32 *drv_num, u8 *cfg_data)
+int gtx8_get_channel_num(struct goodix_ts_core *core_data, u32 * sen_num, u32 * drv_num, u8 * cfg_data)
 {
 	int ret = 0;
 	u8 buf[3] = { 0 };
@@ -615,8 +581,7 @@ int gtx8_get_channel_num(struct goodix_ts_core *core_data, u32 *sen_num,
 
 	ts_info("drv_num:%d,sen_num:%d\n", *drv_num, *sen_num);
 
-	if (*drv_num > MAX_DRV_NUM || *drv_num <= 0 || *sen_num > MAX_SEN_NUM ||
-	    *sen_num <= 0) {
+	if (*drv_num > MAX_DRV_NUM || *drv_num <= 0 || *sen_num > MAX_SEN_NUM || *sen_num <= 0) {
 		ts_err("invalid sensor or driver num\n");
 		ret = -EINVAL;
 	}
@@ -633,8 +598,7 @@ err_out:
 * Output         : u8* config
 * Return         : none
 *******************************************************************************/
-static void cfg_update_chksum(struct goodix_ts_core *core_data, u8 *config,
-			      u16 cfg_len)
+static void cfg_update_chksum(struct goodix_ts_core *core_data, u8 * config, u16 cfg_len)
 {
 	u16 pack_map_len_arr[255];
 	u16 packNum = 0;
@@ -667,26 +631,21 @@ static void cfg_update_chksum(struct goodix_ts_core *core_data, u8 *config,
 	for (i = 0; i <= pack_id_tmp; i++) {
 		check_sum = 0;
 		check_sum_u16 = 0;
-		for (j = cur_pos;
-		     j < cur_pos + pack_map_len_arr[i] - chksum_len; j++) {
+		for (j = cur_pos; j < cur_pos + pack_map_len_arr[i] - chksum_len; j++) {
 			check_sum += config[j];
 			check_sum_u16 += config[j];
 		}
 		if (chksum_len == 1) {
-			config[cur_pos + pack_map_len_arr[i] - chksum_len] =
-				(u8)(0 - check_sum);
+			config[cur_pos + pack_map_len_arr[i] - chksum_len] = (u8) (0 - check_sum);
 		} else if (chksum_len == 2) {
-			config[cur_pos + pack_map_len_arr[i] - chksum_len] =
-				(check_sum_u16 >> 8) & 0xff;
-			config[cur_pos + pack_map_len_arr[i] - chksum_len + 1] =
-				check_sum_u16 & 0xff;
+			config[cur_pos + pack_map_len_arr[i] - chksum_len] = (check_sum_u16 >> 8) & 0xff;
+			config[cur_pos + pack_map_len_arr[i] - chksum_len + 1] = check_sum_u16 & 0xff;
 		}
 		cur_pos += pack_map_len_arr[i];
 	}
 }
 
-static int disable_hopping(struct gtx8_ts_test *ts_test,
-			   struct goodix_ts_config *test_config)
+static int disable_hopping(struct gtx8_ts_test *ts_test, struct goodix_ts_config *test_config)
 {
 	int ret = 0;
 	u8 value = 0;
@@ -695,11 +654,9 @@ static int disable_hopping(struct gtx8_ts_test *ts_test,
 
 	core_data = (struct goodix_ts_core *)ts_test->ts;
 	if (core_data->ts_dev->ic_type == IC_TYPE_YELLOWSTONE)
-		ret = gtx8_get_cfg_value(core_data, test_config->data, &value,
-					 1, 11, 2); /* T11 2 0 0 */
+		ret = gtx8_get_cfg_value(core_data, test_config->data, &value, 1, 11, 2);	/* T11 2 0 0 */
 	else
-		ret = gtx8_get_cfg_value(core_data, test_config->data, &value,
-					 1, 10, 2); /* T10 2 0 0 */
+		ret = gtx8_get_cfg_value(core_data, test_config->data, &value, 1, 10, 2);	/* T10 2 0 0 */
 	if (ret < 0) {
 		ts_err("Failed parse hopping reg\n");
 		return -EINVAL;
@@ -723,8 +680,7 @@ static int init_test_config(struct gtx8_ts_test *ts_test)
 	core_data = (struct goodix_ts_core *)ts_test->ts;
 	if (ts_test->test_config.length == 0) {
 		ts_info("switch to orignal config!\n");
-		memmove(ts_test->test_config.data, ts_test->orig_config.data,
-			ts_test->orig_config.length);
+		memmove(ts_test->test_config.data, ts_test->orig_config.data, ts_test->orig_config.length);
 		ts_test->test_config.length = ts_test->orig_config.length;
 	} else {
 		ts_test->test_config.data[0] = ts_test->orig_config.data[0];
@@ -754,16 +710,14 @@ static int gtx8_init_testlimits(struct gtx8_ts_test *ts_test)
 	test_params = &ts_test->test_params;
 	test_config = &ts_test->test_config;
 	core_data = (struct goodix_ts_core *)ts_test->ts;
-	tmp_config =
-		(int *)kzalloc(GOODIX_CFG_MAX_SIZE * sizeof(int), GFP_KERNEL);
+	tmp_config = (int *)kzalloc(GOODIX_CFG_MAX_SIZE * sizeof(int), GFP_KERNEL);
 	if (NULL == tmp_config) {
 		ts_err("%s: config kzalloc bytes failed.\n", __func__);
 		return -ENOMEM;
 	}
 
 	/* <max_threshold, min_threshold, delta_threshold> */
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_UNIFIED_LIMIT,
-			    data_buf, 1, 3);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_UNIFIED_LIMIT, data_buf, 1, 3);
 	if (ret < 0) {
 		ts_info("%s: Failed get %s\n", __func__, CSV_TP_UNIFIED_LIMIT);
 		goto INIT_LIMIT_END;
@@ -775,30 +729,25 @@ static int gtx8_init_testlimits(struct gtx8_ts_test *ts_test)
 		test_params->deviation_limits[i] = data_buf[2];
 	}
 #ifdef NOISE_DATA_TEST
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_NOISE_LIMIT,
-			    data_buf, 1, 1);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_NOISE_LIMIT, data_buf, 1, 1);
 	if (ret < 0) {
 		ts_info("%s: Failed get %s\n", __func__, CSV_TP_NOISE_LIMIT);
 		goto INIT_LIMIT_END;
 	}
 	test_params->noise_threshold = data_buf[0];
 
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SELFNOISE_LIMIT,
-			    data_buf, 1, 1);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SELFNOISE_LIMIT, data_buf, 1, 1);
 	if (ret < 0) {
-		ts_info("%s: Failed get %s\n", __func__,
-			CSV_TP_SELFNOISE_LIMIT);
+		ts_info("%s: Failed get %s\n", __func__, CSV_TP_SELFNOISE_LIMIT);
 		goto INIT_LIMIT_END;
 	}
 	test_params->self_noise_threshold = data_buf[0];
 #endif
 	/* <self max_threshold, min_threshold> */
 #ifdef SELF_DATA_TEST
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SELF_UNIFIED_LIMIT,
-			    data_buf, 1, 2);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SELF_UNIFIED_LIMIT, data_buf, 1, 2);
 	if (ret < 0) {
-		ts_info("%s: Failed get %s\n", __func__,
-			CSV_TP_SELF_UNIFIED_LIMIT);
+		ts_info("%s: Failed get %s\n", __func__, CSV_TP_SELF_UNIFIED_LIMIT);
 		goto INIT_LIMIT_END;
 	}
 	/* store data to test_parms */
@@ -807,32 +756,26 @@ static int gtx8_init_testlimits(struct gtx8_ts_test *ts_test)
 		test_params->self_min_limits[i] = data_buf[1];
 	}
 
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_SELFRAW_MAX,
-			    test_params->self_max_limits, 1,
-			    test_params->drv_num + test_params->sen_num);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_SELFRAW_MAX, test_params->self_max_limits,
+			    1, test_params->drv_num + test_params->sen_num);
 	if (ret < 0) {
-		ts_info("%s: Failed get %s\n", __func__,
-			CSV_TP_SPECIAL_SELFRAW_MAX);
+		ts_info("%s: Failed get %s\n", __func__, CSV_TP_SPECIAL_SELFRAW_MAX);
 		ret = 0;
 	}
 
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_SELFRAW_MIN,
-			    test_params->self_min_limits, 1,
-			    test_params->drv_num + test_params->sen_num);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_SELFRAW_MIN, test_params->self_min_limits,
+			    1, test_params->drv_num + test_params->sen_num);
 	if (ret < 0) {
-		ts_info("%s: Failed get %s\n", __func__,
-			CSV_TP_SPECIAL_SELFRAW_MIN);
+		ts_info("%s: Failed get %s\n", __func__, CSV_TP_SPECIAL_SELFRAW_MIN);
 		ret = 0;
 	}
 #endif
 
 	/* shortciurt_threshold <short_threshold,drv_to_drv,
 	   drv_to_sen,sen_to_sen, drv_to_gnd, sen_to_gnd, avdd_r> */
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SHORT_THRESHOLD,
-			    data_buf, 1, 7);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SHORT_THRESHOLD, data_buf, 1, 7);
 	if (ret < 0) {
-		ts_info("%s: Failed get %s\n", __func__,
-			CSV_TP_SHORT_THRESHOLD);
+		ts_info("%s: Failed get %s\n", __func__, CSV_TP_SHORT_THRESHOLD);
 		goto INIT_LIMIT_END;
 	}
 	test_params->short_threshold = data_buf[0];
@@ -843,35 +786,28 @@ static int gtx8_init_testlimits(struct gtx8_ts_test *ts_test)
 	test_params->r_sen_gnd_threshold = data_buf[5];
 	test_params->avdd_value = data_buf[6];
 
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_RAW_MAX,
-			    test_params->max_limits, test_params->sen_num,
-			    test_params->drv_num);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_RAW_MAX, test_params->max_limits,
+			    test_params->sen_num, test_params->drv_num);
 	if (ret < 0) {
-		ts_info("%s: Failed get %s\n", __func__,
-			CSV_TP_SPECIAL_RAW_MAX);
-		ret = 0; /* if does not specialed the node value, we will use unified limits setting */
+		ts_info("%s: Failed get %s\n", __func__, CSV_TP_SPECIAL_RAW_MAX);
+		ret = 0;	/* if does not specialed the node value, we will use unified limits setting */
 	}
 
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_RAW_MIN,
-			    test_params->min_limits, test_params->sen_num,
-			    test_params->drv_num);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_RAW_MIN, test_params->min_limits,
+			    test_params->sen_num, test_params->drv_num);
 	if (ret < 0) {
-		ts_info("%s: Failed get %s\n", __func__,
-			CSV_TP_SPECIAL_RAW_MIN);
+		ts_info("%s: Failed get %s\n", __func__, CSV_TP_SPECIAL_RAW_MIN);
 		ret = 0;
 	}
 
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_RAW_DELTA,
-			    test_params->deviation_limits, test_params->sen_num,
-			    test_params->drv_num);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_SPECIAL_RAW_DELTA, test_params->deviation_limits,
+			    test_params->sen_num, test_params->drv_num);
 	if (ret < 0) {
-		ts_info("%s: Failed get %s\n", __func__,
-			CSV_TP_SPECIAL_RAW_DELTA);
+		ts_info("%s: Failed get %s\n", __func__, CSV_TP_SPECIAL_RAW_DELTA);
 		ret = 0;
 	}
 
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_TEST_CONFIG,
-			    tmp_config, 1, GOODIX_CFG_MAX_SIZE);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_TEST_CONFIG, tmp_config, 1, GOODIX_CFG_MAX_SIZE);
 	if (ret < 0) {
 		ts_info("%s: Failed get %s\n", __func__, CSV_TP_TEST_CONFIG);
 		test_config->length = 0;
@@ -885,8 +821,7 @@ static int gtx8_init_testlimits(struct gtx8_ts_test *ts_test)
 	ts_info("init_test_config ret = %d", ret);
 
 #ifdef NOISE_DATA_TEST
-	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_NOISE_CONFIG,
-			    tmp_config, 1, GOODIX_CFG_MAX_SIZE);
+	ret = parse_csvfile(core_data->ts_dev->dev, CSV_TP_NOISE_CONFIG, tmp_config, 1, GOODIX_CFG_MAX_SIZE);
 	if (ret < 0) {
 		ts_info("%s: Failed get %s\n", __func__, CSV_TP_NOISE_CONFIG);
 	} else {
@@ -897,17 +832,13 @@ static int gtx8_init_testlimits(struct gtx8_ts_test *ts_test)
 		ts_test->noise_config.data[1] |= GTX8_CONFIG_REFRESH_DATA;
 		if (core_data->ts_dev->ic_type == IC_TYPE_YELLOWSTONE) {
 			chksum = ts_test->noise_config.data[0] +
-				 ts_test->noise_config.data[1] +
-				 ts_test->noise_config.data[2];
+			    ts_test->noise_config.data[1] + ts_test->noise_config.data[2];
 			ts_test->noise_config.data[3] = (chksum >> 8) & 0xff;
 			ts_test->noise_config.data[4] = chksum & 0xff;
 		} else {
-			ts_test->noise_config.data[3] =
-				(u8)(0 - checksum_u8(ts_test->noise_config.data,
-						     3));
+			ts_test->noise_config.data[3] = (u8) (0 - checksum_u8(ts_test->noise_config.data, 3));
 		}
-		ts_test->noise_config.reg_base =
-			core_data->ts_dev->reg.cfg_addr;
+		ts_test->noise_config.reg_base = core_data->ts_dev->reg.cfg_addr;
 		mutex_init(&(ts_test->noise_config.lock));
 		ts_test->noise_config.initialized = true;
 		strcpy(ts_test->noise_config.name, "noise_config");
@@ -920,8 +851,7 @@ INIT_LIMIT_END:
 	return ret;
 }
 
-static int get_ic_info(struct goodix_ts_device *dev,
-		       struct ts_test_params *test_params)
+static int get_ic_info(struct goodix_ts_device *dev, struct ts_test_params *test_params)
 {
 	int ret = 0;
 	u8 buf[10];
@@ -950,26 +880,21 @@ static int get_ic_info(struct goodix_ts_device *dev,
 		goto err_out;
 	}
 
-	offset = 36; /* drv num */
+	offset = 36;		/* drv num */
 	test_params->drv_num = info_data[offset];
 	offset++;
 	test_params->sen_num = info_data[offset];
 
 	offset = 83;
-	test_params->rawdata_addr =
-		(info_data[offset] << 8) + info_data[offset + 1];
+	test_params->rawdata_addr = (info_data[offset] << 8) + info_data[offset + 1];
 	offset += 2;
-	test_params->noisedata_addr =
-		(info_data[offset] << 8) + info_data[offset + 1];
+	test_params->noisedata_addr = (info_data[offset] << 8) + info_data[offset + 1];
 	offset += 2;
-	test_params->basedata_addr =
-		(info_data[offset] << 8) + info_data[offset + 1];
-	offset += 4; /* self data addr */
-	test_params->self_rawdata_addr =
-		(info_data[offset] << 8) + info_data[offset + 1];
+	test_params->basedata_addr = (info_data[offset] << 8) + info_data[offset + 1];
+	offset += 4;		/* self data addr */
+	test_params->self_rawdata_addr = (info_data[offset] << 8) + info_data[offset + 1];
 	offset += 2;
-	test_params->self_noisedata_addr =
-		(info_data[offset] << 8) + info_data[offset + 1];
+	test_params->self_noisedata_addr = (info_data[offset] << 8) + info_data[offset + 1];
 
 	if (!strncmp(dev->chip_version.pid, "9896", 4)) {
 		test_params->max_drv_num = MAX_DRV_NUM_9896;
@@ -1038,8 +963,7 @@ static int gtx8_init_params(struct gtx8_ts_test *ts_test)
 	} else if (core_data->ts_dev->ic_type == IC_TYPE_YELLOWSTONE) {
 		ret = get_ic_info(core_data->ts_dev, test_params);
 	} else {
-		ts_err("unsupport ic type:%s\n",
-		       core_data->ts_dev->chip_version.pid);
+		ts_err("unsupport ic type:%s\n", core_data->ts_dev->chip_version.pid);
 		test_params->rawdata_addr = GTP_RAWDATA_ADDR_9886;
 		test_params->noisedata_addr = GTP_NOISEDATA_ADDR_9886;
 		test_params->self_rawdata_addr = GTP_SELF_RAWDATA_ADDR_9886;
@@ -1056,8 +980,7 @@ static int gtx8_init_params(struct gtx8_ts_test *ts_test)
 }
 
 static void goodix_cmd_init(struct goodix_ts_device *dev,
-			    struct goodix_ts_cmd *ts_cmd, u8 cmds, u16 cmd_data,
-			    u32 reg_addr)
+			    struct goodix_ts_cmd *ts_cmd, u8 cmds, u16 cmd_data, u32 reg_addr)
 {
 	u16 checksum = 0;
 	ts_cmd->initialized = false;
@@ -1093,10 +1016,8 @@ static int gtx8_init_cmds(struct gtx8_ts_test *ts_test)
 	struct goodix_ts_core *core_data = (struct goodix_ts_core *)ts_test->ts;
 	/* init rawdata cmd */
 
-	goodix_cmd_init(core_data->ts_dev, &ts_test->rawdata_cmd,
-			GTX8_CMD_RAWDATA, 0, core_data->ts_dev->reg.command);
-	goodix_cmd_init(core_data->ts_dev, &ts_test->normal_cmd,
-			GTX8_CMD_NORMAL, 0, core_data->ts_dev->reg.command);
+	goodix_cmd_init(core_data->ts_dev, &ts_test->rawdata_cmd, GTX8_CMD_RAWDATA, 0, core_data->ts_dev->reg.command);
+	goodix_cmd_init(core_data->ts_dev, &ts_test->normal_cmd, GTX8_CMD_NORMAL, 0, core_data->ts_dev->reg.command);
 	ts_info("cmd addr.0x%04x\n", ts_test->rawdata_cmd.cmd_reg);
 	return ret;
 }
@@ -1113,8 +1034,7 @@ static int gtx8_cache_origconfig(struct gtx8_ts_test *ts_test)
 	core_data = (struct goodix_ts_core *)ts_test->ts;
 
 	if (core_data->ts_dev->hw_ops->read_config) {
-		ret = core_data->ts_dev->hw_ops->read_config(
-			core_data->ts_dev, &ts_test->orig_config.data[0]);
+		ret = core_data->ts_dev->hw_ops->read_config(core_data->ts_dev, &ts_test->orig_config.data[0]);
 		if (ret < 0) {
 			ts_err("Failed to read original config data\n");
 			return ret;
@@ -1123,14 +1043,11 @@ static int gtx8_cache_origconfig(struct gtx8_ts_test *ts_test)
 		ts_test->orig_config.data[1] |= GTX8_CONFIG_REFRESH_DATA;
 		if (core_data->ts_dev->ic_type == IC_TYPE_YELLOWSTONE) {
 			chksum = ts_test->orig_config.data[0] +
-				 ts_test->orig_config.data[1] +
-				 ts_test->orig_config.data[2];
+			    ts_test->orig_config.data[1] + ts_test->orig_config.data[2];
 			ts_test->orig_config.data[3] = (chksum >> 8) & 0xff;
 			ts_test->orig_config.data[4] = chksum & 0xff;
 		} else {
-			ts_test->orig_config.data[3] =
-				(u8)(0 -
-				     checksum_u8(ts_test->orig_config.data, 3));
+			ts_test->orig_config.data[3] = (u8) (0 - checksum_u8(ts_test->orig_config.data, 3));
 		}
 
 		mutex_init(&ts_test->orig_config.lock);
@@ -1175,10 +1092,8 @@ static int gtx8_tptest_prepare(struct gtx8_ts_test *ts_test)
 
 	if (core_data->ts_dev->ic_type != IC_TYPE_YELLOWSTONE) {
 		/* get sensor and driver num currently in use */
-		ret = gtx8_get_channel_num(core_data,
-					   &ts_test->test_params.sen_num,
-					   &ts_test->test_params.drv_num,
-					   ts_test->orig_config.data);
+		ret = gtx8_get_channel_num(core_data, &ts_test->test_params.sen_num,
+					   &ts_test->test_params.drv_num, ts_test->orig_config.data);
 		if (ret) {
 			ts_err("Failed get channel num:%d\n", ret);
 			ts_test->test_params.sen_num = MAX_DRV_NUM;
@@ -1194,11 +1109,9 @@ static int gtx8_tptest_prepare(struct gtx8_ts_test *ts_test)
 	}
 #ifdef NOISE_DATA_TEST
 	if (core_data->ts_dev->hw_ops->send_config) {
-		ret = core_data->ts_dev->hw_ops->send_config(
-			core_data->ts_dev, &ts_test->noise_config);
+		ret = core_data->ts_dev->hw_ops->send_config(core_data->ts_dev, &ts_test->noise_config);
 		if (ret) {
-			ts_err("Failed to send noise test config config:%d\n",
-			       ret);
+			ts_err("Failed to send noise test config config:%d\n", ret);
 			return ret;
 		}
 		ts_info("send noise test config success :%d\n", ret);
@@ -1223,8 +1136,7 @@ static int gtx8_tptest_finish(struct gtx8_ts_test *ts_test)
 		ts_err("%s: chip reset failed\n", __func__);
 
 	if (core_data->ts_dev->hw_ops->send_config) {
-		ret = core_data->ts_dev->hw_ops->send_config(
-			core_data->ts_dev, &ts_test->orig_config);
+		ret = core_data->ts_dev->hw_ops->send_config(core_data->ts_dev, &ts_test->orig_config);
 		if (ret)
 			ts_err("Failed to send orig config:%d\n", ret);
 	}
@@ -1232,13 +1144,13 @@ static int gtx8_tptest_finish(struct gtx8_ts_test *ts_test)
 	return ret;
 }
 
-void rxtx_revert(u16 *data, u16 drv_num, u16 sen_num)
+void rxtx_revert(u16 * data, u16 drv_num, u16 sen_num)
 {
 	int i = 0;
 	u16 *tmp_value = NULL;
 	u8 row, col;
 
-	tmp_value = (u16 *)kzalloc(drv_num * sen_num * sizeof(u16), GFP_KERNEL);
+	tmp_value = (u16 *) kzalloc(drv_num * sen_num * sizeof(u16), GFP_KERNEL);
 	if (tmp_value == NULL) {
 		ts_err("zalloc for tmp_value fail");
 		return;
@@ -1268,8 +1180,7 @@ static int gtx8_cache_rawdata(struct gtx8_ts_test *ts_test)
 	core_data = (struct goodix_ts_core *)ts_test->ts;
 	ts_debug("Cache rawdata\n");
 	ts_test->rawdata.size = 0;
-	rawdata_size =
-		ts_test->test_params.sen_num * ts_test->test_params.drv_num;
+	rawdata_size = ts_test->test_params.sen_num * ts_test->test_params.drv_num;
 
 	if (rawdata_size > MAX_DRV_NUM * MAX_SEN_NUM || rawdata_size <= 0) {
 		ts_err("Invalid rawdata size(%u)\n", rawdata_size);
@@ -1281,9 +1192,7 @@ static int gtx8_cache_rawdata(struct gtx8_ts_test *ts_test)
 
 	for (j = 0; j < GTX8_RETRY_NUM_3; j++) {
 		/* read rawdata */
-		ret = sync_read_rawdata(rawdata_addr,
-					(u8 *)&ts_test->rawdata.data[0],
-					rawdata_size * sizeof(u16));
+		ret = sync_read_rawdata(rawdata_addr, (u8 *) & ts_test->rawdata.data[0], rawdata_size * sizeof(u16));
 		if (ret < 0) {
 			if (j == GTX8_RETRY_NUM_3 - 1) {
 				ts_err("Failed to read rawdata:%d\n", ret);
@@ -1293,15 +1202,13 @@ static int gtx8_cache_rawdata(struct gtx8_ts_test *ts_test)
 			}
 		}
 		for (i = 0; i < rawdata_size; i++)
-			ts_test->rawdata.data[i] =
-				be16_to_cpu(ts_test->rawdata.data[i]);
+			ts_test->rawdata.data[i] = be16_to_cpu(ts_test->rawdata.data[i]);
 		ts_test->rawdata.size = rawdata_size;
 		ts_info("Rawdata ready\n");
 		break;
 	}
 
-	rxtx_revert(&ts_test->rawdata.data[0], ts_test->test_params.drv_num,
-		    ts_test->test_params.sen_num);
+	rxtx_revert(&ts_test->rawdata.data[0], ts_test->test_params.drv_num, ts_test->test_params.sen_num);
 
 cache_exit:
 	return ret;
@@ -1322,11 +1229,9 @@ static int gtx8_cache_self_rawdata(struct gtx8_ts_test *ts_test)
 	core_data = (struct goodix_ts_core *)ts_test->ts;
 	ts_debug("Cache selfrawdata\n");
 	ts_test->self_rawdata.size = 0;
-	self_rawdata_size =
-		ts_test->test_params.sen_num + ts_test->test_params.drv_num;
+	self_rawdata_size = ts_test->test_params.sen_num + ts_test->test_params.drv_num;
 
-	if (self_rawdata_size > MAX_DRV_NUM + MAX_SEN_NUM ||
-	    self_rawdata_size <= 0) {
+	if (self_rawdata_size > MAX_DRV_NUM + MAX_SEN_NUM || self_rawdata_size <= 0) {
 		ts_err("Invalid selfrawdata size(%u)\n", self_rawdata_size);
 		return ret;
 	}
@@ -1337,8 +1242,7 @@ static int gtx8_cache_self_rawdata(struct gtx8_ts_test *ts_test)
 	for (j = 0; j < GTX8_RETRY_NUM_3; j++) {
 		/* read selfrawdata */
 		ret = sync_read_rawdata(self_rawdata_addr,
-					(u8 *)&ts_test->self_rawdata.data[0],
-					self_rawdata_size * sizeof(u16));
+					(u8 *) & ts_test->self_rawdata.data[0], self_rawdata_size * sizeof(u16));
 		if (ret < 0) {
 			if (j == GTX8_RETRY_NUM_3 - 1) {
 				ts_err("Failed to read self_rawdata:%d\n", ret);
@@ -1348,8 +1252,7 @@ static int gtx8_cache_self_rawdata(struct gtx8_ts_test *ts_test)
 			}
 		}
 		for (i = 0; i < self_rawdata_size; i++)
-			ts_test->self_rawdata.data[i] =
-				be16_to_cpu(ts_test->self_rawdata.data[i]);
+			ts_test->self_rawdata.data[i] = be16_to_cpu(ts_test->self_rawdata.data[i]);
 		ts_test->self_rawdata.size = self_rawdata_size;
 		ts_info("self_Rawdata ready\n");
 		break;
@@ -1360,7 +1263,7 @@ cache_exit:
 }
 #endif
 
-#ifdef NOISE_DATA_TEST
+#ifdef  NOISE_DATA_TEST
 /**
  * gtx8_noisetest_prepare- noisetest prepare
  */
@@ -1372,23 +1275,17 @@ static int gtx8_noisetest_prepare(struct gtx8_ts_test *ts_test)
 	u32 self_noise_data_size = 0;
 
 	core_data = (struct goodix_ts_core *)ts_test->ts;
-	noise_data_size =
-		ts_test->test_params.sen_num * ts_test->test_params.drv_num;
-	self_noise_data_size =
-		ts_test->test_params.sen_num + ts_test->test_params.drv_num;
+	noise_data_size = ts_test->test_params.sen_num * ts_test->test_params.drv_num;
+	self_noise_data_size = ts_test->test_params.sen_num + ts_test->test_params.drv_num;
 
-	if (noise_data_size <= 0 ||
-	    noise_data_size > MAX_DRV_NUM * MAX_SEN_NUM) {
-		ts_err("%s: Bad noise_data_size[%d]\n", __func__,
-		       noise_data_size);
+	if (noise_data_size <= 0 || noise_data_size > MAX_DRV_NUM * MAX_SEN_NUM) {
+		ts_err("%s: Bad noise_data_size[%d]\n", __func__, noise_data_size);
 		ts_test->test_result[GTP_NOISE_TEST] = SYS_SOFTWARE_REASON;
 		return -EINVAL;
 	}
 
-	if (self_noise_data_size <= 0 ||
-	    self_noise_data_size > MAX_DRV_NUM + MAX_SEN_NUM) {
-		ts_err("%s: Bad self_noise_data_size[%d]\n", __func__,
-		       self_noise_data_size);
+	if (self_noise_data_size <= 0 || self_noise_data_size > MAX_DRV_NUM + MAX_SEN_NUM) {
+		ts_err("%s: Bad self_noise_data_size[%d]\n", __func__, self_noise_data_size);
 		ts_test->test_result[GTP_SELFNOISE_TEST] = SYS_SOFTWARE_REASON;
 		return -EINVAL;
 	}
@@ -1397,14 +1294,11 @@ static int gtx8_noisetest_prepare(struct gtx8_ts_test *ts_test)
 	ts_test->self_noisedata.size = self_noise_data_size;
 
 	msleep(20);
-	ts_info("%s: noise test prepare cmd addr:0x%04x", __func__,
-		ts_test->rawdata_cmd.cmd_reg);
+	ts_info("%s: noise test prepare cmd addr:0x%04x", __func__, ts_test->rawdata_cmd.cmd_reg);
 	/* change to rawdata mode */
-	ret = core_data->ts_dev->hw_ops->send_cmd(core_data->ts_dev,
-						  &ts_test->rawdata_cmd);
+	ret = core_data->ts_dev->hw_ops->send_cmd(core_data->ts_dev, &ts_test->rawdata_cmd);
 	if (ret) {
-		ts_err("%s: Failed send rawdata command:ret%d\n", __func__,
-		       ret);
+		ts_err("%s: Failed send rawdata command:ret%d\n", __func__, ret);
 		ts_test->test_result[GTP_NOISE_TEST] = SYS_SOFTWARE_REASON;
 		ts_test->test_result[GTP_SELFNOISE_TEST] = SYS_SOFTWARE_REASON;
 		return ret;
@@ -1436,9 +1330,7 @@ static int gtx8_cache_noisedata(struct gtx8_ts_test *ts_test)
 	self_noise_data_size = ts_test->self_noisedata.size;
 
 	/* read noise data */
-	ret1 = sync_read_rawdata(noisedata_addr,
-				 (u8 *)&ts_test->noisedata.data[0],
-				 noise_data_size * sizeof(u16));
+	ret1 = sync_read_rawdata(noisedata_addr, (u8 *) & ts_test->noisedata.data[0], noise_data_size * sizeof(u16));
 	if (ret1) {
 		ts_err("%s: Failed read noise data\n", __func__);
 		ts_test->noisedata.size = 0;
@@ -1448,8 +1340,7 @@ static int gtx8_cache_noisedata(struct gtx8_ts_test *ts_test)
 
 	/* read self noise data */
 	ret1 = sync_read_rawdata(self_noisedata_addr,
-				 (u8 *)&ts_test->self_noisedata.data[0],
-				 self_noise_data_size * sizeof(u16));
+				 (u8 *) & ts_test->self_noisedata.data[0], self_noise_data_size * sizeof(u16));
 	if (ret1) {
 		ts_err("%s: Failed read self noise data\n", __func__);
 		ts_test->self_noisedata.size = 0;
@@ -1470,26 +1361,23 @@ static void gtx8_analyse_noisedata(struct gtx8_ts_test *ts_test)
 	s16 noise_value = 0;
 
 	for (i = 0; i < ts_test->noisedata.size; i++) {
-		noise_value = (s16)be16_to_cpu(ts_test->noisedata.data[i]);
+		noise_value = (s16) be16_to_cpu(ts_test->noisedata.data[i]);
 		ts_test->noisedata.data[i] = abs(noise_value);
 	}
 
-	rxtx_revert(&ts_test->noisedata.data[0], ts_test->test_params.drv_num,
-		    ts_test->test_params.sen_num);
+	rxtx_revert(&ts_test->noisedata.data[0], ts_test->test_params.drv_num, ts_test->test_params.sen_num);
 	for (i = 0; i < ts_test->noisedata.size; i++) {
-		/*
+/*
               noise_value = (s16)be16_to_cpu(ts_test->noisedata.data[i]);
               ts_test->noisedata.data[i] = abs(noise_value);
 */
 
-		if (ts_test->noisedata.data[i] >
-		    ts_test->test_params.noise_threshold) {
+		if (ts_test->noisedata.data[i] > ts_test->test_params.noise_threshold) {
 			find_bad_node++;
 			ts_err("noise check failed: niose[%d][%d]:%u, > %u\n",
-			       (u32)div_s64(i, ts_test->test_params.drv_num),
+			       (u32) div_s64(i, ts_test->test_params.drv_num),
 			       i % ts_test->test_params.drv_num,
-			       ts_test->noisedata.data[i],
-			       ts_test->test_params.noise_threshold);
+			       ts_test->noisedata.data[i], ts_test->test_params.noise_threshold);
 		}
 	}
 	if (find_bad_node) {
@@ -1512,16 +1400,13 @@ static void gtx8_analyse_self_noisedata(struct gtx8_ts_test *ts_test)
 	s16 self_noise_value = 0;
 
 	for (i = 0; i < ts_test->self_noisedata.size; i++) {
-		self_noise_value =
-			(s16)be16_to_cpu(ts_test->self_noisedata.data[i]);
+		self_noise_value = (s16) be16_to_cpu(ts_test->self_noisedata.data[i]);
 		ts_test->self_noisedata.data[i] = abs(self_noise_value);
 
-		if (ts_test->self_noisedata.data[i] >
-		    ts_test->test_params.self_noise_threshold) {
+		if (ts_test->self_noisedata.data[i] > ts_test->test_params.self_noise_threshold) {
 			self_find_bad_node++;
-			ts_err("self noise check failed: self_noise[%d]:%u, > %u\n",
-			       i, ts_test->self_noisedata.data[i],
-			       ts_test->test_params.self_noise_threshold);
+			ts_err("self noise check failed: self_noise[%d]:%u, > %u\n", i,
+			       ts_test->self_noisedata.data[i], ts_test->test_params.self_noise_threshold);
 		}
 	}
 
@@ -1555,8 +1440,7 @@ static void gtx8_test_noisedata(struct gtx8_ts_test *ts_test)
 		ret = gtx8_cache_noisedata(ts_test);
 		if (ret) {
 			if (test_cnt == RAWDATA_TEST_TIMES - 1) {
-				ts_err("%s: Cache noisedata failed\n",
-				       __func__);
+				ts_err("%s: Cache noisedata failed\n", __func__);
 				goto soft_err_out;
 			} else {
 				continue;
@@ -1577,39 +1461,34 @@ soft_err_out:
 	ts_test->self_noisedata.size = 0;
 	ts_test->test_result[GTP_SELFNOISE_TEST] = SYS_SOFTWARE_REASON;
 noise_test_exit:
-	/*core_data->ts_dev->hw_ops->send_cmd(core_data->ts_dev, &ts_test->normal_cmd); */
+    /*core_data->ts_dev->hw_ops->send_cmd(core_data->ts_dev, &ts_test->normal_cmd); */
 	buf[0] = 0x00;
-	core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, GTP_REG_COOR,
-					       buf, 1);
+	core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, GTP_REG_COOR, buf, 1);
 	core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev,
-					       ts_test->normal_cmd.cmd_reg,
-					       ts_test->normal_cmd.cmds,
+					       ts_test->normal_cmd.cmd_reg, ts_test->normal_cmd.cmds,
 					       ts_test->normal_cmd.length);
-	/*buf[0] = 0x00; */
-	/*core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, core_data->ts_dev->reg.coor, buf,1);*/
+      /*buf[0] = 0x00; */
+      /*core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, core_data->ts_dev->reg.coor, buf,1);*/
 	return;
 }
 #endif
 
 #ifdef SELF_DATA_TEST
-static int gtx8_self_rawcapacitance_test(struct ts_test_self_rawdata *rawdata,
-					 struct ts_test_params *test_params)
+static int gtx8_self_rawcapacitance_test(struct ts_test_self_rawdata *rawdata, struct ts_test_params *test_params)
 {
 	int i = 0;
 	int ret = NO_ERR;
 
 	for (i = 0; i < rawdata->size; i++) {
 		if (rawdata->data[i] > test_params->self_max_limits[i]) {
-			ts_err("self_rawdata[%d]:%u >self_max_limit:%u, NG\n",
-			       i, rawdata->data[i],
-			       test_params->self_max_limits[i]);
+			ts_err("self_rawdata[%d]:%u >self_max_limit:%u, NG\n", i,
+			       rawdata->data[i], test_params->self_max_limits[i]);
 			ret = RESULT_ERR;
 		}
 
 		if (rawdata->data[i] < test_params->self_min_limits[i]) {
 			ts_err("self_rawdata[%d]:%u < min_limit:%u, NG\n", i,
-			       rawdata->data[i],
-			       test_params->self_min_limits[i]);
+			       rawdata->data[i], test_params->self_min_limits[i]);
 			ret = RESULT_ERR;
 		}
 	}
@@ -1629,8 +1508,7 @@ static int gtx8_captest_prepare(struct gtx8_ts_test *ts_test)
 	core_data = (struct goodix_ts_core *)ts_test->ts;
 
 	if (core_data->ts_dev->hw_ops->send_config) {
-		ret = core_data->ts_dev->hw_ops->send_config(
-			core_data->ts_dev, &ts_test->test_config);
+		ret = core_data->ts_dev->hw_ops->send_config(core_data->ts_dev, &ts_test->test_config);
 		if (ret)
 			ts_err("Failed to send test config:%d\n", ret);
 		else
@@ -1642,9 +1520,7 @@ static int gtx8_captest_prepare(struct gtx8_ts_test *ts_test)
 }
 
 #ifdef RAWDATA_TEST_16_FRAMES
-static void gtx8_rawcapacitance_test_spec(struct gtx8_ts_test *ts_test,
-					  u8 *p_beyond_max_cnt,
-					  u8 *p_beyond_min_cnt)
+static void gtx8_rawcapacitance_test_spec(struct gtx8_ts_test *ts_test, u8 * p_beyond_max_cnt, u8 * p_beyond_min_cnt)
 {
 	int i = 0;
 	struct ts_test_params *test_params;
@@ -1661,7 +1537,7 @@ static void gtx8_rawcapacitance_test_spec(struct gtx8_ts_test *ts_test,
 	}
 }
 
-static int gtx8_accord_test_spec(struct gtx8_ts_test *ts_test, u8 *p_beyond_cnt)
+static int gtx8_accord_test_spec(struct gtx8_ts_test *ts_test, u8 * p_beyond_cnt)
 {
 	int i = 0;
 	int ret = NO_ERR;
@@ -1720,23 +1596,21 @@ static int gtx8_accord_test_spec(struct gtx8_ts_test *ts_test, u8 *p_beyond_cnt)
 		/* float to integer */
 		if (rawdata_val) {
 			max_val *= FLOAT_AMPLIFIER;
-			max_val = (u32)div_s64(max_val, rawdata_val);
+			max_val = (u32) div_s64(max_val, rawdata_val);
 			if (max_val > test_params->deviation_limits[i]) {
 				p_beyond_cnt[i]++;
 			}
 		} else {
 			ts_err("Find rawdata=0 when calculate deltacapacitance:[%d][%d]\n",
-			       (u32)div_s64(i, cols), i % cols);
+			       (u32) div_s64(i, cols), i % cols);
 			ret = RESULT_ERR;
 		}
 	}
 	return ret;
 }
 
-static int gtx8_rawdata_result_analyze(struct gtx8_ts_test *ts_test,
-				       u8 *p_beyond_max_cnt,
-				       u8 *p_beyond_min_cnt,
-				       u8 *p_beyond_accord_cnt, u8 frame_cnt)
+static int gtx8_rawdata_result_analyze(struct gtx8_ts_test *ts_test, u8 * p_beyond_max_cnt,
+				       u8 * p_beyond_min_cnt, u8 * p_beyond_accord_cnt, u8 frame_cnt)
 {
 	int ret = 0;
 	int i = 0;
@@ -1751,11 +1625,9 @@ static int gtx8_rawdata_result_analyze(struct gtx8_ts_test *ts_test,
 	for (i = 0; i < rawdata->size; i++) {
 		/* analyze max test */
 		if (p_beyond_max_cnt[i] * 10 / frame_cnt >= high_ratio) {
-			ts_err("max_cnt:%d, rawdata[%d][%d]:%u > max_limit:%u, NG\n",
-			       p_beyond_max_cnt[i],
-			       (u32)div_s64(i, test_params->drv_num),
-			       i % test_params->drv_num, rawdata->data[i],
-			       test_params->max_limits[i]);
+			ts_err("max_cnt:%d, rawdata[%d][%d]:%u > max_limit:%u, NG\n", p_beyond_max_cnt[i],
+			       (u32) div_s64(i, test_params->drv_num), i % test_params->drv_num,
+			       rawdata->data[i], test_params->max_limits[i]);
 			ts_test->test_result[GTP_CAP_TEST] = GTP_PANEL_REASON;
 		} else if (p_beyond_min_cnt[i] * 10 / frame_cnt > low_ratio) {
 			ts_test->test_result[GTP_CAP_TEST] = GTP_PANEL_REASON;
@@ -1764,9 +1636,8 @@ static int gtx8_rawdata_result_analyze(struct gtx8_ts_test *ts_test,
 		/*analyze min test */
 		if (p_beyond_min_cnt[i] * 10 / frame_cnt >= high_ratio) {
 			ts_err("rawdata[%d][%d]:%u < min_limit:%u, NG\n",
-			       (u32)div_s64(i, test_params->drv_num),
-			       i % test_params->drv_num, rawdata->data[i],
-			       test_params->min_limits[i]);
+			       (u32) div_s64(i, test_params->drv_num), i % test_params->drv_num,
+			       rawdata->data[i], test_params->min_limits[i]);
 			ts_test->test_result[GTP_CAP_TEST] = GTP_PANEL_REASON;
 		} else if (p_beyond_min_cnt[i] * 10 / frame_cnt > low_ratio) {
 			ts_test->test_result[GTP_CAP_TEST] = GTP_PANEL_REASON;
@@ -1774,12 +1645,12 @@ static int gtx8_rawdata_result_analyze(struct gtx8_ts_test *ts_test,
 		}
 	}
 	for (i = 0; i < test_params->drv_num * test_params->sen_num; i++) {
+
 		/* analyze accord test */
 		if (p_beyond_accord_cnt[i] * 10 >= high_ratio) {
 			ts_err("rawdata[%d][%d]:%u, deviation_limit:%u, NG\n",
-			       (u32)div_s64(i, test_params->drv_num),
-			       i % test_params->drv_num, rawdata->data[i],
-			       test_params->deviation_limits[i]);
+			       (u32) div_s64(i, test_params->drv_num), i % test_params->drv_num,
+			       rawdata->data[i], test_params->deviation_limits[i]);
 			ts_test->test_result[GTP_DELTA_TEST] = GTP_PANEL_REASON;
 		} else if (p_beyond_accord_cnt[i] * 10 > low_ratio) {
 			ts_test->test_result[GTP_DELTA_TEST] = GTP_PANEL_REASON;
@@ -1833,18 +1704,16 @@ static void gtx8_rawdata_test_spec(struct gtx8_ts_test *ts_test)
 			goto RAW_TEST_ERR;
 		}
 
-		gtx8_rawcapacitance_test_spec(ts_test, p_beyond_max_limit_cnt,
-					      p_beyond_min_limit_cnt);
+		gtx8_rawcapacitance_test_spec(ts_test, p_beyond_max_limit_cnt, p_beyond_min_limit_cnt);
 		ret = gtx8_accord_test_spec(ts_test, p_beyond_accord_limit_cnt);
 		if (ret) {
 			ts_test->test_result[GTP_DELTA_TEST] = GTP_PANEL_REASON;
 			ts_err("DeltaCap test failed\n");
 		}
 		if ((i + 1) % frame_num == 0) {
-			ret = gtx8_rawdata_result_analyze(
-				ts_test, p_beyond_max_limit_cnt,
-				p_beyond_min_limit_cnt,
-				p_beyond_accord_limit_cnt, i + 1);
+
+			ret = gtx8_rawdata_result_analyze(ts_test, p_beyond_max_limit_cnt,
+							  p_beyond_min_limit_cnt, p_beyond_accord_limit_cnt, i + 1);
 			if (!ret) {
 				break;
 			}
@@ -1873,8 +1742,7 @@ RAW_TEST_END:
 
 #else
 
-static int gtx8_rawcapacitance_test(struct ts_test_rawdata *rawdata,
-				    struct ts_test_params *test_params)
+static int gtx8_rawcapacitance_test(struct ts_test_rawdata *rawdata, struct ts_test_params *test_params)
 {
 	int i = 0;
 	int ret = NO_ERR;
@@ -1882,17 +1750,15 @@ static int gtx8_rawcapacitance_test(struct ts_test_rawdata *rawdata,
 	for (i = 0; i < rawdata->size; i++) {
 		if (rawdata->data[i] > test_params->max_limits[i]) {
 			ts_err("rawdata[%d][%d]:%u > max_limit:%u, NG\n",
-			       (u32)div_s64(i, test_params->drv_num),
-			       i % test_params->drv_num, rawdata->data[i],
-			       test_params->max_limits[i]);
+			       (u32) div_s64(i, test_params->drv_num), i % test_params->drv_num,
+			       rawdata->data[i], test_params->max_limits[i]);
 			ret = RESULT_ERR;
 		}
 
 		if (rawdata->data[i] < test_params->min_limits[i]) {
 			ts_err("rawdata[%d][%d]:%u < min_limit:%u, NG\n",
-			       (u32)div_s64(i, test_params->drv_num),
-			       i % test_params->drv_num, rawdata->data[i],
-			       test_params->min_limits[i]);
+			       (u32) div_s64(i, test_params->drv_num), i % test_params->drv_num,
+			       rawdata->data[i], test_params->min_limits[i]);
 			ret = RESULT_ERR;
 		}
 	}
@@ -1900,8 +1766,7 @@ static int gtx8_rawcapacitance_test(struct ts_test_rawdata *rawdata,
 	return ret;
 }
 
-static int gtx8_deltacapacitance_test(struct ts_test_rawdata *rawdata,
-				      struct ts_test_params *test_params)
+static int gtx8_deltacapacitance_test(struct ts_test_rawdata *rawdata, struct ts_test_params *test_params)
 {
 	int i = 0;
 	int ret = NO_ERR;
@@ -1956,18 +1821,17 @@ static int gtx8_deltacapacitance_test(struct ts_test_rawdata *rawdata,
 		/* float to integer */
 		if (rawdata_val) {
 			max_val *= FLOAT_AMPLIFIER;
-			max_val = (u32)div_s64(max_val, rawdata_val);
+			max_val = (u32) div_s64(max_val, rawdata_val);
 			if (max_val > test_params->deviation_limits[i]) {
 				ts_err("deviation[%d][%d]:%u > delta_limit:%u, NG\n",
-				       (u32)div_s64(i, test_params->drv_num;),
-				       i % test_params->drv_num;
-				       , max_val,
-				       test_params->deviation_limits[i]);
+				       (u32) div_s64(i, test_params->drv_num;
+				       ), i % test_params->drv_num;
+				       , max_val, test_params->deviation_limits[i]);
 				ret = RESULT_ERR;
 			}
 		} else {
 			ts_err("Find rawdata=0 when calculate deltacapacitance:[%d][%d]\n",
-			       (u32)div_s64(i, cols), i % cols);
+			       (u32) div_s64(i, cols), i % cols);
 			ret = RESULT_ERR;
 		}
 	}
@@ -1989,8 +1853,7 @@ static void gtx8_rawdata_test(struct gtx8_ts_test *ts_test)
 		ts_test->test_result[GTP_CAP_TEST] = SYS_SOFTWARE_REASON;
 		ts_test->test_result[GTP_DELTA_TEST] = SYS_SOFTWARE_REASON;
 	} else {
-		ret = gtx8_rawcapacitance_test(&ts_test->rawdata,
-					       &ts_test->test_params);
+		ret = gtx8_rawcapacitance_test(&ts_test->rawdata, &ts_test->test_params);
 		if (!ret) {
 			ts_test->test_result[GTP_CAP_TEST] = GTP_TEST_PASS;
 			ts_info("Rawdata test pass\n");
@@ -1999,8 +1862,7 @@ static void gtx8_rawdata_test(struct gtx8_ts_test *ts_test)
 			ts_err("RawCap test failed\n");
 		}
 
-		ret = gtx8_deltacapacitance_test(&ts_test->rawdata,
-						 &ts_test->test_params);
+		ret = gtx8_deltacapacitance_test(&ts_test->rawdata, &ts_test->test_params);
 		if (!ret) {
 			ts_test->test_result[GTP_DELTA_TEST] = GTP_TEST_PASS;
 			ts_info("DeltaCap test pass\n");
@@ -2030,8 +1892,7 @@ static void gtx8_capacitance_test(struct gtx8_ts_test *ts_test)
 	/* read rawdata and calculate result,  statistics fail times */
 
 	msleep(20);
-	ret = core_data->ts_dev->hw_ops->send_cmd(core_data->ts_dev,
-						  &ts_test->rawdata_cmd);
+	ret = core_data->ts_dev->hw_ops->send_cmd(core_data->ts_dev, &ts_test->rawdata_cmd);
 	if (ret) {
 		ts_err("%s:Failed send rawdata cmd:ret%d\n", __func__, ret);
 		goto capac_test_exit;
@@ -2053,35 +1914,30 @@ static void gtx8_capacitance_test(struct gtx8_ts_test *ts_test)
 		ts_test->test_result[GTP_SELFCAP_TEST] = SYS_SOFTWARE_REASON;
 		goto capac_test_exit;
 	} else {
-		ret = gtx8_self_rawcapacitance_test(&ts_test->self_rawdata,
-						    &ts_test->test_params);
+		ret = gtx8_self_rawcapacitance_test(&ts_test->self_rawdata, &ts_test->test_params);
 		if (!ret) {
 			ts_test->test_result[GTP_SELFCAP_TEST] = GTP_TEST_PASS;
 			ts_info("selfrawdata test pass\n");
 		} else {
-			ts_test->test_result[GTP_SELFCAP_TEST] =
-				GTP_PANEL_REASON;
+			ts_test->test_result[GTP_SELFCAP_TEST] = GTP_PANEL_REASON;
 			ts_err("selfrawCap test failed\n");
 		}
 	}
 #endif
 capac_test_exit:
-	/*core_data->ts_dev->hw_ops->send_cmd(core_data->ts_dev, &ts_test->normal_cmd);*/
+    /*core_data->ts_dev->hw_ops->send_cmd(core_data->ts_dev, &ts_test->normal_cmd);*/
 	buf[0] = 0x00;
-	core_data->ts_dev->hw_ops->write_trans(
-		core_data->ts_dev, core_data->ts_dev->reg.coor, buf, 1);
+	core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, core_data->ts_dev->reg.coor, buf, 1);
 	core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev,
-					       ts_test->normal_cmd.cmd_reg,
-					       ts_test->normal_cmd.cmds,
+					       ts_test->normal_cmd.cmd_reg, ts_test->normal_cmd.cmds,
 					       ts_test->normal_cmd.length);
-	/*buf[0] = 0x00;*/
-	/*core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, core_data->ts_dev->reg.coor, buf,1);*/
+    /*buf[0] = 0x00;*/
+    /*core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, core_data->ts_dev->reg.coor, buf,1);*/
 	return;
 }
 
 static void gtx8_shortcircut_test(struct gtx8_ts_test *ts_test);
-static void gtx8_put_test_result(struct ts_rawdata_info *info,
-				 struct gtx8_ts_test *ts_test);
+static void gtx8_put_test_result(struct ts_rawdata_info *info, struct gtx8_ts_test *ts_test);
 
 int test_process(void *tsdev, struct ts_rawdata_info *info)
 {
@@ -2093,7 +1949,7 @@ int test_process(void *tsdev, struct ts_rawdata_info *info)
 	int all_test_result = 1;
 	s32 data_tmp = 0;
 
-	/*if (!tsdev || !info) {*/
+    /*if (!tsdev || !info) {*/
 	if (!tsdev) {
 		ts_err("%s: gtx8_ts is NULL\n", __func__);
 		return -ENODEV;
@@ -2110,18 +1966,16 @@ int test_process(void *tsdev, struct ts_rawdata_info *info)
 
 	ret = gtx8_tptest_prepare(gts_test);
 	if (ret) {
-		ts_err("%s: Failed parse test peremeters, exit test\n",
-		       __func__);
-		strncpy(info->result, "0F-software reason",
-			TS_RAWDATA_RESULT_MAX - 1);
+		ts_err("%s: Failed parse test peremeters, exit test\n", __func__);
+		strncpy(info->result, "0F-software reason", TS_RAWDATA_RESULT_MAX - 1);
 		goto exit_finish;
 	}
 	ts_info("%s: TP test prepare OK\n", __func__);
-#ifdef NOISE_DATA_TEST
-	gtx8_test_noisedata(gts_test); /*3F 7F test */
+#ifdef  NOISE_DATA_TEST
+	gtx8_test_noisedata(gts_test);	/*3F 7F test */
 #endif
-	gtx8_capacitance_test(gts_test); /* 1F 2F 6F test */
-	gtx8_shortcircut_test(gts_test); /* 5F test */
+	gtx8_capacitance_test(gts_test);	/* 1F 2F 6F test */
+	gtx8_shortcircut_test(gts_test);	/* 5F test */
 	gtx8_put_test_result(info, gts_test);
 	gtx8_tptest_finish(gts_test);
 
@@ -2136,11 +1990,7 @@ int test_process(void *tsdev, struct ts_rawdata_info *info)
 	if (all_test_result == 0) {
 		for (i = 0; i < gts_test->test_params.sen_num; i++) {
 			for (j = 0; j < gts_test->test_params.drv_num; j++) {
-				data_tmp =
-					(s16)gts_test->rawdata
-						.data[i * gts_test->test_params
-								      .drv_num +
-						      j];
+				data_tmp = (s16) gts_test->rawdata.data[i * gts_test->test_params.drv_num + j];
 				ts_err("test_err rawdata:%d\n", data_tmp);
 			}
 		}
@@ -2150,8 +2000,8 @@ exit_finish:
 		kfree(gts_test);
 		gts_test = NULL;
 	}
-	/*if (goodix_set_i2c_doze_mode(core_data->ts_dev, true))*/
-	/*ts_info("WARNING, may failed enable doze after rawdata test\n");*/
+    /*if (goodix_set_i2c_doze_mode(core_data->ts_dev, true))*/
+            /*ts_info("WARNING, may failed enable doze after rawdata test\n");*/
 	return ret;
 }
 
@@ -2173,22 +2023,18 @@ int get_tp_rawdata(void *tsdev, char *buf, int *buf_size)
 
 	ret = gtx8_tptest_prepare(gts_test);
 	if (ret) {
-		ts_err("%s: Failed parse test peremeters, exit test\n",
-		       __func__);
+		ts_err("%s: Failed parse test peremeters, exit test\n", __func__);
 		goto exit_finish;
 	}
 	ts_info("%s: TP test prepare OK\n", __func__);
-#ifdef NOISE_DATA_TEST
-	gtx8_test_noisedata(gts_test); /*3F 7F test */
+#ifdef  NOISE_DATA_TEST
+	gtx8_test_noisedata(gts_test);	/*3F 7F test */
 #endif
-	gtx8_capacitance_test(gts_test); /* 1F 2F 6F test */
+	gtx8_capacitance_test(gts_test);	/* 1F 2F 6F test */
 
-	node_num =
-		gts_test->test_params.sen_num * gts_test->test_params.drv_num;
+	node_num = gts_test->test_params.sen_num * gts_test->test_params.drv_num;
 
-	r = snprintf(&buf[offset], 20, "Tx:%d Rx:%d\n",
-		     gts_test->test_params.drv_num,
-		     gts_test->test_params.sen_num);
+	r = snprintf(&buf[offset], 20, "Tx:%d Rx:%d\n", gts_test->test_params.drv_num, gts_test->test_params.sen_num);
 	offset += r;
 	r = snprintf(&buf[offset], 2, "\n");
 	offset += r;
@@ -2198,10 +2044,7 @@ int get_tp_rawdata(void *tsdev, char *buf, int *buf_size)
 	ts_info("[%s]r = %d\n", __func__, r);
 	for (i = 0; i < gts_test->test_params.sen_num; i++) {
 		for (j = 0; j < gts_test->test_params.drv_num; j++) {
-			data_tmp =
-				(s16)gts_test->rawdata
-					.data[i * gts_test->test_params.drv_num +
-					      j];
+			data_tmp = (s16) gts_test->rawdata.data[i * gts_test->test_params.drv_num + j];
 			r = snprintf(&buf[offset], 10, "%4d,", data_tmp);
 			offset += r;
 		}
@@ -2247,16 +2090,14 @@ int get_tp_testcfg(void *tsdev, char *buf, int *buf_size)
 
 	ret = gtx8_tptest_prepare(gts_test);
 	if (ret) {
-		ts_err("%s: Failed parse test peremeters, exit test\n",
-		       __func__);
+		ts_err("%s: Failed parse test peremeters, exit test\n", __func__);
 		goto exit_finish;
 	}
 	r = snprintf(buf, 20, "Test-config:\n");
 	offset += r;
 
 	for (i = 0; i < gts_test->test_config.length; i++) {
-		r = snprintf(&buf[offset], 10, "%02X,",
-			     gts_test->test_config.data[i]);
+		r = snprintf(&buf[offset], 10, "%02X,", gts_test->test_config.data[i]);
 		offset += r;
 		if ((i + 1) % 30 == 0) {
 			r = snprintf(&buf[offset], 2, "\n");
@@ -2294,8 +2135,7 @@ char *gtx8_strncatint(char *dest, int src, char *format, size_t dest_size)
  *
  * catlculate Avg Min Max value of data
  */
-static void gtx8_data_statistics(u16 *data, size_t data_size, char *result,
-				 size_t res_size)
+static void gtx8_data_statistics(u16 * data, size_t data_size, char *result, size_t res_size)
 {
 	u16 i = 0;
 	u16 avg = 0;
@@ -2309,8 +2149,7 @@ static void gtx8_data_statistics(u16 *data, size_t data_size, char *result,
 	}
 
 	if (data_size <= 0 || res_size <= 0) {
-		ts_err("input parameter is illegva:data_size=%ld, res_size=%ld\n",
-		       data_size, res_size);
+		ts_err("input parameter is illegva:data_size=%ld, res_size=%ld\n", data_size, res_size);
 		return;
 	}
 
@@ -2329,8 +2168,7 @@ static void gtx8_data_statistics(u16 *data, size_t data_size, char *result,
 	return;
 }
 
-static void gtx8_put_test_result(struct ts_rawdata_info *info,
-				 struct gtx8_ts_test *ts_test)
+static void gtx8_put_test_result(struct ts_rawdata_info *info, struct gtx8_ts_test *ts_test)
 {
 	int i = 0;
 	int have_bus_error = 0;
@@ -2354,16 +2192,14 @@ static void gtx8_put_test_result(struct ts_rawdata_info *info,
 	/* save noise data to info->buff */
 	if (ts_test->noisedata.size) {
 		for (i = 0; i < ts_test->noisedata.size; i++)
-			info->buff[info->used_size + i] =
-				ts_test->noisedata.data[i];
+			info->buff[info->used_size + i] = ts_test->noisedata.data[i];
 
 		info->used_size += ts_test->noisedata.size;
 	}
 	/* save self_noisedata to info->buff */
 	if (ts_test->self_noisedata.size) {
 		for (i = 0; i < ts_test->self_noisedata.size; i++)
-			info->buff[info->used_size + i] =
-				ts_test->self_noisedata.data[i];
+			info->buff[info->used_size + i] = ts_test->self_noisedata.data[i];
 
 		info->used_size += ts_test->self_noisedata.size;
 	}
@@ -2371,8 +2207,7 @@ static void gtx8_put_test_result(struct ts_rawdata_info *info,
 	/* save self_rawdata to info->buff */
 	if (ts_test->self_rawdata.size) {
 		for (i = 0; i < ts_test->self_rawdata.size; i++)
-			info->buff[info->used_size + i] =
-				ts_test->self_rawdata.data[i];
+			info->buff[info->used_size + i] = ts_test->self_rawdata.data[i];
 
 		info->used_size += ts_test->self_rawdata.size;
 	}
@@ -2395,74 +2230,58 @@ static void gtx8_put_test_result(struct ts_rawdata_info *info,
 		/* if have tested, show result */
 		if (ts_test->test_result[i]) {
 			if (GTP_TEST_PASS == ts_test->test_result[i])
-				gtx8_strncatint(ts_test->test_info, i, "%dP-",
-						TS_RAWDATA_RESULT_MAX);
+				gtx8_strncatint(ts_test->test_info, i, "%dP-", TS_RAWDATA_RESULT_MAX);
 			else
-				gtx8_strncatint(ts_test->test_info, i, "%dF-",
-						TS_RAWDATA_RESULT_MAX);
+				gtx8_strncatint(ts_test->test_info, i, "%dF-", TS_RAWDATA_RESULT_MAX);
 		}
-		ts_info("test_result_info [%d]%d\n", i,
-			ts_test->test_result[i]);
+		ts_info("test_result_info [%d]%d\n", i, ts_test->test_result[i]);
 	}
 
 	if (ts_test->rawdata.size) {
 		/* calculate rawdata min avg max vale */
 		gtx8_data_statistics(&ts_test->rawdata.data[0],
-				     ts_test->rawdata.size, statistics_data,
-				     STATISTICS_DATA_LEN);
-		gtx8_strncat(ts_test->test_info, statistics_data,
-			     TS_RAWDATA_RESULT_MAX);
+				     ts_test->rawdata.size, statistics_data, STATISTICS_DATA_LEN);
+		gtx8_strncat(ts_test->test_info, statistics_data, TS_RAWDATA_RESULT_MAX);
 	} else {
 		ts_info("NO valiable rawdata\n");
-		gtx8_strncat(ts_test->test_info, "[0,0,0]",
-			     TS_RAWDATA_RESULT_MAX);
+		gtx8_strncat(ts_test->test_info, "[0,0,0]", TS_RAWDATA_RESULT_MAX);
 	}
 #ifdef NOISE_DATA_TEST
 	if (ts_test->noisedata.size) {
 		/* calculate noise data min avg max vale */
 		gtx8_data_statistics(&ts_test->noisedata.data[0],
-				     ts_test->noisedata.size, statistics_data,
-				     STATISTICS_DATA_LEN);
-		gtx8_strncat(ts_test->test_info, statistics_data,
-			     TS_RAWDATA_RESULT_MAX);
+				     ts_test->noisedata.size, statistics_data, STATISTICS_DATA_LEN);
+		gtx8_strncat(ts_test->test_info, statistics_data, TS_RAWDATA_RESULT_MAX);
 	} else {
 		ts_info("NO valiable noisedata\n");
-		gtx8_strncat(ts_test->test_info, "[0,0,0]",
-			     TS_RAWDATA_RESULT_MAX);
+		gtx8_strncat(ts_test->test_info, "[0,0,0]", TS_RAWDATA_RESULT_MAX);
 	}
 #endif
 
 	if (ts_test->self_rawdata.size) {
 		/* calculate self_rawdata min avg max vale */
 		gtx8_data_statistics(&ts_test->self_rawdata.data[0],
-				     ts_test->self_rawdata.size,
-				     statistics_data, STATISTICS_DATA_LEN);
-		gtx8_strncat(ts_test->test_info, statistics_data,
-			     TS_RAWDATA_RESULT_MAX);
+				     ts_test->self_rawdata.size, statistics_data, STATISTICS_DATA_LEN);
+		gtx8_strncat(ts_test->test_info, statistics_data, TS_RAWDATA_RESULT_MAX);
 	} else {
 		ts_info("NO valiable self_rawdata\n");
-		gtx8_strncat(ts_test->test_info, "[0,0,0]",
-			     TS_RAWDATA_RESULT_MAX);
+		gtx8_strncat(ts_test->test_info, "[0,0,0]", TS_RAWDATA_RESULT_MAX);
 	}
 
 #ifdef NOISE_DATA_TEST
 	if (ts_test->self_noisedata.size) {
 		/* calculate self_noisedata min avg max vale */
 		gtx8_data_statistics(&ts_test->self_noisedata.data[0],
-				     ts_test->self_noisedata.size,
-				     statistics_data, STATISTICS_DATA_LEN);
-		gtx8_strncat(ts_test->test_info, statistics_data,
-			     TS_RAWDATA_RESULT_MAX);
+				     ts_test->self_noisedata.size, statistics_data, STATISTICS_DATA_LEN);
+		gtx8_strncat(ts_test->test_info, statistics_data, TS_RAWDATA_RESULT_MAX);
 	} else {
 		ts_info("NO valiable self_noisedata\n");
-		gtx8_strncat(ts_test->test_info, "[0,0,0]",
-			     TS_RAWDATA_RESULT_MAX);
+		gtx8_strncat(ts_test->test_info, "[0,0,0]", TS_RAWDATA_RESULT_MAX);
 	}
 #endif
 
 	gtx8_strncat(ts_test->test_info, "-GT", TS_RAWDATA_RESULT_MAX);
-	gtx8_strncat(ts_test->test_info, core_data->ts_dev->chip_version.pid,
-		     TS_RAWDATA_RESULT_MAX);
+	gtx8_strncat(ts_test->test_info, core_data->ts_dev->chip_version.pid, TS_RAWDATA_RESULT_MAX);
 	gtx8_strncat(ts_test->test_info, "\n", TS_RAWDATA_RESULT_MAX);
 	ts_info("ts_test->test_info:%s\n", ts_test->test_info);
 	ts_err("info used size:%d\n", info->used_size);
@@ -2479,8 +2298,7 @@ static int gtx8_short_test_prepare(struct gtx8_ts_test *ts_test)
 	struct goodix_ts_core *core_data;
 	struct goodix_ts_cmd short_code_cmd;
 	core_data = (struct goodix_ts_core *)ts_test->ts;
-	goodix_cmd_init(core_data->ts_dev, &short_code_cmd, 0x0b, 0,
-			core_data->ts_dev->reg.command);
+	goodix_cmd_init(core_data->ts_dev, &short_code_cmd, 0x0b, 0, core_data->ts_dev->reg.command);
 
 	ts_info("Short test prepare+\n");
 	goodix_ts_blocking_notify(NOTIFY_ESD_OFF, NULL);
@@ -2488,9 +2306,7 @@ static int gtx8_short_test_prepare(struct gtx8_ts_test *ts_test)
 
 	while (--retry) {
 		/* switch to shrot test system */
-		ret = core_data->ts_dev->hw_ops->send_cmd(
-			core_data->ts_dev,
-			&short_code_cmd); /*bagan test command */
+		ret = core_data->ts_dev->hw_ops->send_cmd(core_data->ts_dev, &short_code_cmd);	/*bagan test command */
 		if (ret) {
 			ts_err("Can not switch to short test system\n");
 			return ret;
@@ -2500,9 +2316,7 @@ static int gtx8_short_test_prepare(struct gtx8_ts_test *ts_test)
 		/* check firmware running */
 		for (i = 0; i < 20; i++) {
 			ts_info("Check firmware running..");
-			ret = core_data->ts_dev->hw_ops->read_trans(
-				core_data->ts_dev, SHORT_STATUS_REG, &data[0],
-				1); /* SHORT_STATUS_REG is 0x5095 */
+			ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, SHORT_STATUS_REG, &data[0], 1);	/* SHORT_STATUS_REG is 0x5095 */
 			if (ret) {
 				ts_err("Check firmware running failed\n");
 				return ret;
@@ -2527,8 +2341,7 @@ static int gtx8_short_test_prepare(struct gtx8_ts_test *ts_test)
 	if (core_data->ts_dev->ic_type == IC_TYPE_NORMANDY) {
 		data[0] = 0;
 		/* turn off watch dog timer */
-		ret = core_data->ts_dev->hw_ops->write_trans(
-			core_data->ts_dev, WATCH_DOG_TIMER_REG, data, 1);
+		ret = core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, WATCH_DOG_TIMER_REG, data, 1);
 		if (ret < 0) {
 			ts_err("Failed turn off watch dog timer\n");
 			return ret;
@@ -2541,9 +2354,7 @@ static int gtx8_short_test_prepare(struct gtx8_ts_test *ts_test)
 	data[1] = ts_test->test_params.short_threshold & 0xff;
 
 	/* write tx/tx, tx/rx, rx/rx short threshold value to 0x8408 */
-	ret = core_data->ts_dev->hw_ops->write_trans(
-		core_data->ts_dev, TXRX_THRESHOLD_REG, data,
-		2); /* SHORT THRESHOLD_REG 0X8808 */
+	ret = core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, TXRX_THRESHOLD_REG, data, 2);	/* SHORT THRESHOLD_REG 0X8808 */
 	if (ret < 0) {
 		ts_err("Failed write tx/tx, tx/rx, rx/rx short threshold value\n");
 		return ret;
@@ -2551,9 +2362,7 @@ static int gtx8_short_test_prepare(struct gtx8_ts_test *ts_test)
 	data[0] = (GNDAVDD_SHORT_VALUE >> 8) & 0xff;
 	data[1] = GNDAVDD_SHORT_VALUE & 0xff;
 	/* write default txrx/gndavdd short threshold value 16 to 0x804A */
-	ret = core_data->ts_dev->hw_ops->write_trans(
-		core_data->ts_dev, GNDVDD_THRESHOLD_REG, data,
-		2); /* SHORT THRESHOLD_REG 0X8808 */
+	ret = core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, GNDVDD_THRESHOLD_REG, data, 2);	/* SHORT THRESHOLD_REG 0X8808 */
 	if (ret < 0) {
 		ts_err("Failed write txrx/gndavdd short threshold value\n");
 		return ret;
@@ -2562,8 +2371,7 @@ static int gtx8_short_test_prepare(struct gtx8_ts_test *ts_test)
 	/* Write ADC dump data num to 0x840c */
 	data[0] = (ADC_DUMP_NUM >> 8) & 0xff;
 	data[1] = ADC_DUMP_NUM & 0xff;
-	ret = core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev,
-						     ADC_DUMP_NUM_REG, data, 2);
+	ret = core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, ADC_DUMP_NUM_REG, data, 2);
 	if (ret < 0) {
 		ts_err("Failed write ADC dump data number\n");
 		return ret;
@@ -2571,9 +2379,7 @@ static int gtx8_short_test_prepare(struct gtx8_ts_test *ts_test)
 
 	/* write 0x01 to 0x5095 start short test */
 	data[0] = 0x01;
-	ret = core_data->ts_dev->hw_ops->write_trans(
-		core_data->ts_dev, SHORT_STATUS_REG, data,
-		1); /* SHORT_STATUS_REG 0X5095 */
+	ret = core_data->ts_dev->hw_ops->write_trans(core_data->ts_dev, SHORT_STATUS_REG, data, 1);	/* SHORT_STATUS_REG 0X5095 */
 	if (ret) {
 		ts_err("Failed write running dsp reg\n");
 		return ret;
@@ -2617,8 +2423,7 @@ static u32 map_die2pin(struct ts_test_params *test_params, u32 chn_num)
 	return res;
 }
 
-static int gtx8_check_resistance_to_gnd(struct ts_test_params *test_params,
-					u16 adc_signal, u32 pos)
+static int gtx8_check_resistance_to_gnd(struct ts_test_params *test_params, u16 adc_signal, u32 pos)
 {
 	long r = 0;
 	u16 r_th = 0, avdd_value = 0;
@@ -2629,9 +2434,9 @@ static int gtx8_check_resistance_to_gnd(struct ts_test_params *test_params,
 	if (adc_signal == 0 || adc_signal == 0x8000)
 		adc_signal |= 1;
 
-	if ((adc_signal & 0x8000) == 0) /* short to GND */
+	if ((adc_signal & 0x8000) == 0)	/* short to GND */
 		r = SHORT_TO_GND_RESISTER(adc_signal);
-	else /* short to VDD */
+	else			/* short to VDD */
 		r = SHORT_TO_VDD_RESISTER(adc_signal, avdd_value);
 
 	r = (long)div_s64(r, 100);
@@ -2653,8 +2458,7 @@ static int gtx8_check_resistance_to_gnd(struct ts_test_params *test_params,
 		pin_num = map_die2pin(test_params, chn_id_tmp);
 		ts_err("%s%d shortcircut to %s,R=%ldK,R_Threshold=%dK\n",
 		       (pin_num & DRV_CHANNEL_FLAG) ? "DRV" : "SEN",
-		       (pin_num & ~DRV_CHANNEL_FLAG),
-		       (adc_signal & 0x8000) ? "VDD" : "GND", r, r_th);
+		       (pin_num & ~DRV_CHANNEL_FLAG), (adc_signal & 0x8000) ? "VDD" : "GND", r, r_th);
 
 		return RESULT_ERR;
 	}
@@ -2662,8 +2466,7 @@ static int gtx8_check_resistance_to_gnd(struct ts_test_params *test_params,
 }
 
 static u32 gtx8_short_resistance_calc(struct gtx8_ts_test *ts_test,
-				      struct short_record *r_data,
-				      u16 self_capdata, u8 flag)
+				      struct short_record *r_data, u16 self_capdata, u8 flag)
 {
 	u16 lineDrvNum = 0, lineSenNum = 0;
 	u8 DieNumber1 = 0, DieNumber2 = 0;
@@ -2677,62 +2480,45 @@ static u32 gtx8_short_resistance_calc(struct gtx8_ts_test *ts_test,
 	lineSenNum = MAX_SEN_NUM;
 
 	if (core_data->ts_dev->ic_type == IC_TYPE_YELLOWSTONE) {
-		if (r_data->group1 != r_data->group2) { /* different Group */
-			ret = core_data->ts_dev->hw_ops->read_trans(
-				core_data->ts_dev, YS_IC_MASK_TYPE_REG,
-				&tmp_data, 1); /*  */
+		if (r_data->group1 != r_data->group2) {	/* different Group */
+			ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, YS_IC_MASK_TYPE_REG, &tmp_data, 1);	/*  */
 			if (ret < 0) {
 				ts_err("Read IC_MASK_TYPE_ADDR falied\n");
 				return ret;
 			}
 			if (tmp_data == 0x12) {
-				r = div_s64(self_capdata * 77 * FLOAT_AMPLIFIER,
-					    r_data->short_code);
+				r = div_s64(self_capdata * 77 * FLOAT_AMPLIFIER, r_data->short_code);
 				r -= (77 * FLOAT_AMPLIFIER);
 			} else {
-				r = div_s64(self_capdata * 81 * FLOAT_AMPLIFIER,
-					    r_data->short_code);
+				r = div_s64(self_capdata * 81 * FLOAT_AMPLIFIER, r_data->short_code);
 				r -= (81 * FLOAT_AMPLIFIER);
 			}
 		} else {
-			r = div_s64(self_capdata * 64 * FLOAT_AMPLIFIER,
-				    r_data->short_code);
+			r = div_s64(self_capdata * 64 * FLOAT_AMPLIFIER, r_data->short_code);
 			r -= (64 * FLOAT_AMPLIFIER);
 		}
 	} else {
 		if (flag == 0) {
-			if (r_data->group1 !=
-			    r_data->group2) { /* different Group */
-				r = div_s64(self_capdata * 81 * FLOAT_AMPLIFIER,
-					    r_data->short_code);
+			if (r_data->group1 != r_data->group2) {	/* different Group */
+				r = div_s64(self_capdata * 81 * FLOAT_AMPLIFIER, r_data->short_code);
 				r -= (81 * FLOAT_AMPLIFIER);
 			} else {
-				DieNumber1 =
-					((r_data->master & 0x80) == 0x80) ?
-						(r_data->master + lineSenNum) :
-						r_data->master;
-				DieNumber2 =
-					((r_data->slave & 0x80) == 0x80) ?
-						(r_data->slave + lineSenNum) :
-						r_data->slave;
+				DieNumber1 = ((r_data->master & 0x80) == 0x80) ?
+				    (r_data->master + lineSenNum) : r_data->master;
+				DieNumber2 = ((r_data->slave & 0x80) == 0x80) ?
+				    (r_data->slave + lineSenNum) : r_data->slave;
 				DieNumber1 = (DieNumber1 >= DieNumber2) ?
-						     (DieNumber1 - DieNumber2) :
-						     (DieNumber2 - DieNumber1);
+				    (DieNumber1 - DieNumber2) : (DieNumber2 - DieNumber1);
 				if ((DieNumber1 > 3) && (r_data->group1 == 0)) {
-					r = div_s64(self_capdata * 81 *
-							    FLOAT_AMPLIFIER,
-						    r_data->short_code);
+					r = div_s64(self_capdata * 81 * FLOAT_AMPLIFIER, r_data->short_code);
 					r -= (81 * FLOAT_AMPLIFIER);
 				} else {
-					r = div_s64(self_capdata * 64 *
-							    FLOAT_AMPLIFIER,
-						    r_data->short_code);
+					r = div_s64(self_capdata * 64 * FLOAT_AMPLIFIER, r_data->short_code);
 					r -= (64 * FLOAT_AMPLIFIER);
 				}
 			}
 		} else {
-			r = div_s64(self_capdata * 81 * FLOAT_AMPLIFIER,
-				    r_data->short_code);
+			r = div_s64(self_capdata * 81 * FLOAT_AMPLIFIER, r_data->short_code);
 			r -= (81 * FLOAT_AMPLIFIER);
 		}
 	}
@@ -2761,9 +2547,7 @@ static int gtx8_shortcircut_analysis(struct gtx8_ts_test *ts_test)
 	struct goodix_ts_core *core_data;
 	core_data = (struct goodix_ts_core *)ts_test->ts;
 
-	ret = core_data->ts_dev->hw_ops->read_trans(
-		core_data->ts_dev, TEST_RESTLT_REG, &short_flag,
-		1); /* TEST_RESTLT_REG  0x8401 */
+	ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, TEST_RESTLT_REG, &short_flag, 1);	/* TEST_RESTLT_REG  0x8401 */
 	if (ret < 0) {
 		ts_err("Read TEST_TESULT_REG falied\n");
 		goto shortcircut_analysis_error;
@@ -2783,18 +2567,14 @@ static int gtx8_shortcircut_analysis(struct gtx8_ts_test *ts_test)
 		/* read diff code, diff code will be used to calculate
 		 * resistance between channel and GND */
 		size = (MAX_DRV_NUM + MAX_SEN_NUM) * 2;
-		ret = core_data->ts_dev->hw_ops->read_trans(
-			core_data->ts_dev, DIFF_CODE_REG, data_buf,
-			size); /* DIFF_CODE_REG   0xA97A */
+		ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, DIFF_CODE_REG, data_buf, size);	/* DIFF_CODE_REG   0xA97A */
 		if (ret < 0) {
 			ts_err("Failed read to-gnd rawdata\n");
 			goto shortcircut_analysis_error;
 		}
 		for (i = 0; i < size; i += 2) {
-			adc_signal = be16_to_cpup((__be16 *)&data_buf[i]);
-			ret = gtx8_check_resistance_to_gnd(
-				test_params, adc_signal,
-				i >> 1); /* i >> 1 = i / 2 */
+			adc_signal = be16_to_cpup((__be16 *) & data_buf[i]);
+			ret = gtx8_check_resistance_to_gnd(test_params, adc_signal, i >> 1);	/* i >> 1 = i / 2 */
 			if (ret) {
 				ts_err("Resistance to-gnd test failed\n");
 				err |= ret;
@@ -2804,16 +2584,13 @@ static int gtx8_shortcircut_analysis(struct gtx8_ts_test *ts_test)
 
 	/* read self-capdata+ */
 	size = (MAX_DRV_NUM + MAX_SEN_NUM) * 2;
-	ret = core_data->ts_dev->hw_ops->read_trans(
-		core_data->ts_dev, DRV_SELF_CODE_REG, data_buf,
-		size); /* DRV_SELF_CODE_REG   0xa8e0 */
+	ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, DRV_SELF_CODE_REG, data_buf, size);	/* DRV_SELF_CODE_REG   0xa8e0 */
 	if (ret) {
 		ts_err("Failed read selfcap rawdata\n");
 		goto shortcircut_analysis_error;
 	}
 	for (i = 0; i < MAX_DRV_NUM + MAX_SEN_NUM; i++)
-		self_capdata[i] =
-			be16_to_cpup((__be16 *)&data_buf[i * 2]) & 0x7fff;
+		self_capdata[i] = be16_to_cpup((__be16 *) & data_buf[i * 2]) & 0x7fff;
 	/* read self-capdata- */
 
 	/* read tx tx short number
@@ -2821,32 +2598,26 @@ static int gtx8_shortcircut_analysis(struct gtx8_ts_test *ts_test)
 	 **   short_status[1]: tr rx
 	 **   short_status[2]: rx rx
 	 */
-	ret = core_data->ts_dev->hw_ops->read_trans(
-		core_data->ts_dev, TX_SHORT_NUM, &short_status[0],
-		3); /* TX_SHORT_NUM   0x8402 */
+	ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, TX_SHORT_NUM, &short_status[0], 3);	/* TX_SHORT_NUM   0x8402 */
 	if (ret) {
 		ts_err("Failed read tx-to-tx short rawdata\n");
 		goto shortcircut_analysis_error;
 	}
-	ts_info("Tx&Tx:%d,Rx&Rx:%d,Tx&Rx:%d\n", short_status[0],
-		short_status[1], short_status[2]);
+	ts_info("Tx&Tx:%d,Rx&Rx:%d,Tx&Rx:%d\n", short_status[0], short_status[1], short_status[2]);
 
 	/* drv&drv shortcircut check */
 	data_addr = 0x8460;
 	for (i = 0; i < short_status[0]; i++) {
-		size = SHORT_CAL_SIZE(
-			MAX_DRV_NUM); /* 4 + MAX_DRV_NUM * 2 + 2; */
-		ret = core_data->ts_dev->hw_ops->read_trans(
-			core_data->ts_dev, data_addr, data_buf, size);
+		size = SHORT_CAL_SIZE(MAX_DRV_NUM);	/* 4 + MAX_DRV_NUM * 2 + 2; */
+		ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, data_addr, data_buf, size);
 		if (ret) {
 			ts_err("Failed read drv-to-drv short rawdata\n");
 			goto shortcircut_analysis_error;
 		}
 
 		r_threshold = test_params->r_drv_drv_threshold;
-		short_die_num = be16_to_cpup((__be16 *)&data_buf[0]);
-		if (short_die_num > MAX_DRV_NUM + MAX_SEN_NUM ||
-		    short_die_num < MAX_SEN_NUM) {
+		short_die_num = be16_to_cpup((__be16 *) & data_buf[0]);
+		if (short_die_num > MAX_DRV_NUM + MAX_SEN_NUM || short_die_num < MAX_SEN_NUM) {
 			ts_info("invalid short pad num:%d\n", short_die_num);
 			continue;
 		}
@@ -2854,52 +2625,33 @@ static int gtx8_shortcircut_analysis(struct gtx8_ts_test *ts_test)
 		/* TODO: j start position need recheck */
 		short_die_num -= MAX_SEN_NUM;
 		for (j = short_die_num + 1; j < MAX_DRV_NUM; j++) {
-			adc_signal =
-				be16_to_cpup((__be16 *)&data_buf[4 + j * 2]);
+			adc_signal = be16_to_cpup((__be16 *) & data_buf[4 + j * 2]);
 
 			if (adc_signal > test_params->short_threshold) {
-				temp_short_info.master =
-					short_die_num | DRV_CHANNEL_FLAG;
+				temp_short_info.master = short_die_num | DRV_CHANNEL_FLAG;
 				temp_short_info.slave = j | DRV_CHANNEL_FLAG;
 				temp_short_info.short_code = adc_signal;
-				gtx8_check_setting_group(ts_test,
-							 &temp_short_info);
+				gtx8_check_setting_group(ts_test, &temp_short_info);
 
-				if (self_capdata[short_die_num] == 0xffff ||
-				    self_capdata[short_die_num] == 0) {
-					ts_info("invalid self_capdata:0x%x\n",
-						self_capdata[short_die_num]);
+				if (self_capdata[short_die_num] == 0xffff || self_capdata[short_die_num] == 0) {
+					ts_info("invalid self_capdata:0x%x\n", self_capdata[short_die_num]);
 					continue;
 				}
 
-				short_r = gtx8_short_resistance_calc(
-					ts_test, &temp_short_info,
-					self_capdata[short_die_num], 0);
+				short_r = gtx8_short_resistance_calc(ts_test, &temp_short_info,
+								     self_capdata[short_die_num], 0);
 				if (short_r < 0)
 					goto shortcircut_analysis_error;
 
 				if (short_r < r_threshold) {
-					master_pin_num = map_die2pin(
-						test_params,
-						temp_short_info.master);
-					slave_pin_num = map_die2pin(
-						test_params,
-						temp_short_info.slave);
-					ts_err("Tx/Tx short circut:R=%dK,R_Threshold=%dK\n",
-					       short_r, r_threshold);
+					master_pin_num = map_die2pin(test_params, temp_short_info.master);
+					slave_pin_num = map_die2pin(test_params, temp_short_info.slave);
+					ts_err("Tx/Tx short circut:R=%dK,R_Threshold=%dK\n", short_r, r_threshold);
 					ts_err("%s%d--%s%d shortcircut\n",
-					       (master_pin_num &
-						DRV_CHANNEL_FLAG) ?
-						       "DRV" :
-						       "SEN",
-					       (master_pin_num &
-						~DRV_CHANNEL_FLAG),
-					       (slave_pin_num &
-						DRV_CHANNEL_FLAG) ?
-						       "DRV" :
-						       "SEN",
-					       (slave_pin_num &
-						~DRV_CHANNEL_FLAG));
+					       (master_pin_num & DRV_CHANNEL_FLAG) ? "DRV" : "SEN",
+					       (master_pin_num & ~DRV_CHANNEL_FLAG),
+					       (slave_pin_num & DRV_CHANNEL_FLAG) ? "DRV" : "SEN",
+					       (slave_pin_num & ~DRV_CHANNEL_FLAG));
 					err |= -EINVAL;
 				}
 			}
@@ -2910,69 +2662,46 @@ static int gtx8_shortcircut_analysis(struct gtx8_ts_test *ts_test)
 	/* sen&sen shortcircut check */
 	data_addr = 0x91d0;
 	for (i = 0; i < short_status[1]; i++) {
-		size = SHORT_CAL_SIZE(
-			MAX_SEN_NUM); /* 4 + MAX_SEN_NUM * 2 + 2; */
-		ret = core_data->ts_dev->hw_ops->read_trans(
-			core_data->ts_dev, data_addr, data_buf, size);
+		size = SHORT_CAL_SIZE(MAX_SEN_NUM);	/* 4 + MAX_SEN_NUM * 2 + 2; */
+		ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, data_addr, data_buf, size);
 		if (ret) {
 			ts_err("Failed read sen-to-sen short rawdata\n");
 			goto shortcircut_analysis_error;
 		}
 
 		r_threshold = ts_test->test_params.r_sen_sen_threshold;
-		short_die_num = be16_to_cpup((__be16 *)&data_buf[0]);
+		short_die_num = be16_to_cpup((__be16 *) & data_buf[0]);
 		if (short_die_num > MAX_SEN_NUM)
 			continue;
 
 		for (j = short_die_num + 1; j < MAX_SEN_NUM; j++) {
-			adc_signal =
-				be16_to_cpup((__be16 *)&data_buf[4 + j * 2]);
+			adc_signal = be16_to_cpup((__be16 *) & data_buf[4 + j * 2]);
 			if (adc_signal > ts_test->test_params.short_threshold) {
 				temp_short_info.master = short_die_num;
 				temp_short_info.slave = j;
 				temp_short_info.short_code = adc_signal;
-				gtx8_check_setting_group(ts_test,
-							 &temp_short_info);
+				gtx8_check_setting_group(ts_test, &temp_short_info);
 
-				if (self_capdata[short_die_num + MAX_DRV_NUM] ==
-					    0xffff ||
-				    self_capdata[short_die_num + MAX_DRV_NUM] ==
-					    0) {
+				if (self_capdata[short_die_num + MAX_DRV_NUM] == 0xffff ||
+				    self_capdata[short_die_num + MAX_DRV_NUM] == 0) {
 					ts_info("invalid self_capdata:0x%x\n",
-						self_capdata[short_die_num +
-							     MAX_DRV_NUM]);
+						self_capdata[short_die_num + MAX_DRV_NUM]);
 					continue;
 				}
 
-				short_r = gtx8_short_resistance_calc(
-					ts_test, &temp_short_info,
-					self_capdata[short_die_num +
-						     MAX_DRV_NUM],
-					0);
+				short_r = gtx8_short_resistance_calc(ts_test, &temp_short_info,
+								     self_capdata[short_die_num + MAX_DRV_NUM], 0);
 				if (short_r < 0)
 					goto shortcircut_analysis_error;
 				if (short_r < r_threshold) {
-					master_pin_num = map_die2pin(
-						test_params,
-						temp_short_info.master);
-					slave_pin_num = map_die2pin(
-						test_params,
-						temp_short_info.slave);
-					ts_err("Rx/Rx short circut:R=%dK,R_Threshold=%dK\n",
-					       short_r, r_threshold);
+					master_pin_num = map_die2pin(test_params, temp_short_info.master);
+					slave_pin_num = map_die2pin(test_params, temp_short_info.slave);
+					ts_err("Rx/Rx short circut:R=%dK,R_Threshold=%dK\n", short_r, r_threshold);
 					ts_err("%s%d--%s%d shortcircut\n",
-					       (master_pin_num &
-						DRV_CHANNEL_FLAG) ?
-						       "DRV" :
-						       "SEN",
-					       (master_pin_num &
-						~DRV_CHANNEL_FLAG),
-					       (slave_pin_num &
-						DRV_CHANNEL_FLAG) ?
-						       "DRV" :
-						       "SEN",
-					       (slave_pin_num &
-						~DRV_CHANNEL_FLAG));
+					       (master_pin_num & DRV_CHANNEL_FLAG) ? "DRV" : "SEN",
+					       (master_pin_num & ~DRV_CHANNEL_FLAG),
+					       (slave_pin_num & DRV_CHANNEL_FLAG) ? "DRV" : "SEN",
+					       (slave_pin_num & ~DRV_CHANNEL_FLAG));
 					err |= -EINVAL;
 				}
 			}
@@ -2983,69 +2712,46 @@ static int gtx8_shortcircut_analysis(struct gtx8_ts_test *ts_test)
 	/* sen&drv shortcircut check */
 	data_addr = 0x9cc8;
 	for (i = 0; i < short_status[2]; i++) {
-		size = SHORT_CAL_SIZE(
-			MAX_DRV_NUM); /* size = 4 + MAX_SEN_NUM * 2 + 2; */
-		ret = core_data->ts_dev->hw_ops->read_trans(
-			core_data->ts_dev, data_addr, data_buf, size);
+		size = SHORT_CAL_SIZE(MAX_DRV_NUM);	/* size = 4 + MAX_SEN_NUM * 2 + 2; */
+		ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, data_addr, data_buf, size);
 		if (ret) {
 			ts_err("Failed read sen-to-drv short rawdata\n");
 			goto shortcircut_analysis_error;
 		}
 
 		r_threshold = ts_test->test_params.r_drv_sen_threshold;
-		short_die_num = be16_to_cpup((__be16 *)&data_buf[0]);
+		short_die_num = be16_to_cpup((__be16 *) & data_buf[0]);
 		if (short_die_num > MAX_SEN_NUM)
 			continue;
 
 		for (j = 0; j < MAX_DRV_NUM; j++) {
-			adc_signal =
-				be16_to_cpup((__be16 *)&data_buf[4 + j * 2]);
+			adc_signal = be16_to_cpup((__be16 *) & data_buf[4 + j * 2]);
 			if (adc_signal > ts_test->test_params.short_threshold) {
 				temp_short_info.master = short_die_num;
 				temp_short_info.slave = j | DRV_CHANNEL_FLAG;
 				temp_short_info.short_code = adc_signal;
-				gtx8_check_setting_group(ts_test,
-							 &temp_short_info);
+				gtx8_check_setting_group(ts_test, &temp_short_info);
 
-				if (self_capdata[short_die_num + MAX_DRV_NUM] ==
-					    0xffff ||
-				    self_capdata[short_die_num + MAX_DRV_NUM] ==
-					    0) {
+				if (self_capdata[short_die_num + MAX_DRV_NUM] == 0xffff ||
+				    self_capdata[short_die_num + MAX_DRV_NUM] == 0) {
 					ts_info("invalid self_capdata:0x%x\n",
-						self_capdata[short_die_num +
-							     MAX_DRV_NUM]);
+						self_capdata[short_die_num + MAX_DRV_NUM]);
 					continue;
 				}
 
-				short_r = gtx8_short_resistance_calc(
-					ts_test, &temp_short_info,
-					self_capdata[short_die_num +
-						     MAX_DRV_NUM],
-					0);
+				short_r = gtx8_short_resistance_calc(ts_test, &temp_short_info,
+								     self_capdata[short_die_num + MAX_DRV_NUM], 0);
 				if (short_r < 0)
 					goto shortcircut_analysis_error;
 				if (short_r < r_threshold) {
-					master_pin_num = map_die2pin(
-						test_params,
-						temp_short_info.master);
-					slave_pin_num = map_die2pin(
-						test_params,
-						temp_short_info.slave);
-					ts_err("Rx/Tx short circut:R=%dK,R_Threshold=%dK\n",
-					       short_r, r_threshold);
+					master_pin_num = map_die2pin(test_params, temp_short_info.master);
+					slave_pin_num = map_die2pin(test_params, temp_short_info.slave);
+					ts_err("Rx/Tx short circut:R=%dK,R_Threshold=%dK\n", short_r, r_threshold);
 					ts_err("%s%d--%s%d shortcircut\n",
-					       (master_pin_num &
-						DRV_CHANNEL_FLAG) ?
-						       "DRV" :
-						       "SEN",
-					       (master_pin_num &
-						~DRV_CHANNEL_FLAG),
-					       (slave_pin_num &
-						DRV_CHANNEL_FLAG) ?
-						       "DRV" :
-						       "SEN",
-					       (slave_pin_num &
-						~DRV_CHANNEL_FLAG));
+					       (master_pin_num & DRV_CHANNEL_FLAG) ? "DRV" : "SEN",
+					       (master_pin_num & ~DRV_CHANNEL_FLAG),
+					       (slave_pin_num & DRV_CHANNEL_FLAG) ? "DRV" : "SEN",
+					       (slave_pin_num & ~DRV_CHANNEL_FLAG));
 					err |= -EINVAL;
 				}
 			}
@@ -3088,12 +2794,10 @@ static void gtx8_shortcircut_test(struct gtx8_ts_test *ts_test)
 	for (i = 0; i < 110; i++) {
 		msleep(50);
 		ts_info("waitting for short test end...:retry=%d\n", i);
-		ret = core_data->ts_dev->hw_ops->read_trans(
-			core_data->ts_dev, SHORT_TESTEND_REG, data,
-			1); /* SHORT_TESTEND_REG   0x8400 */
+		ret = core_data->ts_dev->hw_ops->read_trans(core_data->ts_dev, SHORT_TESTEND_REG, data, 1);	/* SHORT_TESTEND_REG   0x8400 */
 		if (ret)
 			ts_err("Failed get short test result: retry%d\n", i);
-		else if (data[0] == 0x88) /* test ok */
+		else if (data[0] == 0x88)	/* test ok */
 			break;
 	}
 
@@ -3106,8 +2810,7 @@ static void gtx8_shortcircut_test(struct gtx8_ts_test *ts_test)
 			ts_err("Short test success\n");
 		}
 	} else {
-		ts_err("Wait short test finish timeout:reg_val=0x%x\n",
-		       data[0]);
+		ts_err("Wait short test finish timeout:reg_val=0x%x\n", data[0]);
 		ts_test->test_result[GTP_SHORT_TEST] = SYS_SOFTWARE_REASON;
 	}
 
@@ -3123,47 +2826,46 @@ static u8 get_chn_group_ys(u8 chn)
 	u8 setting_num = 7;
 
 	/*sen*/
-	if ((chn >= 32) && (chn < 36)) /* (Setting1) C(bit10)*/
+	if ((chn >= 32) && (chn < 36))	/* (Setting1) C(bit10)*/
 		group = 2 * setting_num + 0;
-	else if ((chn >= 27) && (chn < 32)) /* (Setting2)  C(bit10)*/
+	else if ((chn >= 27) && (chn < 32))	/* (Setting2)  C(bit10)*/
 		group = 2 * setting_num + 1;
-	else if ((chn >= 20) && (chn < 24)) /* (Setting3)  A(bit00)*/
+	else if ((chn >= 20) && (chn < 24))	/* (Setting3)  A(bit00)*/
 		group = 0 * setting_num + 2;
-	else if (chn == 25 || /* (Setting3)  C(bit10)*/
-		 chn == 26 || chn == 19 || chn == 24 || chn == 14 ||
-		 chn == 17 || chn == 18 || chn == 15 || chn == 16 || chn == 6 ||
-		 chn == 13)
+	else if (chn == 25 ||	/* (Setting3)  C(bit10)*/
+		 chn == 26 || chn == 19 ||
+		 chn == 24 || chn == 14 || chn == 17 || chn == 18 || chn == 15 || chn == 16 || chn == 6 || chn == 13)
 		group = 2 * setting_num + 2;
-	else if (chn == 3 || chn == 12 || /* (Setting4)   C(bit10)*/
+	else if (chn == 3 || chn == 12 ||	/* (Setting4)   C(bit10)*/
 		 chn == 0 || chn == 1)
 		group = 2 * setting_num + 3;
-	else if ((chn >= 7) && (chn < 12)) /* (Setting5)  A(bit00)*/
+	else if ((chn >= 7) && (chn < 12))	/* (Setting5)  A(bit00)*/
 		group = 0 * setting_num + 4;
-	else if (chn == 5 || /* (Setting5)   C(bit10)*/
+	else if (chn == 5 ||	/* (Setting5)   C(bit10)*/
 		 chn == 4 || chn == 2)
 		group = 2 * setting_num + 4;
 	/*drv*/
-	else if ((chn >= 67) && (chn < 72)) /* (Setting2)  B(bit01)*/
+	else if ((chn >= 67) && (chn < 72))	/* (Setting2)  B(bit01)*/
 		group = 1 * setting_num + 1;
-	else if (chn == 63 || /* (Setting4)  B(bit01)*/
+	else if (chn == 63 ||	/* (Setting4)  B(bit01)*/
 		 chn == 64 || chn == 60 || chn == 61)
 		group = 1 * setting_num + 3;
-	else if (chn == 62 || /* (Setting5)  B(bit01)*/
+	else if (chn == 62 ||	/* (Setting5)  B(bit01)*/
 		 chn == 57 || chn == 58 || chn == 59 || chn == 54)
 		group = 1 * setting_num + 4;
-	else if (chn == 75 || chn == 44) /* (Setting5)  C(bit10)*/
+	else if (chn == 75 || chn == 44)	/* (Setting5)  C(bit10)*/
 		group = 2 * setting_num + 4;
-	else if (chn == 56 || /* (Setting6)  B(bit01)*/
+	else if (chn == 56 ||	/* (Setting6)  B(bit01)*/
 		 chn == 55 || ((chn >= 47) && (chn < 54)))
 		group = 1 * setting_num + 5;
-	else if (chn == 74 || /* (Setting6)  C(bit10)*/
+	else if (chn == 74 ||	/* (Setting6)  C(bit10)*/
 		 ((chn >= 36) && (chn < 44)))
 		group = 2 * setting_num + 5;
-	else if (chn == 73 || chn == 72) /* (Setting7)  A(bit00)*/
+	else if (chn == 73 || chn == 72)	/* (Setting7)  A(bit00)*/
 		group = 0 * setting_num + 6;
-	else if (chn == 46 || chn == 45) /* (Setting7)  B(bit01)*/
+	else if (chn == 46 || chn == 45)	/* (Setting7)  B(bit01)*/
 		group = 1 * setting_num + 6;
-	else if (chn == 66 || chn == 65) /* (Setting7)  C(bit10)*/
+	else if (chn == 66 || chn == 65)	/* (Setting7)  C(bit10)*/
 		group = 2 * setting_num + 6;
 
 	return group;
@@ -3173,50 +2875,49 @@ static u8 get_chn_group_nor(u8 chn)
 {
 	u8 group = 0;
 
-	if ((chn >= 0) && (chn < 9)) /* pad s0~s8 */
+	if ((chn >= 0) && (chn < 9))	/* pad s0~s8 */
 		group = 5;
 
-	else if ((chn >= 9) && (chn < 14)) /* pad s9~s13 */
+	else if ((chn >= 9) && (chn < 14))	/* pad s9~s13 */
 		group = 4;
 
-	else if ((chn >= 14) && (chn < 18)) /* pad s14~s17 */
+	else if ((chn >= 14) && (chn < 18))	/* pad s14~s17 */
 		group = 3;
 
-	else if ((chn >= 18) && (chn < 27)) /* pad s18~s26 */
+	else if ((chn >= 18) && (chn < 27))	/* pad s18~s26 */
 		group = 2;
 
-	else if ((chn >= 27) && (chn < 32)) /* pad s27~s31 */
+	else if ((chn >= 27) && (chn < 32))	/* pad s27~s31 */
 		group = 1;
 
-	else if ((chn >= 32) && (chn < 36)) /* pad s32~s35 */
+	else if ((chn >= 32) && (chn < 36))	/* pad s32~s35 */
 		group = 0;
 
-	else if ((chn >= 36) && (chn < 45)) /* pad d0~d8 */
+	else if ((chn >= 36) && (chn < 45))	/* pad d0~d8 */
 		group = 5;
 
-	else if ((chn >= 45) && (chn < 54)) /* pad d9~d17 */
+	else if ((chn >= 45) && (chn < 54))	/* pad d9~d17 */
 		group = 2;
 
-	else if ((chn >= 54) && (chn < 59)) /* pad d18~d22 */
+	else if ((chn >= 54) && (chn < 59))	/* pad d18~d22 */
 		group = 1;
 
-	else if ((chn >= 59) && (chn < 63)) /*  pad d23~d26 */
+	else if ((chn >= 59) && (chn < 63))	/*  pad d23~d26 */
 		group = 0;
 
-	else if ((chn >= 63) && (chn < 67)) /* pad d27~d30 */
+	else if ((chn >= 63) && (chn < 67))	/* pad d27~d30 */
 		group = 3;
 
-	else if ((chn >= 67) && (chn < 72)) /* pad d31~d35 */
+	else if ((chn >= 67) && (chn < 72))	/* pad d31~d35 */
 		group = 4;
 
-	else if ((chn >= 72) && (chn < 76)) /* pad d36~d39 */
+	else if ((chn >= 72) && (chn < 76))	/* pad d36~d39 */
 		group = 0;
 
 	return group;
 }
 
-static void gtx8_check_setting_group(struct gtx8_ts_test *ts_test,
-				     struct short_record *r_data)
+static void gtx8_check_setting_group(struct gtx8_ts_test *ts_test, struct short_record *r_data)
 {
 	u32 master = 0;
 	u32 slave = 0;

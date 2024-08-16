@@ -8,6 +8,7 @@
 * full: (wr_index +1) % BUFFER_SIZE == rd_index
 * total avaliable size is BUFFER_SIZE -1
 */
+#define DEBUG
 #include <linux/errno.h>
 #include "ringbuffer.h"
 
@@ -18,7 +19,7 @@ struct rb {
 	atomic_t wr_index;
 	atomic_t rd_index;
 	atomic_t eof;
-	volatile int32_t aval_size; // avalibale to write size.
+	volatile  int32_t aval_size; // avalibale to write size.
 	atomic_t buf_condition, exit;
 	wait_queue_head_t wait_q;
 };
@@ -32,7 +33,7 @@ int32_t get_free_size(int32_t tail, int32_t head)
 	else if (head < tail)
 		return (head + BUFFER_SIZE - 1 - tail);
 	else
-		return (head - tail - 1);
+		return(head - tail - 1);
 }
 
 int write_rb(const char *data, int32_t size)
@@ -43,17 +44,15 @@ int write_rb(const char *data, int32_t size)
 	int32_t ret;
 	grb->aval_size = get_free_size(tail, head);
 
-	pr_debug("write  write index %d, read index %d, free size %d", tail,
-		 head, grb->aval_size);
+	pr_debug("write  write index %d, read index %d, free size %d", tail, head, grb->aval_size);
 
 	while ((grb->aval_size < size) && (!atomic_read(&grb->exit))) {
 		pr_debug("no space avaliable");
 		pr_info("%s  goint to waiting irq exit\n", __func__);
-		ret = wait_event_interruptible(
-			grb->wait_q, atomic_read(&grb->buf_condition) == 1);
+		ret = wait_event_interruptible(grb->wait_q, atomic_read(&grb->buf_condition) == 1);
 		if (ret == -ERESTARTSYS) {
-			pr_err("%s wake up by signal return erro\n", __func__);
-			return ret;
+			 pr_err("%s wake up by signal return erro\n", __func__);
+			 return ret;
 		}
 
 		atomic_set(&grb->buf_condition, 0);
@@ -66,7 +65,7 @@ int write_rb(const char *data, int32_t size)
 		return -EPERM;
 	}
 
-	part = BUFFER_SIZE - tail;
+	part =  BUFFER_SIZE - tail;
 	if (part < size) {
 		memcpy(grb->gbuffer + tail, data, part);
 		memcpy(grb->gbuffer, data + part, size - part);
@@ -75,12 +74,11 @@ int write_rb(const char *data, int32_t size)
 		memcpy(grb->gbuffer + tail, data, size);
 		tail += size;
 		if (tail >= BUFFER_SIZE)
-			tail = tail % BUFFER_SIZE;
+		tail = tail % BUFFER_SIZE;
 	}
 	atomic_set(&grb->wr_index, tail);
 	grb->aval_size = get_free_size(tail, head);
-	pr_debug("after write %d,  write index %d, read index %d, aval_size %d",
-		 size, tail, head, grb->aval_size);
+	pr_debug("after write %d,  write index %d, read index %d, aval_size %d", size, tail, head, grb->aval_size);
 	return size;
 }
 
@@ -100,12 +98,10 @@ int read_rb(char *data, int32_t size)
 	grb->aval_size = get_free_size(tail, head);
 	filled_size = BUFFER_SIZE - 1 - grb->aval_size; // aready write size.
 
-	pr_debug("write index %d, read index %d, filled size %d", tail, head,
-		 filled_size);
-	read_bytes = MIN(size, filled_size);
+	pr_debug("write index %d, read index %d, filled size %d", tail, head, filled_size);
+	read_bytes = MIN (size, filled_size);
 	if (size > filled_size)
-		pr_debug("buffer underrun , req size %d, filled size %d", size,
-			 filled_size);
+		pr_debug("buffer underrun , req size %d, filled size %d", size, filled_size);
 	part = BUFFER_SIZE - head;
 	if (part < read_bytes) {
 		memcpy(buf, grb->gbuffer + head, part);
@@ -123,9 +119,7 @@ int read_rb(char *data, int32_t size)
 	//add wakeup here
 	atomic_set(&grb->buf_condition, 1);
 	wake_up_interruptible(&grb->wait_q);
-	pr_debug(
-		"read_rb: after read %d  write index %d, read index %d, aval_size %d",
-		read_bytes, tail, head, grb->aval_size);
+	pr_debug("read_rb: after read %d  write index %d, read index %d, aval_size %d", read_bytes, tail, head, grb->aval_size);
 
 	return atomic_read(&grb->eof) ? read_bytes : size;
 }
@@ -140,7 +134,7 @@ int get_rb_free_size(void)
 
 int get_rb_avalible_size(void)
 {
-	return BUFFER_SIZE - 1 - get_rb_free_size();
+	return BUFFER_SIZE - 1 -  get_rb_free_size();
 }
 
 int get_rb_max_size(void)
@@ -172,8 +166,7 @@ int create_rb(void)
 	int32_t head;
 	grb = kzalloc(sizeof(struct rb), GFP_KERNEL);
 	if (grb == NULL) {
-		goto err;
-		;
+		goto err;;
 	}
 	grb->gbuffer = kzalloc(BUFFER_SIZE, GFP_KERNEL);
 	if (grb->gbuffer == NULL) {
@@ -193,7 +186,7 @@ err:
 		kfree(grb);
 	if (grb->gbuffer)
 		kfree(grb->gbuffer);
-	return -EPERM;
+	return  -EPERM;
 }
 
 void rb_init(void)
@@ -208,13 +201,13 @@ void rb_init(void)
 
 int release_rb(void)
 {
-	if (grb != NULL) {
+	if (grb  != NULL) {
 		if (grb->gbuffer) {
-			kfree(grb->gbuffer);
-			grb->gbuffer = NULL;
+			 kfree(grb->gbuffer);
+			 grb->gbuffer = NULL;
 		}
 		kfree(grb);
-		grb = NULL;
+		grb  = NULL;
 	}
 	return 0;
 }

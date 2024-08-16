@@ -1,7 +1,6 @@
 #
 # Novatek NT36523 touchscreen driver configuration
 #
-
 config TOUCHSCREEN_NT36523_HOSTDL_SPI
 	tristate "Novatek NT36523 host download SPI driver"
 	default n

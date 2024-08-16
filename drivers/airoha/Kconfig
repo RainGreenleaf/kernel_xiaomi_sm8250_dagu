@@ -1,4 +1,5 @@
-config AIROHA_GPS
-	tristate "Airoha GPS Support"
+config CONFIG_AIROHA_GPS
+	bool "Airoha GPS Support"
+	default y
 	help
 		Airoha GPS Support

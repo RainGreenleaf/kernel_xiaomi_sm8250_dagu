@@ -26,73 +26,78 @@
 extern u8 HX_EXCP_RESET_ACTIVATE;
 #endif
 
-#define BS_RAWDATA 8
-#define BS_NOISE 8
-#define BS_OPENSHORT 0
-#define BS_LPWUG 1
-#define BS_LP_dile 1
-#define BS_ACT_IDLE 1
+#define BS_RAWDATA     8
+#define BS_NOISE       8
+#define BS_OPENSHORT   0
+#define	BS_LPWUG       1
+#define	BS_LP_dile  1
+#define	BS_ACT_IDLE    1
 
-#define SKIP_NOTCH_START 5
-#define SKIP_NOTCH_END 10
-#define SKIP_DUMMY_START 23
-#define SKIP_DUMMY_END 28
+#define SKIP_NOTCH_START    5
+#define SKIP_NOTCH_END      10
+#define SKIP_DUMMY_START    23
+#define SKIP_DUMMY_END      28
 
-#define NOISEFRAME 60
-#define NORMAL_IDLE_RAWDATA_NOISEFRAME 10
-#define LP_RAWDATAFRAME 1
-#define LP_NOISEFRAME 1
-#define LP_IDLE_RAWDATAFRAME 1
-#define LP_IDLE_NOISEFRAME 1
 
-#define OTHERSFRAME 2
+#define	NOISEFRAME                      60
+#define NORMAL_IDLE_RAWDATA_NOISEFRAME  10
+#define LP_RAWDATAFRAME              1
+#define LP_NOISEFRAME                1
+#define LP_IDLE_RAWDATAFRAME         1
+#define LP_IDLE_NOISEFRAME           1
 
-#define UNIFMAX 500
+#define OTHERSFRAME		2
 
-#define PWD_OPEN_START 0x77
-#define PWD_OPEN_END 0x88
-#define PWD_SHORT_START 0x11
-#define PWD_SHORT_END 0x33
-#define PWD_RAWDATA_START 0x00
-#define PWD_RAWDATA_END 0x99
-#define PWD_NOISE_START 0x00
-#define PWD_NOISE_END 0x99
-#define PWD_SORTING_START 0xAA
-#define PWD_SORTING_END 0xCC
+#define	UNIFMAX			500
 
-#define PWD_ACT_IDLE_START 0x22
-#define PWD_ACT_IDLE_END 0x44
 
-#define PWD_LP_START 0x55
-#define PWD_LP_END 0x66
+#define	PWD_OPEN_START          0x77
+#define	PWD_OPEN_END            0x88
+#define	PWD_SHORT_START         0x11
+#define	PWD_SHORT_END           0x33
+#define	PWD_RAWDATA_START       0x00
+#define	PWD_RAWDATA_END         0x99
+#define	PWD_NOISE_START         0x00
+#define	PWD_NOISE_END           0x99
+#define	PWD_SORTING_START       0xAA
+#define	PWD_SORTING_END         0xCC
 
-#define PWD_LP_IDLE_START 0x50
-#define PWD_LP_IDLE_END 0x60
 
-#define DATA_SORTING 0x0A
-#define DATA_OPEN 0x0B
-#define DATA_MICRO_OPEN 0x0C
-#define DATA_SHORT 0x0A
-#define DATA_RAWDATA 0x0A
-#define DATA_NOISE 0x0F
-#define DATA_BACK_NORMAL 0x00
-#define DATA_LP_RAWDATA 0x0C
-#define DATA_LP_NOISE 0x0F
-#define DATA_ACT_IDLE_RAWDATA 0x0A
-#define DATA_ACT_IDLE_NOISE 0x0F
+#define PWD_ACT_IDLE_START      0x22
+#define PWD_ACT_IDLE_END        0x44
+
+
+
+#define PWD_LP_START         0x55
+#define PWD_LP_END           0x66
+
+#define PWD_LP_IDLE_START    0x50
+#define PWD_LP_IDLE_END      0x60
+
+#define DATA_SORTING            0x0A
+#define DATA_OPEN               0x0B
+#define DATA_MICRO_OPEN         0x0C
+#define DATA_SHORT              0x0A
+#define DATA_RAWDATA            0x0A
+#define DATA_NOISE              0x0F
+#define DATA_BACK_NORMAL        0x00
+#define DATA_LP_RAWDATA      0x0C
+#define DATA_LP_NOISE        0x0F
+#define DATA_ACT_IDLE_RAWDATA   0x0A
+#define DATA_ACT_IDLE_NOISE     0x0F
 #define DATA_LP_IDLE_RAWDATA 0x0A
-#define DATA_LP_IDLE_NOISE 0x0F
+#define DATA_LP_IDLE_NOISE   0x0F
 
-#define Data_PWD0 0xA5
-#define Data_PWD1 0x5A
+#define	Data_PWD0       0xA5
+#define	Data_PWD1       0x5A
 
-#define ASCII_LF (0x0A)
-#define ASCII_CR (0x0D)
-#define ASCII_COMMA (0x2C)
-#define ASCII_ZERO (0x30)
-#define CHAR_EL '\0'
-#define CHAR_NL '\n'
-#define ACSII_SPACE (0x20)
+#define ASCII_LF        (0x0A)
+#define ASCII_CR        (0x0D)
+#define ASCII_COMMA     (0x2C)
+#define ASCII_ZERO      (0x30)
+#define CHAR_EL         '\0'
+#define CHAR_NL         '\n'
+#define ACSII_SPACE     (0x20)
 
 void himax_inspection_init(void);
 extern int *g_test_item_flag;
@@ -100,19 +105,19 @@ extern int HX_CRITERIA_ITEM;
 extern int *g_test_item_flag;
 extern char *g_himax_inspection_mode[];
 
-#define addr_normal_noise_thx 0x1000708C
-#define addr_lpwug_noise_thx 0x10007090
-#define addr_noise_scale 0x10007094
-#define addr_recal_thx 0x10007090
-#define addr_palm_num 0x100070A8
-#define addr_weight_sup 0x100072C8
-#define addr_normal_weight_a 0x1000709C
-#define addr_lpwug_weight_a 0x100070A0
-#define addr_weight_b 0x10007094
-#define addr_max_dc 0x10007FC8
-#define addr_skip_frame 0x100070F4
-#define addr_neg_noise_sup 0x10007FD8
-#define data_neg_noise 0x7F0C0000
+#define addr_normal_noise_thx   0x1000708C
+#define addr_lpwug_noise_thx    0x10007090
+#define addr_noise_scale        0x10007094
+#define addr_recal_thx          0x10007090
+#define addr_palm_num           0x100070A8
+#define addr_weight_sup         0x100072C8
+#define addr_normal_weight_a    0x1000709C
+#define addr_lpwug_weight_a     0x100070A0
+#define addr_weight_b           0x10007094
+#define addr_max_dc             0x10007FC8
+#define addr_skip_frame         0x100070F4
+#define addr_neg_noise_sup      0x10007FD8
+#define data_neg_noise          0x7F0C0000
 
 enum THP_INSPECTION_ENUM {
 	HX_OPEN,
@@ -141,6 +146,7 @@ enum THP_INSPECTION_ENUM {
 
 	HX_BACK_NORMAL,
 };
+
 
 enum HX_CRITERIA_ENUM {
 	IDX_RAWMIN = 0,
@@ -209,7 +215,7 @@ enum HX_INSPT_SETTING_IDX {
 
 #define ERR_SFT 4
 enum HX_INSP_ERR_ENUM {
-	HX_INSP_OK = 0,
+	HX_INSP_OK	= 0,
 	HX_INSP_EFILE = 1,
 	HX_INSP_EGETRAW = 1 << 1,
 	HX_INSP_MEMALLCTFAIL = 1 << 2,
@@ -234,7 +240,7 @@ enum HX_INSP_ERR_ENUM {
 	HX_EACT_IDLE_BPNRAW = 1 << (HX_ACT_IDLE_BPN_RAWDATA + ERR_SFT),
 	HX_ELP_BPNRAW = 1 << (HX_LP_BPN_RAWDATA + ERR_SFT),
 	HX_ELP_IDLE_BPNRAW = 1 << (HX_LP_IDLE_BPN_RAWDATA + ERR_SFT),
-	HX_INSP_FAIL = -1,
+	HX_INSP_FAIL	= -1,
 };
 
 extern void himax_inspect_data_clear(void);

@@ -1,7 +1,6 @@
 #
 # Novatek NT36xxx touchscreen driver configuration
 #
-
 config TOUCHSCREEN_NT36xxx_HOSTDL_SPI
 	bool "Novatek NT36xxx host download SPI driver"
 	help

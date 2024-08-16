@@ -36,102 +36,115 @@ static char g_file_path[256];
 static char g_rslt_log[256];
 static char g_start_log[512];
 #define FAIL_IN_INDEX "%s: %s FAIL in index %d\n"
-#define FAIL_IN_INDEX_CRTRA "%s: %s FAIL in index %d,max=%d, min=%d, RAW=%d\n"
-char *g_hx_head_str[] = { "TP_Info", "Project_Info", "TestItem", "TestCriteria",
-			  NULL };
+#define FAIL_IN_INDEX_CRTRA \
+	"%s: %s FAIL in index %d,max=%d, min=%d, RAW=%d\n"
+char *g_hx_head_str[] = {
+	"TP_Info",
+	"Project_Info",
+	"TestItem",
+	"TestCriteria",
+	NULL
+};
 
-char *g_himax_inspection_mode[] = { "HIMAX_OPEN",
-				    "HIMAX_MICRO_OPEN",
-				    "HIMAX_SHORT",
-				    "HIMAX_SC",
-				    "HIMAX_WEIGHT_NOISE",
-				    "HIMAX_ABS_NOISE",
-				    "HIMAX_RAWDATA",
-				    "HIMAX_BPN_RAWDATA",
-				    "HIMAX_SORTING",
-				    "HIMAX_GAPTEST_RAW",
-				    "HIMAX_ACT_IDLE_NOISE",
-				    "HIMAX_ACT_IDLE_RAWDATA",
-				    "HIMAX_ACT_IDLE_BPN_RAWDATA",
+char *g_himax_inspection_mode[] = {
+	"HIMAX_OPEN",
+	"HIMAX_MICRO_OPEN",
+	"HIMAX_SHORT",
+	"HIMAX_SC",
+	"HIMAX_WEIGHT_NOISE",
+	"HIMAX_ABS_NOISE",
+	"HIMAX_RAWDATA",
+	"HIMAX_BPN_RAWDATA",
+	"HIMAX_SORTING",
+	"HIMAX_GAPTEST_RAW",
+	"HIMAX_ACT_IDLE_NOISE",
+	"HIMAX_ACT_IDLE_RAWDATA",
+	"HIMAX_ACT_IDLE_BPN_RAWDATA",
 
-				    "HIMAX_LPWUG_WEIGHT_NOISE",
-				    "HIMAX_LPWUG_ABS_NOISE",
-				    "HIMAX_LPWUG_RAWDATA",
-				    "HIMAX_LPWUG_BPN_RAWDATA",
+	"HIMAX_LPWUG_WEIGHT_NOISE",
+	"HIMAX_LPWUG_ABS_NOISE",
+	"HIMAX_LPWUG_RAWDATA",
+	"HIMAX_LPWUG_BPN_RAWDATA",
 
-				    "HIMAX_LPWUG_IDLE_NOISE",
-				    "HIMAX_LPWUG_IDLE_RAWDATA",
-				    "HIMAX_LPWUG_IDLE_BPN_RAWDATA",
+	"HIMAX_LPWUG_IDLE_NOISE",
+	"HIMAX_LPWUG_IDLE_RAWDATA",
+	"HIMAX_LPWUG_IDLE_BPN_RAWDATA",
 
-				    "HIMAX_BACK_NORMAL",
-				    NULL };
+	"HIMAX_BACK_NORMAL",
+	NULL
+};
 
-char *g_hx_inspt_crtra_name[] = { "CRITERIA_RAW_MIN",
-				  "CRITERIA_RAW_MAX",
-				  "CRITERIA_RAW_BPN_MIN",
-				  "CRITERIA_RAW_BPN_MAX",
-				  "CRITERIA_SC_MIN",
-				  "CRITERIA_SC_MAX",
-				  "CRITERIA_SC_GOLDEN",
-				  "CRITERIA_SHORT_MIN",
-				  "CRITERIA_SHORT_MAX",
-				  "CRITERIA_OPEN_MIN",
-				  "CRITERIA_OPEN_MAX",
-				  "CRITERIA_MICRO_OPEN_MIN",
-				  "CRITERIA_MICRO_OPEN_MAX",
-				  "CRITERIA_NOISE_WT_MIN",
-				  "CRITERIA_NOISE_WT_MAX",
-				  "CRITERIA_NOISE_ABS_MIN",
-				  "CRITERIA_NOISE_ABS_MAX",
-				  "CRITERIA_SORT_MIN",
-				  "CRITERIA_SORT_MAX",
+char *g_hx_inspt_crtra_name[] = {
+	"CRITERIA_RAW_MIN",
+	"CRITERIA_RAW_MAX",
+	"CRITERIA_RAW_BPN_MIN",
+	"CRITERIA_RAW_BPN_MAX",
+	"CRITERIA_SC_MIN",
+	"CRITERIA_SC_MAX",
+	"CRITERIA_SC_GOLDEN",
+	"CRITERIA_SHORT_MIN",
+	"CRITERIA_SHORT_MAX",
+	"CRITERIA_OPEN_MIN",
+	"CRITERIA_OPEN_MAX",
+	"CRITERIA_MICRO_OPEN_MIN",
+	"CRITERIA_MICRO_OPEN_MAX",
+	"CRITERIA_NOISE_WT_MIN",
+	"CRITERIA_NOISE_WT_MAX",
+	"CRITERIA_NOISE_ABS_MIN",
+	"CRITERIA_NOISE_ABS_MAX",
+	"CRITERIA_SORT_MIN",
+	"CRITERIA_SORT_MAX",
 
-				  "CRITERIA_GAP_RAW_HOR_MIN",
-				  "CRITERIA_GAP_RAW_HOR_MAX",
-				  "CRITERIA_GAP_RAW_VER_MIN",
-				  "CRITERIA_GAP_RAW_VER_MAX",
+	"CRITERIA_GAP_RAW_HOR_MIN",
+	"CRITERIA_GAP_RAW_HOR_MAX",
+	"CRITERIA_GAP_RAW_VER_MIN",
+	"CRITERIA_GAP_RAW_VER_MAX",
 
-				  "ACT_IDLE_NOISE_MIN",
-				  "ACT_IDLE_NOISE_MAX",
-				  "ACT_IDLE_RAWDATA_MIN",
-				  "ACT_IDLE_RAWDATA_MAX",
-				  "ACT_IDLE_RAW_BPN_MIN",
-				  "ACT_IDLE_RAW_BPN_MAX",
+	"ACT_IDLE_NOISE_MIN",
+	"ACT_IDLE_NOISE_MAX",
+	"ACT_IDLE_RAWDATA_MIN",
+	"ACT_IDLE_RAWDATA_MAX",
+	"ACT_IDLE_RAW_BPN_MIN",
+	"ACT_IDLE_RAW_BPN_MAX",
 
-				  "LPWUG_NOISE_WT_MIN",
-				  "LPWUG_NOISE_WT_MAX",
-				  "LPWUG_NOISE_ABS_MIN",
-				  "LPWUG_NOISE_ABS_MAX",
-				  "LPWUG_RAWDATA_MIN",
-				  "LPWUG_RAWDATA_MAX",
-				  "LPWUG_RAW_BPN_MIN",
-				  "LPWUG_RAW_BPN_MAX",
+	"LPWUG_NOISE_WT_MIN",
+	"LPWUG_NOISE_WT_MAX",
+	"LPWUG_NOISE_ABS_MIN",
+	"LPWUG_NOISE_ABS_MAX",
+	"LPWUG_RAWDATA_MIN",
+	"LPWUG_RAWDATA_MAX",
+	"LPWUG_RAW_BPN_MIN",
+	"LPWUG_RAW_BPN_MAX",
 
-				  "LPWUG_IDLE_NOISE_MIN",
-				  "LPWUG_IDLE_NOISE_MAX",
-				  "LPWUG_IDLE_RAWDATA_MIN",
-				  "LPWUG_IDLE_RAWDATA_MAX",
-				  "LPWUG_IDLE_RAW_BPN_MIN",
-				  "LPWUG_IDLE_RAW_BPN_MAX",
-				  NULL };
+	"LPWUG_IDLE_NOISE_MIN",
+	"LPWUG_IDLE_NOISE_MAX",
+	"LPWUG_IDLE_RAWDATA_MIN",
+	"LPWUG_IDLE_RAWDATA_MAX",
+	"LPWUG_IDLE_RAW_BPN_MIN",
+	"LPWUG_IDLE_RAW_BPN_MAX",
+	NULL
+};
 
-char *g_hx_inspt_setting_name[] = { "RAW_BS_FRAME",
-				    "NOISE_BS_FRAME",
-				    "ACT_IDLE_BS_FRAME",
-				    "LP_BS_FRAME",
-				    "LP_IDLE_BS_FRAME",
+char *g_hx_inspt_setting_name[] = {
+	"RAW_BS_FRAME",
+	"NOISE_BS_FRAME",
+	"ACT_IDLE_BS_FRAME",
+	"LP_BS_FRAME",
+	"LP_IDLE_BS_FRAME",
 
-				    "NORMAL_N_FRAME",
-				    "IDLE_N_FRAME",
-				    "LP_RAW_N_FRAME",
-				    "LP_NOISE_N_FRAME",
-				    "LP_IDLE_RAW_N_FRAME",
-				    "LP_IDLE_NOISE_N_FRAME",
-				    NULL };
+	"NORMAL_N_FRAME",
+	"IDLE_N_FRAME",
+	"LP_RAW_N_FRAME",
+	"LP_NOISE_N_FRAME",
+	"LP_IDLE_RAW_N_FRAME",
+	"LP_IDLE_NOISE_N_FRAME",
+	NULL
+};
 
 int *g_hx_inspt_setting_val;
 
 void (*fp_himax_self_test_init)(void) = himax_inspection_init;
+
 
 static void himax_press_powerkey(void)
 {
@@ -145,6 +158,7 @@ static void himax_press_powerkey(void)
 	input_report_key(private_ts->input_dev, KEY_POWER, 0);
 	input_sync(private_ts->input_dev);
 }
+
 
 static uint16_t NOISEMAX;
 static uint16_t g_recal_thx;
@@ -166,12 +180,12 @@ void himax_get_arraydata_edge(int *RAW)
 
 	for (i = 0; i < len; i++)
 		ArrayData[i] = RAW[i];
-	for (j = len - 1; j > 0; j--) {
+	for (j = len-1; j > 0; j--) {
 		for (i = 0; i < j; i++) {
-			if (ArrayData[i] > ArrayData[i + 1]) {
+			if (ArrayData[i] > ArrayData[i+1]) {
 				temp = ArrayData[i];
-				ArrayData[i] = ArrayData[i + 1];
-				ArrayData[i + 1] = temp;
+				ArrayData[i] = ArrayData[i+1];
+				ArrayData[i+1] = temp;
 			}
 		}
 	}
@@ -179,13 +193,14 @@ void himax_get_arraydata_edge(int *RAW)
 	arraydata_min1 = ArrayData[0];
 	arraydata_min2 = ArrayData[1];
 	arraydata_min3 = ArrayData[2];
-	arraydata_max1 = ArrayData[len - 3];
-	arraydata_max2 = ArrayData[len - 2];
-	arraydata_max3 = ArrayData[len - 1];
+	arraydata_max1 = ArrayData[len-3];
+	arraydata_max2 = ArrayData[len-2];
+	arraydata_max3 = ArrayData[len-1];
+
 }
 
 static int hx_test_data_get(int RAW[], char *start_log, char *result,
-			    int now_item)
+			 int now_item)
 {
 	uint32_t i;
 
@@ -194,7 +209,7 @@ static int hx_test_data_get(int RAW[], char *start_log, char *result,
 	uint32_t SZ_SIZE = g_1kind_raw_size;
 
 	I("%s: Entering, Now type=%s!\n", __func__,
-	  g_himax_inspection_mode[now_item]);
+		 g_himax_inspection_mode[now_item]);
 
 	testdata = kzalloc(sizeof(char) * SZ_SIZE, GFP_KERNEL);
 	if (testdata == NULL) {
@@ -203,13 +218,13 @@ static int hx_test_data_get(int RAW[], char *start_log, char *result,
 	}
 
 	len += snprintf((testdata + len), SZ_SIZE - len, "%s", start_log);
-	for (i = 0; i < ic_data->HX_TX_NUM * ic_data->HX_RX_NUM; i++) {
+	for (i = 0; i < ic_data->HX_TX_NUM*ic_data->HX_RX_NUM; i++) {
 		if (i > 1 && ((i + 1) % ic_data->HX_RX_NUM) == 0)
 			len += snprintf((testdata + len), SZ_SIZE - len,
-					"%5d,\n", RAW[i]);
+				 "%5d,\n", RAW[i]);
 		else
-			len += snprintf((testdata + len), SZ_SIZE - len, "%5d,",
-					RAW[i]);
+			len += snprintf((testdata + len), SZ_SIZE - len,
+				 "%5d,", RAW[i]);
 	}
 	len += snprintf((testdata + len), SZ_SIZE - len, "\n%s", result);
 
@@ -225,38 +240,34 @@ static int hx_test_data_get(int RAW[], char *start_log, char *result,
 static int himax_switch_mode_inspection(int mode)
 {
 	uint8_t tmp_addr[4];
-	uint8_t tmp_data[4] = { 0 };
+	uint8_t tmp_data[4] = {0};
 
 	I("%s: Entering\n", __func__);
 
 	/*Stop Handshaking*/
 	himax_parse_assign_cmd(sram_adr_rawdata_addr, tmp_addr,
-			       sizeof(tmp_addr));
+			sizeof(tmp_addr));
 	g_core_fp.fp_register_write(tmp_addr, tmp_data, 4);
 
 	/*Swtich Mode*/
 	switch (mode) {
 	case HX_SORTING:
-		tmp_data[3] = 0x00;
-		tmp_data[2] = 0x00;
+		tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 		tmp_data[1] = PWD_SORTING_START;
 		tmp_data[0] = PWD_SORTING_START;
 		break;
 	case HX_OPEN:
-		tmp_data[3] = 0x00;
-		tmp_data[2] = 0x00;
+		tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 		tmp_data[1] = PWD_OPEN_START;
 		tmp_data[0] = PWD_OPEN_START;
 		break;
 	case HX_MICRO_OPEN:
-		tmp_data[3] = 0x00;
-		tmp_data[2] = 0x00;
+		tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 		tmp_data[1] = PWD_OPEN_START;
 		tmp_data[0] = PWD_OPEN_START;
 		break;
 	case HX_SHORT:
-		tmp_data[3] = 0x00;
-		tmp_data[2] = 0x00;
+		tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 		tmp_data[1] = PWD_SHORT_START;
 		tmp_data[0] = PWD_SHORT_START;
 		break;
@@ -265,16 +276,14 @@ static int himax_switch_mode_inspection(int mode)
 	case HX_RAWDATA:
 	case HX_BPN_RAWDATA:
 	case HX_SC:
-		tmp_data[3] = 0x00;
-		tmp_data[2] = 0x00;
+		tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 		tmp_data[1] = PWD_RAWDATA_START;
 		tmp_data[0] = PWD_RAWDATA_START;
 		break;
 
 	case HX_WT_NOISE:
 	case HX_ABS_NOISE:
-		tmp_data[3] = 0x00;
-		tmp_data[2] = 0x00;
+		tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 		tmp_data[1] = PWD_NOISE_START;
 		tmp_data[0] = PWD_NOISE_START;
 		break;
@@ -282,8 +291,7 @@ static int himax_switch_mode_inspection(int mode)
 	case HX_ACT_IDLE_RAWDATA:
 	case HX_ACT_IDLE_BPN_RAWDATA:
 	case HX_ACT_IDLE_NOISE:
-		tmp_data[3] = 0x00;
-		tmp_data[2] = 0x00;
+		tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 		tmp_data[1] = PWD_ACT_IDLE_START;
 		tmp_data[0] = PWD_ACT_IDLE_START;
 		break;
@@ -292,16 +300,14 @@ static int himax_switch_mode_inspection(int mode)
 	case HX_LP_BPN_RAWDATA:
 	case HX_LP_ABS_NOISE:
 	case HX_LP_WT_NOISE:
-		tmp_data[3] = 0x00;
-		tmp_data[2] = 0x00;
+		tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 		tmp_data[1] = PWD_LP_START;
 		tmp_data[0] = PWD_LP_START;
 		break;
 	case HX_LP_IDLE_RAWDATA:
 	case HX_LP_IDLE_BPN_RAWDATA:
 	case HX_LP_IDLE_NOISE:
-		tmp_data[3] = 0x00;
-		tmp_data[2] = 0x00;
+		tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 		tmp_data[1] = PWD_LP_IDLE_START;
 		tmp_data[0] = PWD_LP_IDLE_START;
 		break;
@@ -316,6 +322,7 @@ static int himax_switch_mode_inspection(int mode)
 	I("%s: End of setting!\n", __func__);
 
 	return 0;
+
 }
 
 static void himax_raw_data_dbg(int RAW[])
@@ -357,6 +364,7 @@ static void himax_raw_data_dbg(int RAW[])
 			PI(", %2d", RAW[index]);
 		index++;
 	}
+
 }
 
 static uint32_t himax_get_rawdata(int RAW[], uint32_t len, uint8_t checktype)
@@ -379,16 +387,17 @@ static uint32_t himax_get_rawdata(int RAW[], uint32_t len, uint8_t checktype)
 
 	/* Copy Data*/
 	for (i = 0; i < len; i++) {
-		if (checktype == HX_WT_NOISE || checktype == HX_ABS_NOISE ||
-		    checktype == HX_ACT_IDLE_NOISE ||
-		    checktype == HX_LP_WT_NOISE ||
-		    checktype == HX_LP_ABS_NOISE ||
-		    checktype == HX_LP_IDLE_NOISE)
-			RAW[i] = ((int8_t)tmp_rawdata[(i * 2) + 1] << 8) +
-				 tmp_rawdata[(i * 2)];
+		if (checktype == HX_WT_NOISE ||
+			checktype == HX_ABS_NOISE ||
+			checktype == HX_ACT_IDLE_NOISE ||
+			checktype == HX_LP_WT_NOISE ||
+			checktype == HX_LP_ABS_NOISE ||
+			checktype == HX_LP_IDLE_NOISE)
+			RAW[i] = ((int8_t)tmp_rawdata[(i * 2) + 1]<<8) +
+				tmp_rawdata[(i * 2)];
 		else
-			RAW[i] = tmp_rawdata[(i * 2) + 1] << 8 |
-				 tmp_rawdata[(i * 2)];
+			RAW[i] = tmp_rawdata[(i * 2) + 1]<<8 |
+				tmp_rawdata[(i * 2)];
 
 		if (i < (len - ic_data->HX_RX_NUM - ic_data->HX_TX_NUM)) {
 			if (i == 0)
@@ -411,6 +420,7 @@ DIRECT_END:
 		return HX_INSP_OK;
 	else
 		return HX_INSP_EGETRAW;
+
 }
 
 static void himax_switch_data_type(uint8_t checktype)
@@ -418,8 +428,9 @@ static void himax_switch_data_type(uint8_t checktype)
 	uint8_t datatype = 0x00;
 
 	if (private_ts->debug_log_level & BIT(4)) {
-		I("%s,Expected type[%d]=%s", __func__, checktype,
-		  g_himax_inspection_mode[checktype]);
+		I("%s,Expected type[%d]=%s"
+			, __func__
+			, checktype, g_himax_inspection_mode[checktype]);
 	}
 	switch (checktype) {
 	case HX_SORTING:
@@ -534,7 +545,8 @@ static void himax_bank_search_set(uint16_t Nframe, uint8_t checktype)
 		break;
 	}
 	if (private_ts->debug_log_level & BIT(4)) {
-		I("%s,Now BankSearch Value=%d\n", __func__, tmp_data[0]);
+		I("%s,Now BankSearch Value=%d\n",
+			__func__, tmp_data[0]);
 	}
 	g_core_fp.fp_register_write(tmp_addr, tmp_data, 4);
 }
@@ -545,14 +557,14 @@ static void himax_neg_noise_sup(uint8_t *data)
 	uint8_t tmp_data[4];
 
 	/*0x10007FD8 Check support negative value or not */
-	himax_parse_assign_cmd(addr_neg_noise_sup, tmp_addr, sizeof(tmp_addr));
+	himax_parse_assign_cmd(addr_neg_noise_sup, tmp_addr,
+		sizeof(tmp_addr));
 	g_core_fp.fp_register_read(tmp_addr, tmp_data, 4);
 
 	if ((tmp_data[3] & 0x04) == 0x04) {
 		himax_parse_assign_cmd(data_neg_noise, tmp_data,
-				       sizeof(tmp_data));
-		data[2] = tmp_data[2];
-		data[3] = tmp_data[3];
+			sizeof(tmp_data));
+		data[2] = tmp_data[2]; data[3] = tmp_data[3];
 	} else
 		I("%s Not support negative noise\n", __func__);
 }
@@ -565,20 +577,21 @@ static void himax_set_N_frame(uint16_t Nframe, uint8_t checktype)
 	himax_bank_search_set(Nframe, checktype);
 
 	/*IIR MAX - 0x10007294*/
-	himax_parse_assign_cmd(fw_addr_set_frame_addr, tmp_addr,
-			       sizeof(tmp_addr));
-	tmp_data[3] = 0x00;
-	tmp_data[2] = 0x00;
+	himax_parse_assign_cmd(fw_addr_set_frame_addr,
+			tmp_addr, sizeof(tmp_addr));
+	tmp_data[3] = 0x00; tmp_data[2] = 0x00;
 	tmp_data[1] = (uint8_t)((Nframe & 0xFF00) >> 8);
 	tmp_data[0] = (uint8_t)(Nframe & 0x00FF);
 	g_core_fp.fp_register_write(tmp_addr, tmp_data, 4);
 
-	if (checktype == HX_WT_NOISE || checktype == HX_ABS_NOISE ||
-	    checktype == HX_LP_WT_NOISE || checktype == HX_LP_ABS_NOISE)
+	if (checktype == HX_WT_NOISE ||
+		checktype == HX_ABS_NOISE ||
+		checktype == HX_LP_WT_NOISE ||
+		checktype == HX_LP_ABS_NOISE)
 		himax_neg_noise_sup(tmp_data);
 	if (private_ts->debug_log_level & BIT(4)) {
-		I("%s,Now N frame Value=0x%02X%02X\n", __func__, tmp_data[1],
-		  tmp_data[0]);
+		I("%s,Now N frame Value=0x%02X%02X\n",
+			__func__, tmp_data[1], tmp_data[0]);
 	}
 	g_core_fp.fp_register_write(tmp_addr, tmp_data, 4);
 }
@@ -592,19 +605,20 @@ static void himax_get_noise_base(uint8_t checktype)
 
 	switch (checktype) {
 	case HX_WT_NOISE:
-		himax_parse_assign_cmd(addr_normal_noise_thx, tmp_addr,
-				       sizeof(tmp_addr));
+		himax_parse_assign_cmd(addr_normal_noise_thx,
+				tmp_addr, sizeof(tmp_addr));
 		break;
 	case HX_LP_WT_NOISE:
-		himax_parse_assign_cmd(addr_lpwug_noise_thx, tmp_addr,
-				       sizeof(tmp_addr));
+		himax_parse_assign_cmd(addr_lpwug_noise_thx,
+				tmp_addr, sizeof(tmp_addr));
 		break;
 	default:
 		I("%s Not support type\n", __func__);
 	}
-	himax_parse_assign_cmd(addr_noise_scale, tmp_addr2, sizeof(tmp_addr2));
+	himax_parse_assign_cmd(addr_noise_scale,
+			tmp_addr2, sizeof(tmp_addr2));
 	g_core_fp.fp_register_read(tmp_addr2, tmp_data2, 4);
-	tmp_data2[1] = tmp_data2[1] >> 4;
+	tmp_data2[1] = tmp_data2[1]>>4;
 	if (tmp_data2[1] == 0)
 		tmp_data2[1] = 1;
 
@@ -612,11 +626,12 @@ static void himax_get_noise_base(uint8_t checktype)
 	g_core_fp.fp_register_read(tmp_addr, tmp_data, 4);
 	NOISEMAX = tmp_data[3] * tmp_data2[1];
 
-	himax_parse_assign_cmd(addr_recal_thx, tmp_addr, sizeof(tmp_addr));
+	himax_parse_assign_cmd(addr_recal_thx,
+			tmp_addr, sizeof(tmp_addr));
 	g_core_fp.fp_register_read(tmp_addr, tmp_data, 4);
 	g_recal_thx = tmp_data[2] * tmp_data2[1];
-	I("%s: NOISEMAX = %d, g_recal_thx = %d\n", __func__, NOISEMAX,
-	  g_recal_thx);
+	I("%s: NOISEMAX = %d, g_recal_thx = %d\n", __func__,
+		NOISEMAX, g_recal_thx);
 }
 
 static uint16_t himax_get_palm_num(void)
@@ -624,7 +639,8 @@ static uint16_t himax_get_palm_num(void)
 	uint8_t tmp_addr[4];
 	uint8_t tmp_data[4];
 	uint16_t palm_num;
-	himax_parse_assign_cmd(addr_palm_num, tmp_addr, sizeof(tmp_addr));
+	himax_parse_assign_cmd(addr_palm_num,
+			tmp_addr, sizeof(tmp_addr));
 	g_core_fp.fp_register_read(tmp_addr, tmp_data, 4);
 	palm_num = tmp_data[3];
 	I("%s: palm_num = %d ", __func__, palm_num);
@@ -639,7 +655,8 @@ static int himax_get_noise_weight_test(uint8_t checktype)
 	uint16_t weight = 0;
 	uint16_t value = 0;
 
-	himax_parse_assign_cmd(addr_weight_sup, tmp_addr, sizeof(tmp_addr));
+	himax_parse_assign_cmd(addr_weight_sup,
+			tmp_addr, sizeof(tmp_addr));
 
 	/*0x100072C8 weighting value*/
 	g_core_fp.fp_register_read(tmp_addr, tmp_data, 4);
@@ -651,12 +668,12 @@ static int himax_get_noise_weight_test(uint8_t checktype)
 
 	switch (checktype) {
 	case HX_WT_NOISE:
-		himax_parse_assign_cmd(addr_normal_weight_a, tmp_addr,
-				       sizeof(tmp_addr));
+		himax_parse_assign_cmd(addr_normal_weight_a,
+				tmp_addr, sizeof(tmp_addr));
 		break;
 	case HX_LP_WT_NOISE:
-		himax_parse_assign_cmd(addr_lpwug_weight_a, tmp_addr,
-				       sizeof(tmp_addr));
+		himax_parse_assign_cmd(addr_lpwug_weight_a,
+				tmp_addr, sizeof(tmp_addr));
 		break;
 	default:
 		I("%s Not support type\n", __func__);
@@ -668,7 +685,7 @@ static int himax_get_noise_weight_test(uint8_t checktype)
 
 	himax_parse_assign_cmd(addr_weight_b, tmp_addr, sizeof(tmp_addr));
 	g_core_fp.fp_register_read(tmp_addr, tmp_data, 4);
-	tmp_data[1] = tmp_data[1] & 0x0F;
+	tmp_data[1] = tmp_data[1]&0x0F;
 	if (tmp_data[1] == 0)
 		tmp_data[1] = 1;
 	weight = tmp_data[1] * weight;
@@ -683,8 +700,8 @@ static int himax_get_noise_weight_test(uint8_t checktype)
 static uint32_t himax_check_mode(uint8_t checktype)
 {
 	int ret = 0;
-	uint8_t tmp_data[4] = { 0 };
-	uint8_t wait_pwd[2] = { 0 };
+	uint8_t tmp_data[4] = {0};
+	uint8_t wait_pwd[2] = {0};
 
 	switch (checktype) {
 	case HX_SORTING:
@@ -750,22 +767,23 @@ static uint32_t himax_check_mode(uint8_t checktype)
 	}
 
 	if ((wait_pwd[0] == tmp_data[0]) && (wait_pwd[1] == tmp_data[1])) {
-		I("%s,It had been changed to [%d]=%s\n", __func__, checktype,
-		  g_himax_inspection_mode[checktype]);
+		I("%s,It had been changed to [%d]=%s\n",
+			__func__,
+			checktype, g_himax_inspection_mode[checktype]);
 		return NO_ERR;
 	} else {
 		return 1;
 	}
 }
 
-#define TEMP_LOG                                                               \
-	"%s:%s,tmp_data[0]=%x,tmp_data[1]=%x,tmp_data[2]=%x,tmp_data[3]=%x\n"
+#define TEMP_LOG \
+"%s:%s,tmp_data[0]=%x,tmp_data[1]=%x,tmp_data[2]=%x,tmp_data[3]=%x\n"
 
 static uint32_t himax_wait_sorting_mode(uint8_t checktype)
 {
-	uint8_t tmp_addr[4] = { 0 };
-	uint8_t tmp_data[4] = { 0 };
-	uint8_t wait_pwd[2] = { 0 };
+	uint8_t tmp_addr[4] = {0};
+	uint8_t tmp_data[4] = {0};
+	uint8_t wait_pwd[2] = {0};
 	int count = 0;
 
 	if (private_ts->debug_log_level & BIT(4))
@@ -825,8 +843,9 @@ static uint32_t himax_wait_sorting_mode(uint8_t checktype)
 		I("No Change Mode and now type=%d\n", checktype);
 		break;
 	}
-	I("%s:NowType[%d] = %s, Expected=0x%02X%02X\n", __func__, checktype,
-	  g_himax_inspection_mode[checktype], wait_pwd[1], wait_pwd[0]);
+	I("%s:NowType[%d] = %s, Expected=0x%02X%02X\n",
+		__func__, checktype, g_himax_inspection_mode[checktype],
+		 wait_pwd[1], wait_pwd[0]);
 	do {
 		if (private_ts->debug_log_level & BIT(4))
 			I("%s:start check_sorting_mode!\n", __func__);
@@ -835,26 +854,29 @@ static uint32_t himax_wait_sorting_mode(uint8_t checktype)
 		if (private_ts->debug_log_level & BIT(4))
 			I("%s:end check_sorting_mode!\n", __func__);
 		if ((wait_pwd[0] == tmp_data[0]) &&
-		    (wait_pwd[1] == tmp_data[1]))
+			(wait_pwd[1] == tmp_data[1]))
 			return HX_INSP_OK;
 		if (private_ts->debug_log_level & BIT(4)) {
-			himax_parse_assign_cmd(fw_addr_chk_fw_status, tmp_addr,
-					       sizeof(tmp_addr));
+			himax_parse_assign_cmd(fw_addr_chk_fw_status,
+					tmp_addr, sizeof(tmp_addr));
 			g_core_fp.fp_register_read(tmp_addr, tmp_data, 4);
-			I(TEMP_LOG, __func__, "0x900000A8", tmp_data[0],
-			  tmp_data[1], tmp_data[2], tmp_data[3]);
+			I(TEMP_LOG, __func__, "0x900000A8",
+				tmp_data[0], tmp_data[1],
+				tmp_data[2], tmp_data[3]);
 
 			himax_parse_assign_cmd(fw_addr_flag_reset_event,
-					       tmp_addr, sizeof(tmp_addr));
+					tmp_addr, sizeof(tmp_addr));
 			g_core_fp.fp_register_read(tmp_addr, tmp_data, 4);
-			I(TEMP_LOG, __func__, "0x900000E4", tmp_data[0],
-			  tmp_data[1], tmp_data[2], tmp_data[3]);
+			I(TEMP_LOG, __func__, "0x900000E4",
+				tmp_data[0], tmp_data[1],
+				tmp_data[2], tmp_data[3]);
 
 			himax_parse_assign_cmd(fw_addr_fw_dbg_msg_addr,
-					       tmp_addr, sizeof(tmp_addr));
+					tmp_addr, sizeof(tmp_addr));
 			g_core_fp.fp_register_read(tmp_addr, tmp_data, 4);
-			I(TEMP_LOG, __func__, "0x10007F40", tmp_data[0],
-			  tmp_data[1], tmp_data[2], tmp_data[3]);
+			I(TEMP_LOG, __func__, "0x10007F40",
+				tmp_data[0], tmp_data[1],
+				tmp_data[2], tmp_data[3]);
 
 			I("Now retry %d times!\n", count);
 		}
@@ -877,27 +899,26 @@ static int himax_gap_test_vertical_setting(void)
 }
 
 static void himax_cal_gap_data_vertical(int start, int end_idx, int direct,
-					uint32_t *org_raw, uint32_t *result_raw)
+		uint32_t *org_raw, uint32_t *result_raw)
 {
 	int i = 0;
 	int rx_num = ic_data->HX_RX_NUM;
 
 	I("%s:start=%d,end_idx=%d\n", __func__, start, end_idx);
 
-	for (i = start; i < (start + rx_num * end_idx); i++) {
+	for (i = start; i < (start + rx_num*end_idx); i++) {
 		if (direct == 0) {
-			if (i < start + rx_num)
+			if (i < start+rx_num)
 				result_raw[i] = 0;
 			else
-				result_raw[i] =
-					org_raw[i - rx_num] - org_raw[i];
+				result_raw[i] = org_raw[i-rx_num] - org_raw[i];
 
 		} else {
-			if (i > (start + rx_num * (end_idx - 1) - 1))
+			if (i > (start + rx_num*(end_idx-1)-1))
 				result_raw[i] = 0;
 			else
-				result_raw[i] =
-					org_raw[i + rx_num] - org_raw[i];
+				result_raw[i] = org_raw[i+rx_num] - org_raw[i];
+
 		}
 	}
 }
@@ -914,14 +935,14 @@ static int himax_gap_test_vertical_raw(int test_type, int *org_raw)
 	int tx_num = ic_data->HX_TX_NUM;
 	int rx_num = ic_data->HX_RX_NUM;
 
-	g_gap_vertical_part =
-		kcalloc(g_gap_vertical_partial, sizeof(int), GFP_KERNEL);
+	g_gap_vertical_part = kcalloc(g_gap_vertical_partial,
+		sizeof(int), GFP_KERNEL);
 	if (g_gap_vertical_part == NULL) {
 		E("%s: Memory allocation falied!\n", __func__);
 		return MEM_ALLOC_FAIL;
 	}
 
-	result_raw = kcalloc(tx_num * rx_num, sizeof(uint32_t), GFP_KERNEL);
+	result_raw = kcalloc(tx_num*rx_num, sizeof(uint32_t), GFP_KERNEL);
 	if (result_raw == NULL) {
 		E("%s: Memory allocation falied!\n", __func__);
 		ret_val = MEM_ALLOC_FAIL;
@@ -931,40 +952,41 @@ static int himax_gap_test_vertical_raw(int test_type, int *org_raw)
 	himax_gap_test_vertical_setting();
 
 	I("Print vertical ORG RAW\n");
-	for (i = 0; i < tx_num * rx_num; i++) {
+	for (i = 0; i < tx_num*rx_num; i++) {
 		I("%04d,", org_raw[i]);
-		if (i > 0 && i % rx_num == (rx_num - 1))
+		if (i > 0 && i%rx_num == (rx_num-1))
 			I("\n");
 	}
 
 	for (i_partial = 0; i_partial < g_gap_vertical_partial; i_partial++) {
-		tmp_start = g_gap_vertical_part[i_partial] * rx_num;
-		if (i_partial + 1 == g_gap_vertical_partial)
+
+		tmp_start = g_gap_vertical_part[i_partial]*rx_num;
+		if (i_partial+1 == g_gap_vertical_partial)
 			tmp_end_idx = tx_num - g_gap_vertical_part[i_partial];
 		else
-			tmp_end_idx = g_gap_vertical_part[i_partial + 1] -
-				      g_gap_vertical_part[i_partial];
+			tmp_end_idx = g_gap_vertical_part[i_partial+1] -
+				 g_gap_vertical_part[i_partial];
 
 		if (i_partial % 2 == 0)
 			himax_cal_gap_data_vertical(tmp_start, tmp_end_idx, 0,
-						    org_raw, result_raw);
+						org_raw, result_raw);
 		else
 			himax_cal_gap_data_vertical(tmp_start, tmp_end_idx, 1,
-						    org_raw, result_raw);
+						org_raw, result_raw);
+
 	}
 
 	I("Print Vertical New RAW\n");
-	for (i = 0; i < tx_num * rx_num; i++) {
+	for (i = 0; i < tx_num*rx_num; i++) {
 		I("%04d,", result_raw[i]);
-		if (i > 0 && i % rx_num == (rx_num - 1))
+		if (i > 0 && i%rx_num == (rx_num-1))
 			I("\n");
 	}
 
-	for (i = 0; i < tx_num * rx_num; i++) {
-		if (result_raw[i] <
-			    g_inspection_criteria[IDX_GAP_VER_RAWMIN][i] &&
-		    result_raw[i] >
-			    g_inspection_criteria[IDX_GAP_VER_RAWMAX][i]) {
+	for (i = 0; i < tx_num*rx_num; i++) {
+		if (result_raw[i] < g_inspection_criteria[IDX_GAP_VER_RAWMIN][i]
+		 &&
+		 result_raw[i] > g_inspection_criteria[IDX_GAP_VER_RAWMAX][i]) {
 			ret_val = NO_ERR - i;
 			break;
 		}
@@ -988,8 +1010,7 @@ static int himax_gap_test_horizontal_setting(void)
 }
 
 static void himax_cal_gap_data_horizontal(int start, int end_idx, int direct,
-					  uint32_t *org_raw,
-					  uint32_t *result_raw)
+		uint32_t *org_raw, uint32_t *result_raw)
 {
 	int i = 0;
 	int j = 0;
@@ -999,18 +1020,18 @@ static void himax_cal_gap_data_horizontal(int start, int end_idx, int direct,
 	I("start=%d,end_idx=%d\n", start, end_idx);
 
 	for (j = 0; j < tx_num; j++) {
-		for (i = (start + (j * rx_num));
-		     i < (start + (j * rx_num) + end_idx); i++) {
+		for (i = (start + (j*rx_num));
+			i < (start + (j*rx_num) + end_idx); i++) {
 			/* left - right */
 			if (direct == 0) {
-				if (i == (start + (j * rx_num)))
+				if (i == (start + (j*rx_num)))
 					result_raw[i] = 0;
 				else
 					result_raw[i] =
-						org_raw[i - 1] - org_raw[i];
+						org_raw[i-1] - org_raw[i];
 
 			} else {
-				if (i == ((start + (j * rx_num) + end_idx) - 1))
+				if (i == ((start + (j*rx_num) + end_idx) - 1))
 					result_raw[i] = 0;
 				else
 					result_raw[i] =
@@ -1031,14 +1052,14 @@ static int himax_gap_test_honrizontal_raw(int test_type, int *raw)
 	int i = 0;
 	int ret_val = NO_ERR;
 
-	g_gap_horizontal_part =
-		kcalloc(g_gap_horizontal_partial, sizeof(int), GFP_KERNEL);
+	g_gap_horizontal_part = kcalloc(g_gap_horizontal_partial,
+		sizeof(int), GFP_KERNEL);
 	if (g_gap_horizontal_part == NULL) {
 		E("%s: Memory allocation falied!\n", __func__);
 		return MEM_ALLOC_FAIL;
 	}
 
-	result_raw = kcalloc(tx_num * rx_num, sizeof(int), GFP_KERNEL);
+	result_raw = kcalloc(tx_num*rx_num, sizeof(int), GFP_KERNEL);
 	if (result_raw == NULL) {
 		E("%s: Memory allocation falied!\n", __func__);
 		ret_val = MEM_ALLOC_FAIL;
@@ -1048,39 +1069,41 @@ static int himax_gap_test_honrizontal_raw(int test_type, int *raw)
 	himax_gap_test_horizontal_setting();
 
 	I("Print Horizontal ORG RAW\n");
-	for (i = 0; i < tx_num * rx_num; i++) {
+	for (i = 0; i < tx_num*rx_num; i++) {
 		I("%04d,", raw[i]);
-		if (i > 0 && i % rx_num == (rx_num - 1))
+		if (i > 0 && i%rx_num == (rx_num-1))
 			I("\n");
 	}
 
-	for (i_partial = 0; i_partial < g_gap_horizontal_partial; i_partial++) {
-		tmp_start = g_gap_horizontal_part[i_partial];
-		if (i_partial + 1 == g_gap_horizontal_partial)
+	for (i_partial = 0;
+	i_partial < g_gap_horizontal_partial;
+	i_partial++) {
+		tmp_start	= g_gap_horizontal_part[i_partial];
+		if (i_partial+1 == g_gap_horizontal_partial)
 			tmp_end_idx = rx_num - g_gap_horizontal_part[i_partial];
 		else
-			tmp_end_idx = g_gap_horizontal_part[i_partial + 1] -
-				      g_gap_horizontal_part[i_partial];
+			tmp_end_idx = g_gap_horizontal_part[i_partial+1] -
+				g_gap_horizontal_part[i_partial];
 
 		if (i_partial % 2 == 0)
-			himax_cal_gap_data_horizontal(tmp_start, tmp_end_idx, 0,
-						      raw, result_raw);
+			himax_cal_gap_data_horizontal(tmp_start, tmp_end_idx,
+						0, raw, result_raw);
 		else
-			himax_cal_gap_data_horizontal(tmp_start, tmp_end_idx, 1,
-						      raw, result_raw);
+			himax_cal_gap_data_horizontal(tmp_start, tmp_end_idx,
+						1, raw, result_raw);
+
 	}
 	I("Print Horizontal New RAW\n");
-	for (i = 0; i < tx_num * rx_num; i++) {
+	for (i = 0; i < tx_num*rx_num; i++) {
 		I("%04d,", result_raw[i]);
-		if (i > 0 && i % rx_num == (rx_num - 1))
+		if (i > 0 && i%rx_num == (rx_num-1))
 			I("\n");
 	}
 
-	for (i = 0; i < tx_num * rx_num; i++) {
-		if (result_raw[i] <
-			    g_inspection_criteria[IDX_GAP_HOR_RAWMIN][i] &&
-		    result_raw[i] >
-			    g_inspection_criteria[IDX_GAP_HOR_RAWMAX][i]) {
+	for (i = 0; i < tx_num*rx_num; i++) {
+		if (result_raw[i] < g_inspection_criteria[IDX_GAP_HOR_RAWMIN][i]
+		&&
+		result_raw[i] > g_inspection_criteria[IDX_GAP_HOR_RAWMAX][i]) {
 			ret_val = NO_ERR - i;
 			break;
 		}
@@ -1094,12 +1117,13 @@ alloc_result_raw_failed:
 	return ret_val;
 }
 
-static uint32_t himax_data_compare(uint8_t checktype, int *RAW, int ret_val)
+static uint32_t himax_data_compare(uint8_t checktype, int *RAW,
+		int ret_val)
 {
 	int i = 0;
 	int idx_max = 0;
 	int idx_min = 0;
-	int block_num = ic_data->HX_TX_NUM * ic_data->HX_RX_NUM;
+	int block_num = ic_data->HX_TX_NUM*ic_data->HX_RX_NUM;
 	uint16_t palm_num = 0;
 	uint16_t noise_count = 0;
 
@@ -1216,9 +1240,9 @@ static uint32_t himax_data_compare(uint8_t checktype, int *RAW, int ret_val)
 		break;
 	case HX_SC:
 		for (i = 0; i < block_num; i++) {
-			RAW[i] = ((int)RAW[i] -
-				  g_inspection_criteria[IDX_SC_GOLDEN][i]) *
-				 100 / g_inspection_criteria[IDX_SC_GOLDEN][i];
+			RAW[i] = ((int)RAW[i]
+				- g_inspection_criteria[IDX_SC_GOLDEN][i])
+				* 100 / g_inspection_criteria[IDX_SC_GOLDEN][i];
 		}
 		break;
 	}
@@ -1226,14 +1250,14 @@ static uint32_t himax_data_compare(uint8_t checktype, int *RAW, int ret_val)
 	/*data campare*/
 	switch (checktype) {
 	case HX_GAPTEST_RAW:
-		if (himax_gap_test_vertical_raw(HX_GAPTEST_RAW, RAW) !=
-		    NO_ERR) {
+		if (
+		himax_gap_test_vertical_raw(HX_GAPTEST_RAW, RAW) != NO_ERR) {
 			E("%s: HX_GAPTEST_RAW FAIL\n", __func__);
 			ret_val |= 1 << (checktype + ERR_SFT);
 			break;
 		}
-		if (himax_gap_test_honrizontal_raw(HX_GAPTEST_RAW, RAW) !=
-		    NO_ERR) {
+		if (himax_gap_test_honrizontal_raw(HX_GAPTEST_RAW, RAW)
+		!= NO_ERR) {
 			E("%s: HX_GAPTEST_RAW FAIL\n", __func__);
 			ret_val |= 1 << (checktype + ERR_SFT);
 			break;
@@ -1246,7 +1270,7 @@ static uint32_t himax_data_compare(uint8_t checktype, int *RAW, int ret_val)
 		himax_get_noise_base(checktype);
 		palm_num = himax_get_palm_num();
 		for (i = 0; i < (ic_data->HX_TX_NUM * ic_data->HX_RX_NUM);
-		     i++) {
+		i++) {
 			if ((int)RAW[i] > NOISEMAX)
 				noise_count++;
 		}
@@ -1257,23 +1281,25 @@ static uint32_t himax_data_compare(uint8_t checktype, int *RAW, int ret_val)
 			break;
 		}
 		snprintf(g_start_log, 256 * sizeof(char), "\n Threshold = %d\n",
-			 NOISEMAX);
+				NOISEMAX);
 		/*Check weightingt*/
 		if (himax_get_noise_weight_test(checktype) < 0) {
 			I("%s: %s FAIL %X\n", __func__,
-			  g_himax_inspection_mode[checktype], ret_val);
+				g_himax_inspection_mode[checktype], ret_val);
 			ret_val |= 1 << (checktype + ERR_SFT);
 			break;
 		}
 
 		/*Check negative side noise*/
 		for (i = 0; i < block_num; i++) {
-			if ((int)RAW[i] > (g_inspection_criteria[idx_max][i] *
-					   NOISEMAX / 100) ||
-			    (int)RAW[i] < (g_inspection_criteria[idx_min][i] *
-					   g_recal_thx / 100)) {
+			if ((int)RAW[i]
+			> (g_inspection_criteria[idx_max][i]
+			* NOISEMAX / 100)
+			|| (int)RAW[i]
+			< (g_inspection_criteria[idx_min][i]
+			* g_recal_thx / 100)) {
 				E(FAIL_IN_INDEX, __func__,
-				  g_himax_inspection_mode[checktype], i);
+					g_himax_inspection_mode[checktype], i);
 				ret_val |= 1 << (checktype + ERR_SFT);
 				break;
 			}
@@ -1299,43 +1325,44 @@ static uint32_t himax_data_compare(uint8_t checktype, int *RAW, int ret_val)
 	case HX_LP_BPN_RAWDATA:
 	case HX_LP_ABS_NOISE:
 		for (i = 0; i < block_num; i++) {
-			if ((int)RAW[i] > g_inspection_criteria[idx_max][i] ||
-			    (int)RAW[i] < g_inspection_criteria[idx_min][i]) {
+			if ((int)RAW[i] > g_inspection_criteria[idx_max][i]
+			|| (int)RAW[i] < g_inspection_criteria[idx_min][i]) {
 				if (private_ts->debug_log_level & BIT(4)) {
 					E(FAIL_IN_INDEX_CRTRA, __func__,
-					  g_himax_inspection_mode[checktype], i,
-					  g_inspection_criteria[idx_max][i],
-					  g_inspection_criteria[idx_min][i],
-					  RAW[i]);
+					g_himax_inspection_mode[checktype], i
+					, g_inspection_criteria[idx_max][i]
+					, g_inspection_criteria[idx_min][i]
+					, RAW[i]);
 					ret_val |= 1 << (checktype + ERR_SFT);
 				} else {
 					E(FAIL_IN_INDEX, __func__,
-					  g_himax_inspection_mode[checktype],
-					  i);
+					g_himax_inspection_mode[checktype], i);
 					ret_val |= 1 << (checktype + ERR_SFT);
 				}
 				break;
 			}
 #ifdef HX_INSPT_DBG
 			if ((private_ts->debug_log_level & BIT(4))) {
-				I("%s,type=%s, idx[%d]=%d\n", __func__,
-				  g_himax_inspection_mode[checktype], i,
-				  RAW[i]);
-				I("%s, crteria,max=%d,min=%d\n", __func__,
-				  g_inspection_criteria[idx_max][i],
-				  g_inspection_criteria[idx_min][i]);
+				I("%s,type=%s, idx[%d]=%d\n",
+				__func__,
+				g_himax_inspection_mode[checktype],
+				i, RAW[i]);
+				I("%s, crteria,max=%d,min=%d\n",
+				__func__,
+				g_inspection_criteria[idx_max][i],
+				g_inspection_criteria[idx_min][i]);
 			}
 #endif
 		}
 		break;
 	default:
-		E("Wrong type[%d] = %s\n", checktype,
-		  g_himax_inspection_mode[checktype]);
+		E("Wrong type[%d] = %s\n",
+		checktype, g_himax_inspection_mode[checktype]);
 		break;
 	}
 
 	I("%s: %s %s\n", __func__, g_himax_inspection_mode[checktype],
-	  (ret_val == HX_INSP_OK) ? "PASS" : "FAIL");
+			(ret_val == HX_INSP_OK)?"PASS":"FAIL");
 
 	return ret_val;
 }
@@ -1349,11 +1376,11 @@ static int himax_get_max_dc(void)
 	himax_parse_assign_cmd(addr_max_dc, tmp_addr, sizeof(tmp_addr));
 
 	g_core_fp.fp_register_read(tmp_addr, tmp_data, DATA_LEN_4);
-	I("%s: tmp_data[0-3] = %02x%02x%02x%02x\n", __func__, tmp_data[0],
-	  tmp_data[1], tmp_data[2], tmp_data[3]);
+	I("%s: tmp_data[0-3] = %02x%02x%02x%02x\n", __func__,
+		tmp_data[0], tmp_data[1], tmp_data[2], tmp_data[3]);
 
-	dc_max = tmp_data[3] << 24 | tmp_data[2] << 16 | tmp_data[1] << 8 |
-		 tmp_data[0];
+	dc_max = tmp_data[3]<<24 | tmp_data[2]<<16 |
+			tmp_data[1]<<8 | tmp_data[0];
 	I("%s: dc max = %d\n", __func__, dc_max);
 	return dc_max;
 }
@@ -1406,7 +1433,7 @@ static uint32_t mpTestFunc(uint8_t checktype, uint32_t datalen)
 		/*himax_check_mode(checktype);*/
 
 		I("Need Change Mode ,target=%s\n",
-		  g_himax_inspection_mode[checktype]);
+		g_himax_inspection_mode[checktype]);
 
 		if (private_ts->debug_log_level & BIT(4))
 			I("%s:start sense off!\n", __func__);
@@ -1455,15 +1482,15 @@ static uint32_t mpTestFunc(uint8_t checktype, uint32_t datalen)
 		case HX_LP_IDLE_RAWDATA:
 		case HX_LP_IDLE_BPN_RAWDATA:
 			if (g_hx_inspt_setting_val[LP_IDLE_RAW_NFRAME] > 0)
-				n_frame = g_hx_inspt_setting_val
-					[LP_IDLE_RAW_NFRAME];
+				n_frame =
+				g_hx_inspt_setting_val[LP_IDLE_RAW_NFRAME];
 			else
 				n_frame = LP_IDLE_RAWDATAFRAME;
 			break;
 		case HX_LP_IDLE_NOISE:
 			if (g_hx_inspt_setting_val[LP_IDLE_NOISE_NFRAME] > 0)
-				n_frame = g_hx_inspt_setting_val
-					[LP_IDLE_NOISE_NFRAME];
+				n_frame =
+				g_hx_inspt_setting_val[LP_IDLE_NOISE_NFRAME];
 			else
 				n_frame = LP_IDLE_NOISEFRAME;
 			break;
@@ -1476,6 +1503,7 @@ static uint32_t mpTestFunc(uint8_t checktype, uint32_t datalen)
 		g_core_fp.fp_sense_on(1);
 		if (private_ts->debug_log_level & BIT(4))
 			I("%s:end sense on!\n", __func__);
+
 	}
 
 	ret_val |= himax_wait_sorting_mode(checktype);
@@ -1501,9 +1529,8 @@ static uint32_t mpTestFunc(uint8_t checktype, uint32_t datalen)
 
 	I("%s: Init OK, start to test!\n", __func__);
 
-	len += snprintf(g_start_log + len, 256 * sizeof(char), "\n%s%s\n",
-			g_himax_inspection_mode[checktype],
-			": data as follow!\n");
+	len += snprintf(g_start_log+len, 256 * sizeof(char), "\n%s%s\n",
+		g_himax_inspection_mode[checktype], ": data as follow!\n");
 
 	ret_val |= himax_data_compare(checktype, RAW, ret_val);
 
@@ -1522,14 +1549,14 @@ static uint32_t mpTestFunc(uint8_t checktype, uint32_t datalen)
 	len += snprintf(g_start_log + len, 256 * sizeof(char) - len,
 			"  arraydata_max3 = %d\n", arraydata_max3);
 
-	if (!ret_val) { /*PASS*/
+	if (!ret_val) {/*PASS*/
 		snprintf(g_rslt_log, 256 * sizeof(char), "\n%s%s\n",
-			 g_himax_inspection_mode[checktype], ":Test Pass!");
+			g_himax_inspection_mode[checktype], ":Test Pass!");
 		I("pass write log\n");
-	} else { /*FAIL*/
+	} else {/*FAIL*/
 		snprintf(g_rslt_log, 256 * sizeof(char), "\n%s%s\n",
-			 g_himax_inspection_mode[checktype], ":Test Fail!");
-		I("fail write log\n");
+			g_himax_inspection_mode[checktype], ":Test Fail!");
+	  I("fail write log\n");
 	}
 
 	hx_test_data_get(RAW, g_start_log, g_rslt_log, checktype);
@@ -1550,6 +1577,7 @@ static int himax_power_cal(int pow, int number)
 	result = result * number;
 
 	return result;
+
 }
 
 /* String to int */
@@ -1575,7 +1603,7 @@ static int hiamx_parse_str2int(char *str)
 			continue;
 		}
 		temp_cal = str[i] - '0';
-		result += himax_power_cal(str_len - i - 1, temp_cal);
+		result += himax_power_cal(str_len-i-1, temp_cal);
 	}
 
 	if (negtive_flag == 1)
@@ -1584,17 +1612,20 @@ static int hiamx_parse_str2int(char *str)
 	return result;
 }
 
+
+
+
 /* get idx of criteria whe parsing file */
 int hx_find_crtra_id(char *input)
 {
 	int i = 0;
 	int result = 0;
 
-	for (i = 0; i < HX_CRITERIA_SIZE; i++) {
+	for (i = 0 ; i < HX_CRITERIA_SIZE ; i++) {
 		if (strcmp(g_hx_inspt_crtra_name[i], input) == 0) {
 			result = i;
-			I("find the str=%s,idx=%d\n", g_hx_inspt_crtra_name[i],
-			  i);
+			I("find the str=%s,idx=%d\n",
+			  g_hx_inspt_crtra_name[i], i);
 			break;
 		}
 	}
@@ -1609,7 +1640,7 @@ int hx_find_crtra_id(char *input)
 int hx_print_crtra_after_parsing(void)
 {
 	int i = 0, j = 0;
-	int all_mut_len = ic_data->HX_TX_NUM * ic_data->HX_RX_NUM;
+	int all_mut_len = ic_data->HX_TX_NUM*ic_data->HX_RX_NUM;
 
 	for (i = 0; i < HX_CRITERIA_SIZE; i++) {
 		I("Now is %s\n", g_hx_inspt_crtra_name[i]);
@@ -1638,13 +1669,13 @@ static int hx_crtra_get(char *result, int himax_count_type, int comprae_data)
 	if (temp != -9487)
 		g_inspection_criteria[himax_count_type][comprae_data] = temp;
 	else {
-		I("%s: Parsing Fail in %d, rslt = %d\n", __func__, comprae_data,
-		  temp);
+		I("%s: Parsing Fail in %d, rslt = %d\n",
+		__func__, comprae_data, temp);
 		return HX_INSP_EFILE;
 	}
 
 #ifdef HX_INSPT_DBG
-	hx_print_crtra_after_parsing();
+		hx_print_crtra_after_parsing();
 #endif
 
 	return HX_INSP_OK;
@@ -1668,8 +1699,8 @@ static int hx_check_char_val(char input)
 END:
 	return result;
 }
-static int hx_check_criteria(const struct firmware *file_entry, char *start_str,
-			     int tx_num, int rx_num)
+static int hx_check_criteria(const struct firmware *file_entry,
+	char *start_str, int tx_num, int rx_num)
 {
 	int now_pos = 0;
 	int result = NO_ERR;
@@ -1677,15 +1708,16 @@ static int hx_check_criteria(const struct firmware *file_entry, char *start_str,
 	int tx_count = 0;
 	int i = 0;
 
-	now_pos = (int)(start_str - (char *)file_entry->data);
+	now_pos = (int) (start_str - (char *)file_entry->data);
 
 	/* Count RX number in criteria */
 	for (i = 0; now_pos + i < file_entry->size; i++) {
-		if (*(file_entry->data + (now_pos + i)) >= 'A' &&
-		    *(file_entry->data + (now_pos + i)) <= 'Z') {
+		if (*(file_entry->data + (now_pos + i)) >= 'A'
+			&& *(file_entry->data + (now_pos + i)) <= 'Z') {
 			if (private_ts->debug_log_level & BIT(4))
-				I("%s, get the character: %c!\n", __func__,
-				  *(file_entry->data + (now_pos + i)));
+				I("%s, get the character: %c!\n",
+					__func__,
+					*(file_entry->data + (now_pos + i)));
 			break;
 		}
 		if (*(file_entry->data + (now_pos + i)) == ',')
@@ -1697,20 +1729,20 @@ static int hx_check_criteria(const struct firmware *file_entry, char *start_str,
 	}
 
 	if (rx_count != rx_num) {
-		E("%s,RX Error, parse size is %d, but this is %d!\n", __func__,
-		  rx_count, rx_num);
+		E("%s,RX Error, parse size is %d, but this is %d!\n",
+			__func__, rx_count, rx_num);
 		result = HX_INSP_EFILE;
 		goto END;
 	}
 
 	/* Count TX number in  criteria*/
 	for (i = 0; now_pos + i < file_entry->size; i++) {
-		if (hx_check_char_val(*(file_entry->data + (now_pos + i))) <
-		    NO_ERR) {
+		if (hx_check_char_val(*(file_entry->data + (now_pos + i)))
+			< NO_ERR) {
 			if (private_ts->debug_log_level & BIT(4))
 				I("%s,TX collect over, get char: %c!\n",
-				  __func__,
-				  *(file_entry->data + (now_pos + i)));
+					__func__,
+					*(file_entry->data + (now_pos + i)));
 			break;
 		}
 		if (*(file_entry->data + (now_pos + i)) == '\n')
@@ -1718,25 +1750,24 @@ static int hx_check_criteria(const struct firmware *file_entry, char *start_str,
 	}
 
 	if (tx_count != tx_num) {
-		E("%s,TX Error, parse size is %d, but this is %d!\n", __func__,
-		  tx_count, tx_num);
+		E("%s,TX Error, parse size is %d, but this is %d!\n",
+			__func__, tx_count, tx_num);
 		result = HX_INSP_EFILE;
 		goto END;
 	}
 
-	I("%s:parse TX count is %d, RX count is %d!\n", __func__, tx_count,
-	  rx_count);
+	I("%s:parse TX count is %d, RX count is %d!\n",
+		__func__, tx_count, rx_count);
 END:
 	return result;
 }
 
 static int himax_parse_criteria_str(int match_start, int hx_str_len,
-				    const struct firmware *file_entry,
-				    int tx_num, int rx_num)
+	const struct firmware *file_entry, int tx_num, int rx_num)
 {
 	int err = HX_INSP_OK;
-	char result[100] = { 0 };
-	char str_rslt[100] = { 0 };
+	char result[100] = {0};
+	char str_rslt[100] = {0};
 	char str_len = 0;
 	char *str_addr = NULL;
 	int str_flag = 1;
@@ -1764,30 +1795,30 @@ static int himax_parse_criteria_str(int match_start, int hx_str_len,
 	str_data = str_data + hx_str_len + 1;
 
 	/* Check the criteria file OK or not */
-	if (hx_check_criteria(file_entry, str_data, tx_num, rx_num) ==
-	    HX_INSP_EFILE)
+	if (hx_check_criteria(file_entry, str_data, tx_num, rx_num)
+		== HX_INSP_EFILE)
 		return HX_INSP_EFILE;
 	for (i = 0; i < mul_num; i++) {
 		if (i <= mul_num - 2) {
-			now_pointer_file =
-				(int)(str_data - (char *)file_entry->data);
-			if ((now_pointer_file >= file_entry->size) &&
-			    now_pointer_file > 0) {
+			now_pointer_file = (int) (str_data -
+				(char *)file_entry->data);
+			if ((now_pointer_file >= file_entry->size)
+				&& now_pointer_file > 0) {
 				E("Over file size 1 !\n");
 				return HX_INSP_EFILE;
 			}
 			while (flag) {
-				if (now_pointer_file + flag >=
-				    (int)file_entry->size) {
+				if (now_pointer_file + flag
+					>= (int)file_entry->size) {
 					E("Over file size 2!\n");
 					return HX_INSP_EFILE;
 				}
-				if (hx_check_char_val(*(str_data + flag)) <
-				    NO_ERR) {
+				if (hx_check_char_val(*(str_data+flag))
+					< NO_ERR) {
 					E("%s,Need INT but it's str=%s:%c\n",
-					  __func__, str_rslt,
-					  *(str_data + flag));
-					return HX_INSP_EFILE;
+						__func__, str_rslt,
+						*(str_data+flag));
+						return HX_INSP_EFILE;
 				}
 				if (*(str_data + flag) == ',') {
 					str_addr = str_data + flag;
@@ -1802,9 +1833,9 @@ static int himax_parse_criteria_str(int match_start, int hx_str_len,
 			str_flag = 1;
 			str_len = str_addr - str_data;
 			for (j = 1; j <= str_len; j++) {
-				if ((*(str_data + j) == '\r' ||
-				     *(str_data + j) == '\n' ||
-				     *(str_data + j) == '\0')) {
+				if ((*(str_data + j) == '\r'
+					|| *(str_data + j) == '\n'
+					|| *(str_data + j) == '\0')) {
 					memset(result, 0, 100);
 					memcpy(&result[0], str_data, j);
 					str_flag = 0;
@@ -1822,10 +1853,11 @@ static int himax_parse_criteria_str(int match_start, int hx_str_len,
 				return HX_INSP_EFILE;
 			}
 			str_data = str_addr + 1;
-		} else {
+		} else{
 			/* last data of mutual */
 			temp = 1;
-			while (hx_check_char_val((*(str_data + temp))) > NO_ERR)
+			while (hx_check_char_val((*(str_data + temp)))
+				> NO_ERR)
 				temp++;
 			str_len = temp;
 			memset(result, 0, 100);
@@ -1860,9 +1892,9 @@ static int himax_test_item_parse(char *str_data, int str_size)
 		if (str_ptr != NULL && end_ptr != NULL) {
 			while (g_himax_inspection_mode[i]) {
 				if (strncmp(str_ptr, g_himax_inspection_mode[i],
-					    end_ptr - str_ptr) == 0) {
+				end_ptr - str_ptr) == 0) {
 					I("%s,Find item : %s\n", __func__,
-					  g_himax_inspection_mode[i]);
+						g_himax_inspection_mode[i]);
 					g_test_item_flag[i] = 1;
 					ret = HX_INSP_OK;
 					break;
@@ -1873,8 +1905,8 @@ static int himax_test_item_parse(char *str_data, int str_size)
 			str_ptr = end_ptr++;
 			i = 0;
 		} else {
-			I("%s,Can't find %s or %s\n", __func__, "HIMAX",
-			  "\x0d\x0a");
+			I("%s,Can't find %s or %s\n", __func__,
+				"HIMAX", "\x0d\x0a");
 			break;
 		}
 	} while (size > strlen("HIMAX"));
@@ -1897,8 +1929,8 @@ static void strcpy_idx(char *str, char start, int end_idx)
 	start_idx = (int)strcspn(str, &start);
 
 	if (private_ts->debug_log_level & BIT(4))
-		I("%s:start_idx = %d, end_idx = %d\n", __func__, start_idx,
-		  end_idx);
+		I("%s:start_idx = %d, end_idx = %d\n",
+			__func__, start_idx, end_idx);
 
 	if (end_idx < start_idx) {
 		E("%s, end < start, fail\n", __func__);
@@ -1937,24 +1969,25 @@ static int himax_parse_criteria_setting(const struct firmware *file_entry)
 		memset(line, 0x00, sizeof(char) * 128);
 
 		/* check the name of item */
-		find_start =
-			strnstr(file_entry->data, g_hx_inspt_setting_name[i],
-				file_entry->size);
+		find_start = strnstr(file_entry->data,
+			g_hx_inspt_setting_name[i], file_entry->size);
 		if (find_start == NULL) {
-			I("%s, Can't find %s, skip\n", __func__,
-			  g_hx_inspt_setting_name[i]);
+			I("%s, Can't find %s, skip\n",
+				__func__, g_hx_inspt_setting_name[i]);
 			result = -1;
 			i++;
 			continue;
 		} else
-			match_start =
-				(int)(find_start - (char *)file_entry->data);
+			match_start = (int)(find_start -
+				(char *)file_entry->data);
 		if (match_start >= 0) {
 			memcpy(line, &file_entry->data[match_start],
-			       sizeof(char) * 128);
+				sizeof(char) * 128);
 		} else {
-			I("%s, start wrong:%s = %d, skip\n", __func__,
-			  g_hx_inspt_setting_name[i], match_start);
+			I("%s, start wrong:%s = %d, skip\n",
+				__func__,
+				g_hx_inspt_setting_name[i],
+				match_start);
 			result = -1;
 			i++;
 			continue;
@@ -1962,15 +1995,18 @@ static int himax_parse_criteria_setting(const struct firmware *file_entry)
 
 		find_end = strnchr(line, 128, '\n');
 		if (find_end == NULL) {
-			I("%s, Can't find eol, skip\n", __func__);
+			I("%s, Can't find eol, skip\n",
+				__func__);
 			result = -1;
 			i++;
 			continue;
 		} else
 			match_end = (int)(find_end - line);
 		if (match_end >= 128 || match_end <= 0) {
-			I("%s, end wrong:%s = %d, skip\n", __func__,
-			  g_hx_inspt_setting_name[i], match_end);
+			I("%s, end wrong:%s = %d, skip\n",
+				__func__,
+				g_hx_inspt_setting_name[i],
+				match_end);
 			result = -1;
 			i++;
 			continue;
@@ -1985,7 +2021,8 @@ static int himax_parse_criteria_setting(const struct firmware *file_entry)
 				} else
 					continue;
 			} else {
-				if (line[j] >= '0' && line[j] <= '9') {
+				if (line[j] >= '0'
+					&& line[j] <= '9') {
 					continue;
 				} else {
 					line[j] = '\0';
@@ -1997,14 +2034,14 @@ static int himax_parse_criteria_setting(const struct firmware *file_entry)
 
 		comm_1st = -1;
 		if (private_ts->debug_log_level & BIT(4))
-			I("Line=%s,start = %d, end=%d\n", line, match_start,
-			  match_end);
+			I("Line=%s,start = %d, end=%d\n",
+				line, match_start, match_end);
 
 		/* get the number string, and set the end sign for line end */
 		strcpy_idx(line, ',', match_end);
 		if (line == NULL) {
-			E("%s, get value fail for %s!\n", __func__,
-			  g_hx_inspt_setting_name[i]);
+			E("%s, get value fail for %s!\n",
+				__func__, g_hx_inspt_setting_name[i]);
 			result = -1;
 			i++;
 			continue;
@@ -2013,8 +2050,9 @@ static int himax_parse_criteria_setting(const struct firmware *file_entry)
 			I("last..Line=%s\n", line);
 		test_int = hiamx_parse_str2int(line);
 		g_hx_inspt_setting_val[i] = test_int;
-		I("%s:[%d] %s,result value=%d\n", __func__, i,
-		  g_hx_inspt_setting_name[i], g_hx_inspt_setting_val[i]);
+		I("%s:[%d] %s,result value=%d\n", __func__,
+			i, g_hx_inspt_setting_name[i],
+			g_hx_inspt_setting_val[i]);
 		if (private_ts->debug_log_level & BIT(4))
 			I("%s:test_int=%d\n", __func__, test_int);
 		if (test_int <= -9487) {
@@ -2027,6 +2065,7 @@ static int himax_parse_criteria_setting(const struct firmware *file_entry)
 	kfree(line);
 	return result;
 }
+
 
 static int himax_parse_criteria(const struct firmware *file_entry)
 {
@@ -2045,18 +2084,17 @@ static int himax_parse_criteria(const struct firmware *file_entry)
 
 	i = 0;
 	while (g_hx_inspt_crtra_name[i] != NULL) {
-		start_ptr = strnstr(file_entry->data, g_hx_inspt_crtra_name[i],
-				    file_entry->size);
+		start_ptr = strnstr(file_entry->data,
+			g_hx_inspt_crtra_name[i], file_entry->size);
 		if (start_ptr != NULL) {
-			I("g_hx_inspt_crtra_name[%d] = %s\n", i,
-			  g_hx_inspt_crtra_name[i]);
+			I("g_hx_inspt_crtra_name[%d] = %s\n",
+				i, g_hx_inspt_crtra_name[i]);
 			start_str_len = strlen(g_hx_inspt_crtra_name[i]);
-			match_start =
-				(int)(start_ptr - (char *)(file_entry->data));
+			match_start = (int)(start_ptr -
+				(char *)(file_entry->data));
 			ret |= himax_parse_criteria_str(match_start,
-							start_str_len,
-							file_entry, tx_num,
-							rx_num);
+				start_str_len, file_entry,
+				tx_num, rx_num);
 			if (ret >= HX_INSP_EFILE)
 				break;
 		}
@@ -2065,6 +2103,7 @@ static int himax_parse_criteria(const struct firmware *file_entry)
 END:
 	return ret;
 }
+
 
 static int himax_parse_test_dri_file(const struct firmware *file_entry)
 {
@@ -2075,7 +2114,7 @@ static int himax_parse_test_dri_file(const struct firmware *file_entry)
 	int i = 0;
 	int j = 0;
 	char str[2][60]; /*[0]->Start string, [1]->End string*/
-	char *str_tail[2] = { "_Begin]\x0d\x0a", "_End]\x0d\x0a" };
+	char *str_tail[2] = {"_Begin]\x0d\x0a", "_End]\x0d\x0a"};
 	int ret = HX_INSP_OK;
 
 	while (g_hx_head_str[i]) {
@@ -2093,20 +2132,21 @@ static int himax_parse_test_dri_file(const struct firmware *file_entry)
 
 		if (start_ptr == NULL || end_ptr == NULL) {
 			E("%s,Can't find string %s\n", __func__,
-			  g_hx_head_str[i]);
+				g_hx_head_str[i]);
 		} else {
 			str_size = end_ptr - start_ptr - start_str_len;
 			if (strncmp(g_hx_head_str[i], "TestItem",
-				    strlen(g_hx_head_str[i])) == 0) {
+			strlen(g_hx_head_str[i])) == 0) {
 				I("%s,Start to parse %s\n", __func__,
-				  g_hx_head_str[i]);
-				ret |= himax_test_item_parse(
-					start_ptr + start_str_len, str_size);
+					g_hx_head_str[i]);
+				ret |= himax_test_item_parse(start_ptr
+					+ start_str_len,
+					str_size);
 			}
 			if (strncmp(g_hx_head_str[i], "TestCriteria",
-				    strlen(g_hx_head_str[i])) == 0) {
+			strlen(g_hx_head_str[i])) == 0) {
 				I("%s,Start to parse %s\n", __func__,
-				  g_hx_head_str[i]);
+				g_hx_head_str[i]);
 				ret |= himax_parse_criteria(file_entry);
 			}
 		}
@@ -2124,136 +2164,101 @@ static void himax_test_item_chk(int csv_test)
 		for (i = 0; i < HX_CRITERIA_ITEM - 1; i++)
 			g_test_item_flag[i] = 1;
 
-	g_test_item_flag[HX_OPEN] &= (g_inspt_crtra_flag[IDX_OPENMIN] == 1 &&
-				      g_inspt_crtra_flag[IDX_OPENMAX] == 1) ?
-					     1 :
-					     0;
+	g_test_item_flag[HX_OPEN] &=
+		(g_inspt_crtra_flag[IDX_OPENMIN] == 1
+		&& g_inspt_crtra_flag[IDX_OPENMAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_MICRO_OPEN] &=
-		(g_inspt_crtra_flag[IDX_M_OPENMIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_M_OPENMAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_M_OPENMIN] == 1
+		&& g_inspt_crtra_flag[IDX_M_OPENMAX] == 1) ? 1 : 0;
 
-	g_test_item_flag[HX_SHORT] &= (g_inspt_crtra_flag[IDX_SHORTMIN] == 1 &&
-				       g_inspt_crtra_flag[IDX_SHORTMAX] == 1) ?
-					      1 :
-					      0;
+	g_test_item_flag[HX_SHORT] &=
+		(g_inspt_crtra_flag[IDX_SHORTMIN] == 1
+		&& g_inspt_crtra_flag[IDX_SHORTMAX] == 1) ? 1 : 0;
 
-	g_test_item_flag[HX_RAWDATA] &= (g_inspt_crtra_flag[IDX_RAWMIN] == 1 &&
-					 g_inspt_crtra_flag[IDX_RAWMAX] == 1) ?
-						1 :
-						0;
+	g_test_item_flag[HX_RAWDATA] &=
+		(g_inspt_crtra_flag[IDX_RAWMIN] == 1
+		&& g_inspt_crtra_flag[IDX_RAWMAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_BPN_RAWDATA] &=
-		(g_inspt_crtra_flag[IDX_BPN_RAWMIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_BPN_RAWMAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_BPN_RAWMIN] == 1
+		&& g_inspt_crtra_flag[IDX_BPN_RAWMAX] == 1) ? 1 : 0;
 
-	g_test_item_flag[HX_SC] &= (g_inspt_crtra_flag[IDX_SCMIN] == 1 &&
-				    g_inspt_crtra_flag[IDX_SCMAX] == 1 &&
-				    g_inspt_crtra_flag[IDX_SC_GOLDEN] == 1) ?
-					   1 :
-					   0;
+	g_test_item_flag[HX_SC] &=
+		(g_inspt_crtra_flag[IDX_SCMIN] == 1
+		&& g_inspt_crtra_flag[IDX_SCMAX] == 1
+		&& g_inspt_crtra_flag[IDX_SC_GOLDEN] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_WT_NOISE] &=
-		(g_inspt_crtra_flag[IDX_WT_NOISEMIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_WT_NOISEMAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_WT_NOISEMIN] == 1
+		&& g_inspt_crtra_flag[IDX_WT_NOISEMAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_ABS_NOISE] &=
-		(g_inspt_crtra_flag[IDX_ABS_NOISEMIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_ABS_NOISEMAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_ABS_NOISEMIN] == 1
+		&& g_inspt_crtra_flag[IDX_ABS_NOISEMAX] == 1) ? 1 : 0;
 
-	g_test_item_flag[HX_SORTING] &= (g_inspt_crtra_flag[IDX_SORTMIN] == 1 &&
-					 g_inspt_crtra_flag[IDX_SORTMAX] == 1) ?
-						1 :
-						0;
+	g_test_item_flag[HX_SORTING] &=
+		(g_inspt_crtra_flag[IDX_SORTMIN] == 1
+		&& g_inspt_crtra_flag[IDX_SORTMAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_GAPTEST_RAW] &=
-		(g_inspt_crtra_flag[IDX_GAP_HOR_RAWMAX] == 1 &&
-		 g_inspt_crtra_flag[IDX_GAP_HOR_RAWMIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_GAP_VER_RAWMAX] == 1 &&
-		 g_inspt_crtra_flag[IDX_GAP_VER_RAWMIN] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_GAP_HOR_RAWMAX] == 1
+		&& g_inspt_crtra_flag[IDX_GAP_HOR_RAWMIN] == 1
+		&& g_inspt_crtra_flag[IDX_GAP_VER_RAWMAX] == 1
+		&& g_inspt_crtra_flag[IDX_GAP_VER_RAWMIN] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_ACT_IDLE_RAWDATA] &=
-		(g_inspt_crtra_flag[IDX_ACT_IDLE_RAWDATA_MIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_ACT_IDLE_RAWDATA_MAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_ACT_IDLE_RAWDATA_MIN] == 1
+		&& g_inspt_crtra_flag[IDX_ACT_IDLE_RAWDATA_MAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_ACT_IDLE_BPN_RAWDATA] &=
-		(g_inspt_crtra_flag[IDX_ACT_IDLE_RAW_BPN_MIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_ACT_IDLE_RAW_BPN_MAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_ACT_IDLE_RAW_BPN_MIN] == 1
+		&& g_inspt_crtra_flag[IDX_ACT_IDLE_RAW_BPN_MAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_ACT_IDLE_NOISE] &=
-		(g_inspt_crtra_flag[IDX_ACT_IDLE_NOISE_MIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_ACT_IDLE_NOISE_MAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_ACT_IDLE_NOISE_MIN] == 1
+		&& g_inspt_crtra_flag[IDX_ACT_IDLE_NOISE_MAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_LP_RAWDATA] &=
-		(g_inspt_crtra_flag[IDX_LP_RAWDATA_MIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_LP_RAWDATA_MAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_LP_RAWDATA_MIN] == 1
+		&& g_inspt_crtra_flag[IDX_LP_RAWDATA_MAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_LP_BPN_RAWDATA] &=
-		(g_inspt_crtra_flag[IDX_LP_RAW_BPN_MIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_LP_RAW_BPN_MAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_LP_RAW_BPN_MIN] == 1
+		&& g_inspt_crtra_flag[IDX_LP_RAW_BPN_MAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_LP_WT_NOISE] &=
-		(g_inspt_crtra_flag[IDX_LP_WT_NOISEMAX] == 1 &&
-		 g_inspt_crtra_flag[IDX_LP_WT_NOISEMIN] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_LP_WT_NOISEMAX] == 1
+		&& g_inspt_crtra_flag[IDX_LP_WT_NOISEMIN] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_LP_ABS_NOISE] &=
-		(g_inspt_crtra_flag[IDX_LP_NOISE_ABS_MAX] == 1 &&
-		 g_inspt_crtra_flag[IDX_LP_NOISE_ABS_MIN] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_LP_NOISE_ABS_MAX] == 1
+		&& g_inspt_crtra_flag[IDX_LP_NOISE_ABS_MIN] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_LP_IDLE_RAWDATA] &=
-		(g_inspt_crtra_flag[IDX_LP_IDLE_RAWDATA_MAX] == 1 &&
-		 g_inspt_crtra_flag[IDX_LP_IDLE_RAWDATA_MIN] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_LP_IDLE_RAWDATA_MAX] == 1
+		&& g_inspt_crtra_flag[IDX_LP_IDLE_RAWDATA_MIN] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_LP_IDLE_BPN_RAWDATA] &=
-		(g_inspt_crtra_flag[IDX_LP_IDLE_RAW_BPN_MIN] == 1 &&
-		 g_inspt_crtra_flag[IDX_LP_IDLE_RAW_BPN_MAX] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_LP_IDLE_RAW_BPN_MIN] == 1
+		&& g_inspt_crtra_flag[IDX_LP_IDLE_RAW_BPN_MAX] == 1) ? 1 : 0;
 
 	g_test_item_flag[HX_LP_IDLE_NOISE] &=
-		(g_inspt_crtra_flag[IDX_LP_IDLE_NOISE_MAX] == 1 &&
-		 g_inspt_crtra_flag[IDX_LP_IDLE_NOISE_MIN] == 1) ?
-			1 :
-			0;
+		(g_inspt_crtra_flag[IDX_LP_IDLE_NOISE_MAX] == 1
+		&& g_inspt_crtra_flag[IDX_LP_IDLE_NOISE_MIN] == 1) ? 1 : 0;
 
-	do_lpwg_test = g_test_item_flag[HX_LP_RAWDATA] |
-		       g_test_item_flag[HX_LP_BPN_RAWDATA] |
-		       g_test_item_flag[HX_LP_WT_NOISE] |
-		       g_test_item_flag[HX_LP_ABS_NOISE] |
-		       g_test_item_flag[HX_LP_IDLE_RAWDATA] |
-		       g_test_item_flag[HX_LP_IDLE_BPN_RAWDATA] |
-		       g_test_item_flag[HX_LP_IDLE_NOISE];
+	do_lpwg_test = g_test_item_flag[HX_LP_RAWDATA]
+			| g_test_item_flag[HX_LP_BPN_RAWDATA]
+			| g_test_item_flag[HX_LP_WT_NOISE]
+			| g_test_item_flag[HX_LP_ABS_NOISE]
+			| g_test_item_flag[HX_LP_IDLE_RAWDATA]
+			| g_test_item_flag[HX_LP_IDLE_BPN_RAWDATA]
+			| g_test_item_flag[HX_LP_IDLE_NOISE];
 
 	if (private_ts->debug_log_level & BIT(4)) {
 		for (i = 0; i < HX_CRITERIA_ITEM - 1; i++)
-			I("g_test_item_flag[%d] = %d\n", i,
-			  g_test_item_flag[i]);
+			I("g_test_item_flag[%d] = %d\n",
+				i, g_test_item_flag[i]);
 	}
 }
 
@@ -2286,7 +2291,7 @@ static void hx_print_fw_info(void)
 	int panel_ver;
 	uint8_t cus_info[12];
 	uint8_t proj_info[12];
-	uint8_t data[12] = { 0 };
+	uint8_t data[12] = {0};
 	uint8_t tmp_addr[4];
 	int buf_size = 1024;
 
@@ -2298,7 +2303,7 @@ static void hx_print_fw_info(void)
 
 	himax_parse_assign_cmd(fw_addr_fw_ver_addr, tmp_addr, sizeof(tmp_addr));
 	g_core_fp.fp_register_read(tmp_addr, data, DATA_LEN_4);
-	panel_ver = data[0];
+	panel_ver =  data[0];
 	fw_ver = data[1] << 8 | data[2];
 
 	himax_parse_assign_cmd(fw_addr_fw_cfg_addr, tmp_addr, sizeof(tmp_addr));
@@ -2308,7 +2313,7 @@ static void hx_print_fw_info(void)
 	display_cfg_ver = data[3];
 
 	himax_parse_assign_cmd(fw_addr_fw_vendor_addr, tmp_addr,
-			       sizeof(tmp_addr));
+		sizeof(tmp_addr));
 	g_core_fp.fp_register_read(tmp_addr, data, DATA_LEN_4);
 	cid_maj_ver = data[2];
 	cid_min_ver = data[3];
@@ -2321,42 +2326,42 @@ static void hx_print_fw_info(void)
 	g_core_fp.fp_register_read(tmp_addr, data, 12);
 	memcpy(proj_info, data, 12);
 
-	len += snprintf(prt_data + len, buf_size - len, "\nFW_VER = 0x%2.2X\n",
-			fw_ver);
+	len += snprintf(prt_data + len, buf_size - len,
+		"\nFW_VER = 0x%2.2X\n", fw_ver);
 
 	if (private_ts->chip_cell_type == CHIP_IS_ON_CELL) {
 		len += snprintf(prt_data + len, buf_size - len,
-				"CONFIG_VER = 0x%2.2X\n", config_ver);
+			"CONFIG_VER = 0x%2.2X\n", config_ver);
 	} else {
 		len += snprintf(prt_data + len, buf_size - len,
-				"TOUCH_VER = 0x%2.2X\n", touch_cfg_ver);
+			"TOUCH_VER = 0x%2.2X\n", touch_cfg_ver);
 		len += snprintf(prt_data + len, buf_size - len,
-				"DISPLAY_VER = 0x%2.2X\n", display_cfg_ver);
+			"DISPLAY_VER = 0x%2.2X\n", display_cfg_ver);
 	}
 
 	if (cid_maj_ver < 0 && cid_min_ver < 0) {
 		len += snprintf(prt_data + len, buf_size - len,
-				"CID_VER = NULL\n");
+			"CID_VER = NULL\n");
 	} else {
 		len += snprintf(prt_data + len, buf_size - len,
-				"CID_VER = 0x%2.2X\n",
-				(ic_data->vendor_cid_maj_ver << 8 |
-				 ic_data->vendor_cid_min_ver));
+			"CID_VER = 0x%2.2X\n",
+			(ic_data->vendor_cid_maj_ver << 8 |
+			ic_data->vendor_cid_min_ver));
 	}
 
 	if (panel_ver < 0) {
 		len += snprintf(prt_data + len, buf_size - len,
-				"PANEL_VER = NULL\n");
+			"PANEL_VER = NULL\n");
 	} else {
 		len += snprintf(prt_data + len, buf_size - len,
-				"PANEL_VER = 0x%2.2X\n", panel_ver);
+			"PANEL_VER = 0x%2.2X\n", panel_ver);
 	}
 
 	if (private_ts->chip_cell_type == CHIP_IS_IN_CELL) {
 		len += snprintf(prt_data + len, buf_size - len,
-				"Cusomer = %s\n", cus_info);
+			"Cusomer = %s\n", cus_info);
 		len += snprintf(prt_data + len, buf_size - len,
-				"Project = %s\n", proj_info);
+			"Project = %s\n", proj_info);
 	}
 
 	memcpy(&g_rslt_data[0], prt_data, len);
@@ -2399,8 +2404,8 @@ static int himax_self_test_data_init(void)
 		goto err_malloc_inspt_crtra_flag;
 	}
 
-	g_inspection_criteria =
-		kcalloc(HX_CRITERIA_SIZE, sizeof(int *), GFP_KERNEL);
+	g_inspection_criteria = kcalloc(HX_CRITERIA_SIZE,
+			sizeof(int *), GFP_KERNEL);
 	if (g_inspection_criteria == NULL) {
 		E("%s,%d: Memory allocation falied!\n", __func__, __LINE__);
 		ret = HX_INSP_MEMALLCTFAIL;
@@ -2408,12 +2413,12 @@ static int himax_self_test_data_init(void)
 	}
 
 	for (i = 0; i < HX_CRITERIA_SIZE; i++) {
-		g_inspection_criteria[i] =
-			kcalloc((ic_data->HX_TX_NUM * ic_data->HX_RX_NUM),
+		g_inspection_criteria[i] = kcalloc((ic_data->HX_TX_NUM
+				* ic_data->HX_RX_NUM),
 				sizeof(int), GFP_KERNEL);
 		if (g_inspection_criteria[i] == NULL) {
-			E("%s,%d: Memory allocation %d falied!\n", __func__,
-			  __LINE__, i);
+			E("%s,%d: Memory allocation %d falied!\n",
+				__func__, __LINE__, i);
 			ret = HX_INSP_MEMALLCTFAIL;
 			goto err_malloc_inspection_criteria2;
 		}
@@ -2421,11 +2426,11 @@ static int himax_self_test_data_init(void)
 
 	g_rslt_data_len = 0;
 	if (g_rslt_data == NULL) {
-		g_rslt_data =
-			kcalloc(g_1kind_raw_size, sizeof(char), GFP_KERNEL);
+		g_rslt_data = kcalloc(g_1kind_raw_size, sizeof(char),
+			GFP_KERNEL);
 		if (g_rslt_data == NULL) {
-			E("%s,%d: Memory allocation falied!\n", __func__,
-			  __LINE__);
+			E("%s,%d: Memory allocation falied!\n",
+				__func__, __LINE__);
 			ret = HX_INSP_MEMALLCTFAIL;
 			goto err_malloc_rslt_data;
 		}
@@ -2433,18 +2438,19 @@ static int himax_self_test_data_init(void)
 
 	setting_sz = hx_get_size_str_arr(g_hx_inspt_setting_name);
 	I("There are %d kinds of setting items\n", setting_sz);
-	g_hx_inspt_setting_val = kcalloc(setting_sz, sizeof(int), GFP_KERNEL);
+	g_hx_inspt_setting_val = kcalloc(setting_sz, sizeof(int),
+		GFP_KERNEL);
 	if (g_hx_inspt_setting_val == NULL) {
 		E("%s,%d: Memory allocation falied!\n", __func__, __LINE__);
 		ret = HX_INSP_MEMALLCTFAIL;
 		goto err_malloc_inspection_setting_val;
 	}
-	for (i = 0; i < setting_sz; i++)
+	for (i = 0 ; i < setting_sz; i++)
 		g_hx_inspt_setting_val[i] = -1;
 
-	I("%s: initialize g_rslt_data, length = %d\n", __func__,
-	  g_1kind_raw_size);
-	memset(g_rslt_data, 0x00, g_1kind_raw_size * sizeof(char));
+	I("%s: initialize g_rslt_data, length = %d\n",
+		__func__, g_1kind_raw_size);
+	memset(g_rslt_data, 0x00, g_1kind_raw_size  * sizeof(char));
 
 	err = request_firmware(&file_entry, file_name_1, ts->dev);
 	if (err < 0) {
@@ -2473,16 +2479,16 @@ static int himax_self_test_data_init(void)
 	}
 
 	if (private_ts->debug_log_level & BIT(4)) {
-		for (i = 0; i < HX_CRITERIA_SIZE; i++) {
+		for (i = 0 ; i < HX_CRITERIA_SIZE ; i++) {
 			if (g_inspt_crtra_flag[i] != 0)
-				I("%s: [%d]There is String=%s\n", __func__, i,
-				  g_hx_inspt_crtra_name[i]);
+				I("%s: [%d]There is String=%s\n",
+					__func__, i, g_hx_inspt_crtra_name[i]);
 		}
 	}
 
-	snprintf(g_file_path,
-		 (int)(strlen(HX_RSLT_OUT_PATH) + strlen(HX_RSLT_OUT_FILE) + 1),
-		 "%s%s", HX_RSLT_OUT_PATH, HX_RSLT_OUT_FILE);
+	snprintf(g_file_path, (int)(strlen(HX_RSLT_OUT_PATH)
+			+ strlen(HX_RSLT_OUT_FILE)+1),
+			"%s%s", HX_RSLT_OUT_PATH, HX_RSLT_OUT_FILE);
 
 	file_w_flag = true;
 	return ret;
@@ -2535,17 +2541,18 @@ static void himax_self_test_data_deinit(void)
 	kfree(g_test_item_flag);
 	g_test_item_flag = NULL;
 	I("%s: release finished\n", __func__);
+
 }
 
 static int himax_chip_self_test(struct seq_file *s, void *v)
 {
 	uint32_t ret = HX_INSP_OK;
-	uint32_t test_size = ic_data->HX_TX_NUM * ic_data->HX_RX_NUM +
-			     ic_data->HX_TX_NUM + ic_data->HX_RX_NUM;
+	uint32_t test_size = ic_data->HX_TX_NUM	* ic_data->HX_RX_NUM
+			+ ic_data->HX_TX_NUM + ic_data->HX_RX_NUM;
 	int i = 0;
 #if !defined(HX_ZERO_FLASH)
-	uint8_t tmp_addr[DATA_LEN_4] = { 0x94, 0x72, 0x00, 0x10 };
-	uint8_t tmp_data[DATA_LEN_4] = { 0x01, 0x00, 0x00, 0x00 };
+	uint8_t tmp_addr[DATA_LEN_4] = {0x94, 0x72, 0x00, 0x10};
+	uint8_t tmp_data[DATA_LEN_4] = {0x01, 0x00, 0x00, 0x00};
 #endif
 	struct file *raw_file = NULL;
 	struct filename *vts_name = NULL;
@@ -2562,7 +2569,7 @@ static int himax_chip_self_test(struct seq_file *s, void *v)
 		E("%s: initialize self test failed\n", __func__);
 		if (ret == HX_INSP_EFILE) {
 			seq_puts(s, "Self_Test Fail:\n"
-				    "- Criteria file!\n");
+			"- Criteria file!\n");
 		}
 
 		goto END;
@@ -2584,11 +2591,11 @@ static int himax_chip_self_test(struct seq_file *s, void *v)
 
 	if (raw_file == NULL && file_w_flag) {
 		raw_file = kp_file_open_name(vts_name,
-					     O_TRUNC | O_CREAT | O_RDWR, 0660);
+			O_TRUNC|O_CREAT|O_RDWR, 0660);
 
 		if (IS_ERR(raw_file)) {
-			E("%s open file failed = %ld\n", __func__,
-			  PTR_ERR(raw_file));
+			E("%s open file failed = %ld\n",
+				__func__, PTR_ERR(raw_file));
 			file_w_flag = false;
 		}
 	}
@@ -2605,19 +2612,19 @@ static int himax_chip_self_test(struct seq_file *s, void *v)
 		if (i < HX_LP_WT_NOISE) {
 			if (g_test_item_flag[i] == 1) {
 				I("%d. %s Start\n", i,
-				  g_himax_inspection_mode[i]);
+					g_himax_inspection_mode[i]);
 				rslt = mpTestFunc(i, test_size);
 				if (file_w_flag &&
-				    ((rslt & HX_INSP_EGETRAW) == 0) &&
-				    ((rslt & HX_INSP_ESWITCHMODE) == 0)) {
+					((rslt & HX_INSP_EGETRAW) == 0) &&
+					((rslt & HX_INSP_ESWITCHMODE) == 0)) {
 					vfs_write(raw_file, g_rslt_data,
-						  g_rslt_data_len, &pos);
+					g_rslt_data_len, &pos);
 					pos += g_rslt_data_len;
 				}
 				ret |= rslt;
 
 				I("%d. %s End, ret = %d\n", i,
-				  g_himax_inspection_mode[i], ret);
+					g_himax_inspection_mode[i], ret);
 
 				if (ret)
 					goto SELF_TEST_FAIL;
@@ -2639,13 +2646,13 @@ static int himax_chip_self_test(struct seq_file *s, void *v)
 		for (; i < HX_CRITERIA_ITEM; i++) {
 			if (g_test_item_flag[i] == 1) {
 				I("%d.%s Start\n", i,
-				  g_himax_inspection_mode[i]);
+					g_himax_inspection_mode[i]);
 				rslt = mpTestFunc(i, test_size);
 				if (file_w_flag &&
-				    ((rslt & HX_INSP_EGETRAW) == 0) &&
-				    ((rslt & HX_INSP_ESWITCHMODE) == 0)) {
+					((rslt & HX_INSP_EGETRAW) == 0) &&
+					((rslt & HX_INSP_ESWITCHMODE) == 0)) {
 					vfs_write(raw_file, g_rslt_data,
-						  g_rslt_data_len, &pos);
+						g_rslt_data_len, &pos);
 					pos += g_rslt_data_len;
 				}
 				ret |= rslt;
@@ -2657,7 +2664,7 @@ static int himax_chip_self_test(struct seq_file *s, void *v)
 			}
 		}
 
-	SELF_TEST_LP_FAIL:
+SELF_TEST_LP_FAIL:
 		himax_press_powerkey();
 		while (private_ts->suspend_resume_done != 1)
 			usleep_range(1000, 1001);
@@ -2667,15 +2674,15 @@ SELF_TEST_FAIL:
 	if (ret) {
 		for (; i < HX_CRITERIA_ITEM; i++) {
 			if (g_test_item_flag[i] == 1)
-				ret |= 1 << (i + ERR_SFT);
+				ret |= 1 << (i+ERR_SFT);
 		}
-#if defined(HX_ZERO_FLASH)
+	#if defined(HX_ZERO_FLASH)
 		hx_print_fw_info();
-		if (file_w_flag) {
-			vfs_write(raw_file, g_rslt_data, g_rslt_data_len, &pos);
-			pos += g_rslt_data_len;
-		}
-#endif
+	if (file_w_flag) {
+		vfs_write(raw_file, g_rslt_data, g_rslt_data_len, &pos);
+		pos += g_rslt_data_len;
+	}
+	#endif
 	}
 
 	if (file_w_flag)
@@ -2687,6 +2694,7 @@ SELF_TEST_FAIL:
 		kp_putname_kernel(vts_name);
 
 	set_fs(fs);
+
 
 #if defined(HX_ZERO_FLASH)
 UPDATE_MPFW_FAIL:
@@ -2728,11 +2736,10 @@ UPDATE_MPFW_FAIL:
 
 	for (i = 0; i < HX_CRITERIA_ITEM - 1; i++) {
 		if (g_test_item_flag[i] == 1) {
-			seq_printf(s, "%s : %s\n", g_himax_inspection_mode[i],
-				   ((ret & (1 << (i + ERR_SFT))) ==
-				    (1 << (i + ERR_SFT))) ?
-					   "Fail" :
-					   "OK");
+			seq_printf(s, "%s : %s\n",
+				g_himax_inspection_mode[i],
+				((ret & (1 << (i + ERR_SFT)))
+				 == (1 << (i + ERR_SFT))) ? "Fail":"OK");
 		}
 	}
 

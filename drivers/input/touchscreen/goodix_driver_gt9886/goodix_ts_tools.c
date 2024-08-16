@@ -27,27 +27,27 @@
 #include <linux/wait.h>
 #include "goodix_ts_core.h"
 
-#define GOODIX_TOOLS_NAME "gtp_tools"
-#define GOODIX_TS_IOC_MAGIC 'G'
-#define NEGLECT_SIZE_MASK (~(_IOC_SIZEMASK << _IOC_SIZESHIFT))
+#define GOODIX_TOOLS_NAME		"gtp_tools"
+#define GOODIX_TS_IOC_MAGIC		'G'
+#define NEGLECT_SIZE_MASK		(~(_IOC_SIZEMASK << _IOC_SIZESHIFT))
 
-#define GTP_IRQ_ENABLE _IO(GOODIX_TS_IOC_MAGIC, 0)
-#define GTP_DEV_RESET _IO(GOODIX_TS_IOC_MAGIC, 1)
+#define GTP_IRQ_ENABLE	_IO(GOODIX_TS_IOC_MAGIC, 0)
+#define GTP_DEV_RESET	_IO(GOODIX_TS_IOC_MAGIC, 1)
 #define GTP_SEND_COMMAND (_IOW(GOODIX_TS_IOC_MAGIC, 2, u8) & NEGLECT_SIZE_MASK)
-#define GTP_SEND_CONFIG (_IOW(GOODIX_TS_IOC_MAGIC, 3, u8) & NEGLECT_SIZE_MASK)
-#define GTP_ASYNC_READ (_IOR(GOODIX_TS_IOC_MAGIC, 4, u8) & NEGLECT_SIZE_MASK)
-#define GTP_SYNC_READ (_IOR(GOODIX_TS_IOC_MAGIC, 5, u8) & NEGLECT_SIZE_MASK)
-#define GTP_ASYNC_WRITE (_IOW(GOODIX_TS_IOC_MAGIC, 6, u8) & NEGLECT_SIZE_MASK)
-#define GTP_READ_CONFIG (_IOW(GOODIX_TS_IOC_MAGIC, 7, u8) & NEGLECT_SIZE_MASK)
-#define GTP_ESD_ENABLE _IO(GOODIX_TS_IOC_MAGIC, 8)
-#define GTP_DRV_VERSION (_IOR(GOODIX_TS_IOC_MAGIC, 9, u8) & NEGLECT_SIZE_MASK)
+#define GTP_SEND_CONFIG	(_IOW(GOODIX_TS_IOC_MAGIC, 3, u8) & NEGLECT_SIZE_MASK)
+#define GTP_ASYNC_READ	(_IOR(GOODIX_TS_IOC_MAGIC, 4, u8) & NEGLECT_SIZE_MASK)
+#define GTP_SYNC_READ	(_IOR(GOODIX_TS_IOC_MAGIC, 5, u8) & NEGLECT_SIZE_MASK)
+#define GTP_ASYNC_WRITE	(_IOW(GOODIX_TS_IOC_MAGIC, 6, u8) & NEGLECT_SIZE_MASK)
+#define GTP_READ_CONFIG	(_IOW(GOODIX_TS_IOC_MAGIC, 7, u8) & NEGLECT_SIZE_MASK)
+#define GTP_ESD_ENABLE	_IO(GOODIX_TS_IOC_MAGIC, 8)
+#define GTP_DRV_VERSION     (_IOR(GOODIX_TS_IOC_MAGIC, 9, u8) & NEGLECT_SIZE_MASK)
 
-#define GOODIX_TS_IOC_MAXNR 10
+#define GOODIX_TS_IOC_MAXNR		10
 
-#define IRQ_FALG (0x01 << 2)
+#define IRQ_FALG	(0x01 << 2)
 
-#define I2C_MSG_HEAD_LEN 20
-#define TS_REG_COORDS_BASE 0x4100
+#define I2C_MSG_HEAD_LEN	20
+#define TS_REG_COORDS_BASE	0x4100
 
 /*
  * struct goodix_tools_data - goodix tools data message used in sync read
@@ -65,6 +65,7 @@ struct goodix_tools_data {
 	bool filled;
 	struct list_head list;
 };
+
 
 /*
  * struct goodix_tools_dev - goodix tools device struct
@@ -86,6 +87,7 @@ struct goodix_tools_dev {
 	struct goodix_ext_module module;
 } *goodix_tools_dev;
 
+
 /* read data from i2c asynchronous,
  * success return bytes read, else return <= 0
  */
@@ -103,20 +105,19 @@ static int async_read(struct goodix_tools_dev *dev, void __user *arg)
 		ret = -EFAULT;
 		goto err_out;
 	}
-	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8) +
-		   (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
-	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8) +
-		 (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
+	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8)
+			+ (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
+	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8)
+			+ (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
 
 	databuf = kzalloc(length, GFP_KERNEL);
 	if (!databuf) {
-		ts_err("Alloc memory failed");
-		return -ENOMEM;
+			ts_err("Alloc memory failed");
+			return -ENOMEM;
 	}
 
 	if (!hw_ops->read_trans(ts_dev, reg_addr, databuf, length)) {
-		if (copy_to_user((u8 *)arg + I2C_MSG_HEAD_LEN, databuf,
-				 length)) {
+		if (copy_to_user((u8 *)arg + I2C_MSG_HEAD_LEN, databuf, length)) {
 			ret = -EFAULT;
 			ts_err("Copy_to_user failed");
 		} else {
@@ -144,10 +145,10 @@ static int read_config_data(struct goodix_ts_device *ts_dev, void __user *arg)
 		ts_err("Copy data from user failed");
 		return -EFAULT;
 	}
-	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8) +
-		   (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
-	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8) +
-		 (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
+	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8)
+		   + (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
+	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8)
+		 + (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
 	ts_info("read config,reg_addr=0x%x, length=%d", reg_addr, length);
 	tmp_buf = kzalloc(length, GFP_KERNEL);
 	if (!tmp_buf) {
@@ -161,8 +162,7 @@ static int read_config_data(struct goodix_ts_device *ts_dev, void __user *arg)
 		else
 			ret = -EINVAL;
 	} else {
-		ret = ts_dev->hw_ops->read_trans(ts_dev, reg_addr, tmp_buf,
-						 length);
+		ret = ts_dev->hw_ops->read_trans(ts_dev, reg_addr, tmp_buf, length);
 		if (!ret)
 			ret = length;
 	}
@@ -193,31 +193,30 @@ static int sync_read(struct goodix_tools_dev *dev, void __user *arg)
 		ts_err("Copy data from user failed");
 		return -EFAULT;
 	}
-	tools_data.reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8) +
-			      (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
-	tools_data.length = i2c_msg_head[4] + (i2c_msg_head[5] << 8) +
-			    (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
+	tools_data.reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8)
+				+ (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
+	tools_data.length = i2c_msg_head[4] + (i2c_msg_head[5] << 8)
+				+ (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
 	tools_data.filled = 0;
 
 	tools_data.data = kzalloc(tools_data.length, GFP_KERNEL);
 	if (!tools_data.data) {
-		ts_err("Alloc memory failed");
-		return -ENOMEM;
+			ts_err("Alloc memory failed");
+			return -ENOMEM;
 	}
 
 	mutex_lock(&dev->mutex);
 	list_add_tail(&tools_data.list, &dev->head);
 	mutex_unlock(&dev->mutex);
 	/* wait queue will timeout after 1 seconds */
-	wait_event_interruptible_timeout(dev->wq, tools_data.filled == 1,
-					 HZ * 3);
+	wait_event_interruptible_timeout(dev->wq, tools_data.filled == 1, HZ * 3);
 
 	mutex_lock(&dev->mutex);
 	list_del(&tools_data.list);
 	mutex_unlock(&dev->mutex);
 	if (tools_data.filled == 1) {
 		if (copy_to_user((u8 *)arg + I2C_MSG_HEAD_LEN, tools_data.data,
-				 tools_data.length)) {
+							tools_data.length)) {
 			ret = -EFAULT;
 			ts_err("Copy_to_user failed");
 		} else {
@@ -249,10 +248,10 @@ static int async_write(struct goodix_tools_dev *dev, void __user *arg)
 		ts_err("Copy data from user failed");
 		return -EFAULT;
 	}
-	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8) +
-		   (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
-	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8) +
-		 (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
+	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8)
+			+ (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
+	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8)
+			+ (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
 
 	databuf = kzalloc(length, GFP_KERNEL);
 	if (!databuf) {
@@ -292,10 +291,10 @@ static int init_cfg_data(struct goodix_ts_config *cfg, void __user *arg)
 		return -EFAULT;
 	}
 
-	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8) +
-		   (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
-	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8) +
-		 (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
+	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8)
+			+ (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
+	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8)
+			+ (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
 
 	ret = copy_from_user(cfg->data, (u8 *)arg + I2C_MSG_HEAD_LEN, length);
 	if (ret) {
@@ -342,7 +341,7 @@ int sync_read_rawdata(unsigned int reg, unsigned char *data, unsigned int len)
 	mutex_unlock(&dev->mutex);
 	/* wait queue will timeout after 1 seconds */
 	wait_event_interruptible_timeout(dev->wq, tools_data.filled == 1,
-					 HZ * 3);
+		HZ * 3);
 	mutex_lock(&dev->mutex);
 	list_del(&tools_data.list);
 	mutex_unlock(&dev->mutex);
@@ -365,7 +364,7 @@ int sync_read_rawdata(unsigned int reg, unsigned char *data, unsigned int len)
  * Returns >=0 - succeed, else failed
  */
 static long goodix_tools_ioctl(struct file *filp, unsigned int cmd,
-			       unsigned long arg)
+					unsigned long arg)
 {
 	int ret = 0;
 	struct goodix_tools_dev *dev = filp->private_data;
@@ -386,8 +385,8 @@ static long goodix_tools_ioctl(struct file *filp, unsigned int cmd,
 		return -ENOTTY;
 	}
 	if (_IOC_NR(cmd) > GOODIX_TS_IOC_MAXNR) {
-		ts_err("Bad cmd num:%d > %d", _IOC_NR(cmd),
-		       GOODIX_TS_IOC_MAXNR);
+		ts_err("Bad cmd num:%d > %d",
+		       _IOC_NR(cmd), GOODIX_TS_IOC_MAXNR);
 		return -ENOTTY;
 	}
 
@@ -421,7 +420,7 @@ static long goodix_tools_ioctl(struct file *filp, unsigned int cmd,
 		break;
 	case GTP_SEND_COMMAND:
 		ret = copy_from_user(&temp_cmd, (void __user *)arg,
-				     sizeof(struct goodix_ts_cmd));
+					sizeof(struct goodix_ts_cmd));
 		if (ret) {
 			ret = -EINVAL;
 			goto err_out;
@@ -503,6 +502,7 @@ err_out:
 
 int goodix_tools_register(void)
 {
+
 	int ret = 0;
 
 	ts_info("register tools module");
@@ -512,7 +512,9 @@ int goodix_tools_register(void)
 	ret = goodix_register_ext_module(&goodix_tools_dev->module);
 
 	if (ret) {
+
 		ts_info("failed register to core module");
+
 	}
 
 	return ret;
@@ -520,6 +522,7 @@ int goodix_tools_register(void)
 
 int goodix_tools_unregister(void)
 {
+
 	int ret = 0;
 
 	/* when the last close this dev node unregister the module */
@@ -527,11 +530,12 @@ int goodix_tools_unregister(void)
 	ret = goodix_unregister_ext_module(&goodix_tools_dev->module);
 
 	return ret;
+
 }
 
 #ifdef CONFIG_COMPAT
 static long goodix_tools_compat_ioctl(struct file *file, unsigned int cmd,
-				      unsigned long arg)
+				unsigned long arg)
 {
 	void __user *arg32 = compat_ptr(arg);
 
@@ -573,7 +577,7 @@ static int goodix_tools_release(struct inode *inode, struct file *filp)
  * return: EVT_CONTINUE let other module handle this irq
  */
 static int goodix_tools_module_irq(struct goodix_ts_core *core_data,
-				   struct goodix_ext_module *module)
+	struct goodix_ext_module *module)
 {
 	struct goodix_tools_dev *dev = module->priv_data;
 	struct goodix_ts_device *ts_dev = dev->ts_core->ts_dev;
@@ -584,19 +588,16 @@ static int goodix_tools_module_irq(struct goodix_ts_core *core_data,
 
 	mutex_lock(&dev->mutex);
 	if (!list_empty(&dev->head)) {
-		r = hw_ops->read_trans(ts_dev,
-				       ts_dev->reg.coor /* TS_REG_COORDS_BASE*/,
-				       &evt_sta, 1);
+		r = hw_ops->read_trans(ts_dev, ts_dev->reg.coor/* TS_REG_COORDS_BASE*/, &evt_sta, 1);
 		if (r < 0 || ((evt_sta & GOODIX_TOUCH_EVENT) == 0)) {
 			ts_err("data not ready:0x%x, read ret =%d", evt_sta, r);
 			mutex_unlock(&dev->mutex);
 			return EVT_CONTINUE;
 		}
 
-		list_for_each_entry_safe (tools_data, next, &dev->head, list) {
+		list_for_each_entry_safe(tools_data, next, &dev->head, list) {
 			if (!hw_ops->read_trans(ts_dev, tools_data->reg_addr,
-						tools_data->data,
-						tools_data->length)) {
+					tools_data->data, tools_data->length)) {
 				tools_data->filled = 1;
 			}
 		}
@@ -607,7 +608,7 @@ static int goodix_tools_module_irq(struct goodix_ts_core *core_data,
 }
 
 static int goodix_tools_module_init(struct goodix_ts_core *core_data,
-				    struct goodix_ext_module *module)
+			struct goodix_ext_module *module)
 {
 	struct goodix_tools_dev *tools_dev = module->priv_data;
 
@@ -620,19 +621,19 @@ static int goodix_tools_module_init(struct goodix_ts_core *core_data,
 }
 
 static const struct file_operations goodix_tools_fops = {
-	.owner = THIS_MODULE,
-	.open = goodix_tools_open,
-	.release = goodix_tools_release,
-	.unlocked_ioctl = goodix_tools_ioctl,
+	.owner		= THIS_MODULE,
+	.open		= goodix_tools_open,
+	.release	= goodix_tools_release,
+	.unlocked_ioctl	= goodix_tools_ioctl,
 #ifdef CONFIG_COMPAT
 	.compat_ioctl = goodix_tools_compat_ioctl,
 #endif
 };
 
 static struct miscdevice goodix_tools_miscdev = {
-	.minor = MISC_DYNAMIC_MINOR,
-	.name = GOODIX_TOOLS_NAME,
-	.fops = &goodix_tools_fops,
+	.minor	= MISC_DYNAMIC_MINOR,
+	.name	= GOODIX_TOOLS_NAME,
+	.fops	= &goodix_tools_fops,
 };
 
 static struct goodix_ext_module_funcs goodix_tools_module_funcs = {

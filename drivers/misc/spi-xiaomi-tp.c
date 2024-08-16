@@ -4,15 +4,14 @@
 
 static struct ts_spi_info owner;
 
-static ssize_t ts_xsfer_state_show(struct device *dev,
-				   struct device_attribute *attr, char *buf)
+static ssize_t ts_xsfer_state_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	ssize_t ret;
 
 	mutex_lock(&owner.lock);
 
-	ret = snprintf(buf, PAGE_SIZE, "[%s] used:%d, tmp:%d\n", owner.name,
-		       owner.used, owner.tmp);
+	ret = snprintf(buf, PAGE_SIZE, "[%s] used:%d, tmp:%d\n",
+		owner.name, owner.used, owner.tmp);
 
 	mutex_unlock(&owner.lock);
 
@@ -21,12 +20,14 @@ static ssize_t ts_xsfer_state_show(struct device *dev,
 
 static DEVICE_ATTR(ts_xsfer_state, S_IRUGO, ts_xsfer_state_show, NULL);
 
+
 /*tmporary get spi device's ownership until invoke tmp_drop_ts_xsfer()
  *
  *return -EBUSY others is using, -EPERM if spi device already belong to others.
  */
 int32_t tmp_hold_ts_xsfer(struct spi_device **client)
 {
+
 	if (!owner.init) {
 		PDEBUG("ts_xsfer does not exist");
 		return -EINVAL;
@@ -35,8 +36,7 @@ int32_t tmp_hold_ts_xsfer(struct spi_device **client)
 	mutex_lock(&owner.lock);
 
 	if (owner.used) {
-		PDEBUG("ts_xsfer belong to %s, can't tmporary use it\n",
-		       owner.name);
+		PDEBUG("ts_xsfer belong to %s, can't tmporary use it\n", owner.name);
 		mutex_unlock(&owner.lock);
 		return -EPERM;
 	}
@@ -80,8 +80,7 @@ int32_t get_ts_xsfer(const char *name)
 	mutex_lock(&owner.lock);
 
 	if (owner.used) {
-		PDEBUG("ts_xsfer belong to %s, others can't get it\n",
-		       owner.name);
+		PDEBUG("ts_xsfer belong to %s, others can't get it\n", owner.name);
 		mutex_unlock(&owner.lock);
 		return -EPERM;
 	}
@@ -151,8 +150,7 @@ static int32_t ts_spi_probe(struct spi_device *client)
 	owner.tmp = false;
 	owner.client = client;
 
-	ret = sysfs_create_file(&client->dev.kobj,
-				&dev_attr_ts_xsfer_state.attr);
+	ret = sysfs_create_file(&client->dev.kobj, &dev_attr_ts_xsfer_state.attr);
 	if (ret < 0) {
 		PDEBUG("create sysfs failed\n");
 	}
@@ -172,9 +170,7 @@ static int32_t ts_spi_remove(struct spi_device *client)
 }
 
 static struct of_device_id ts_match_tbl[] = {
-	{
-		.compatible = "xiaomi,spi-for-tp",
-	},
+	{ .compatible = "xiaomi,spi-for-tp", },
 	{},
 };
 
@@ -198,6 +194,7 @@ static void __exit touch_spi_exit(void)
 {
 	spi_unregister_driver(&touch_spi_drv);
 }
+
 
 module_init(touch_spi_init);
 module_exit(touch_spi_exit);

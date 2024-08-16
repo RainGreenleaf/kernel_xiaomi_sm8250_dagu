@@ -1,1 +1,1 @@
-obj-$(CONFIG_INPUT_XIAOMI_KEYBOARD) += xiaomi_keyboard.o
+obj-$(CONFIG_XIAOMI_KEYBOARD) += xiaomi_keyboard.o

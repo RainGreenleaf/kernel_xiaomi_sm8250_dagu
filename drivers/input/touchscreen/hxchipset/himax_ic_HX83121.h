@@ -23,10 +23,11 @@ extern u8 HX_EXCP_RESET_ACTIVATE;
 #endif
 
 #define hx83121a_fw_addr_raw_out_sel 0x100072EC
-#define hx83121a_data_df_rx 60
-#define hx83121a_data_df_tx 40
-#define hx83121a_data_adc_num 1280
-#define hx83121a_notouch_frame 0
-#define hx83121a_ic_cmd_incr4 0x12
+#define hx83121a_data_df_rx          60
+#define hx83121a_data_df_tx          40
+#define hx83121a_data_adc_num        1280
+#define hx83121a_notouch_frame       0
+#define hx83121a_ic_cmd_incr4        0x12
 
 #define HX83121A_FLASH_SIZE 261120
+

@@ -27,9 +27,9 @@
 #include <linux/atomic.h>
 #include "goodix_ts_core.h"
 
-#define QUERYBIT(longlong, bit) (!!(longlong[bit / 8] & (1 << bit % 8)))
+#define QUERYBIT(longlong, bit) (!!(longlong[bit/8] & (1 << bit%8)))
 
-#define GSX_GESTURE_TYPE_LEN 32
+#define GSX_GESTURE_TYPE_LEN	32
 
 /*
  * struct gesture_module - gesture module data
@@ -50,25 +50,24 @@ struct gesture_module {
 static struct gesture_module *gsx_gesture; /*allocated in gesture init module*/
 static bool module_initialized;
 
+
 int goodix_gesture_enable(int enable)
 {
 	int ret = 0;
 
 	if (!module_initialized)
-		return 0;
+		return 0;		
 
 	if (enable) {
 		if (atomic_read(&gsx_gesture->registered))
 			ts_info("gesture module has been already registered");
 		else
-			ret = goodix_register_ext_module_no_wait(
-				&gsx_gesture->module);
+			ret = goodix_register_ext_module_no_wait(&gsx_gesture->module);
 	} else {
 		if (!atomic_read(&gsx_gesture->registered))
 			ts_info("gesture module has been already unregistered");
 		else
-			ret = goodix_unregister_ext_module(
-				&gsx_gesture->module);
+			ret = goodix_unregister_ext_module(&gsx_gesture->module);
 	}
 
 	return ret;
@@ -82,7 +81,7 @@ int goodix_gesture_enable(int enable)
  * Returns >=0 - succeed,< 0 - failed
  */
 static ssize_t gsx_gesture_type_show(struct goodix_ext_module *module,
-				     char *buf)
+				char *buf)
 {
 	int count = 0, i, ret = 0;
 	unsigned char *type;
@@ -93,7 +92,8 @@ static ssize_t gsx_gesture_type_show(struct goodix_ext_module *module,
 	read_lock(&gsx_gesture->rwlock);
 	for (i = 0; i < 256; i++) {
 		if (QUERYBIT(gsx_gesture->gesture_type, i)) {
-			count += scnprintf(type + count, PAGE_SIZE, "%02x,", i);
+			count += scnprintf(type + count,
+					   PAGE_SIZE, "%02x,", i);
 		}
 	}
 	if (count > 0)
@@ -113,7 +113,7 @@ static ssize_t gsx_gesture_type_show(struct goodix_ext_module *module,
  * Returns >0 - valid gestures, < 0 - failed
  */
 static ssize_t gsx_gesture_type_store(struct goodix_ext_module *module,
-				      const char *buf, size_t count)
+		const char *buf, size_t count)
 {
 	int i;
 
@@ -125,21 +125,21 @@ static ssize_t gsx_gesture_type_store(struct goodix_ext_module *module,
 	write_lock(&gsx_gesture->rwlock);
 	memset(gsx_gesture->gesture_type, 0, GSX_GESTURE_TYPE_LEN);
 	for (i = 0; i < count; i++)
-		gsx_gesture->gesture_type[buf[i] / 8] |= (0x1 << buf[i] % 8);
+		gsx_gesture->gesture_type[buf[i]/8] |= (0x1 << buf[i]%8);
 	write_unlock(&gsx_gesture->rwlock);
 
 	return count;
 }
 
 static ssize_t gsx_gesture_enable_show(struct goodix_ext_module *module,
-				       char *buf)
+		char *buf)
 {
 	return scnprintf(buf, PAGE_SIZE, "%d\n",
 			 atomic_read(&gsx_gesture->registered));
 }
 
 static ssize_t gsx_gesture_enable_store(struct goodix_ext_module *module,
-					const char *buf, size_t count)
+		const char *buf, size_t count)
 {
 	bool val;
 	int ret;
@@ -158,7 +158,7 @@ static ssize_t gsx_gesture_enable_store(struct goodix_ext_module *module,
 }
 
 static ssize_t gsx_gesture_data_show(struct goodix_ext_module *module,
-				     char *buf)
+				char *buf)
 {
 	ssize_t count;
 
@@ -172,14 +172,14 @@ static ssize_t gsx_gesture_data_show(struct goodix_ext_module *module,
 
 const struct goodix_ext_attribute gesture_attrs[] = {
 	__EXTMOD_ATTR(type, 0666, gsx_gesture_type_show,
-		      gsx_gesture_type_store),
+		gsx_gesture_type_store),
 	__EXTMOD_ATTR(enable, 0666, gsx_gesture_enable_show,
-		      gsx_gesture_enable_store),
+		gsx_gesture_enable_store),
 	__EXTMOD_ATTR(data, 0444, gsx_gesture_data_show, NULL)
 };
 
 static int gsx_gesture_init(struct goodix_ts_core *cd,
-			    struct goodix_ext_module *module)
+		struct goodix_ext_module *module)
 {
 	if (!cd || !cd->hw_ops->gesture) {
 		ts_err("gesture unsupported");
@@ -196,7 +196,7 @@ static int gsx_gesture_init(struct goodix_ts_core *cd,
 }
 
 static int gsx_gesture_exit(struct goodix_ts_core *cd,
-			    struct goodix_ext_module *module)
+		struct goodix_ext_module *module)
 {
 	if (!cd || !cd->hw_ops->gesture) {
 		ts_err("gesture unsupported");
@@ -207,7 +207,7 @@ static int gsx_gesture_exit(struct goodix_ts_core *cd,
 	ts_debug("disable all gesture type");
 	memset(gsx_gesture->gesture_type, 0x00, GSX_GESTURE_TYPE_LEN);
 	atomic_set(&gsx_gesture->registered, 0);
-
+	
 	return 0;
 }
 
@@ -221,10 +221,10 @@ static int gsx_gesture_exit(struct goodix_ts_core *cd,
  * return: 0 goon execute, EVT_CANCEL_IRQEVT  stop execute
  */
 static int gsx_gesture_ist(struct goodix_ts_core *cd,
-			   struct goodix_ext_module *module)
+	struct goodix_ext_module *module)
 {
 	struct goodix_ts_hw_ops *hw_ops = cd->hw_ops;
-	struct goodix_ts_event gs_event = { 0 };
+	struct goodix_ts_event gs_event = {0};
 	int ret;
 	int key_value;
 
@@ -239,7 +239,8 @@ static int gsx_gesture_ist(struct goodix_ts_core *cd,
 	}
 
 	if (!(gs_event.event_type & EVENT_GESTURE)) {
-		ts_err("invalid event type: 0x%x", cd->ts_event.event_type);
+		ts_err("invalid event type: 0x%x",
+			cd->ts_event.event_type);
 		goto re_send_ges_cmd;
 	}
 
@@ -285,7 +286,7 @@ gesture_ist_exit:
  * return: 0 goon execute, EVT_IRQCANCLED  stop execute
  */
 static int gsx_gesture_before_suspend(struct goodix_ts_core *cd,
-				      struct goodix_ext_module *module)
+	struct goodix_ext_module *module)
 {
 	int ret;
 	const struct goodix_ts_hw_ops *hw_ops = cd->hw_ops;
@@ -303,7 +304,7 @@ static int gsx_gesture_before_suspend(struct goodix_ts_core *cd,
 }
 
 static int gsx_gesture_before_resume(struct goodix_ts_core *cd,
-				     struct goodix_ext_module *module)
+	struct goodix_ext_module *module)
 {
 	const struct goodix_ts_hw_ops *hw_ops = cd->hw_ops;
 
@@ -342,8 +343,8 @@ int gesture_module_init(void)
 	rwlock_init(&gsx_gesture->rwlock);
 
 	/* gesture sysfs init */
-	ret = kobject_init_and_add(&gsx_gesture->module.kobj, def_kobj_type,
-				   def_kobj, "gesture");
+	ret = kobject_init_and_add(&gsx_gesture->module.kobj,
+			def_kobj_type, def_kobj, "gesture");
 	if (ret) {
 		ts_err("failed create gesture sysfs node!");
 		goto err_out;
@@ -351,12 +352,12 @@ int gesture_module_init(void)
 
 	for (i = 0; i < ARRAY_SIZE(gesture_attrs) && !ret; i++)
 		ret = sysfs_create_file(&gsx_gesture->module.kobj,
-					&gesture_attrs[i].attr);
+				&gesture_attrs[i].attr);
 	if (ret) {
 		ts_err("failed create gst sysfs files");
 		while (--i >= 0)
 			sysfs_remove_file(&gsx_gesture->module.kobj,
-					  &gesture_attrs[i].attr);
+					&gesture_attrs[i].attr);
 
 		kobject_put(&gsx_gesture->module.kobj);
 		goto err_out;
@@ -386,7 +387,7 @@ void gesture_module_exit(void)
 	/* deinit sysfs */
 	for (i = 0; i < ARRAY_SIZE(gesture_attrs); i++)
 		sysfs_remove_file(&gsx_gesture->module.kobj,
-				  &gesture_attrs[i].attr);
+					&gesture_attrs[i].attr);
 
 	kobject_put(&gsx_gesture->module.kobj);
 	kfree(gsx_gesture);

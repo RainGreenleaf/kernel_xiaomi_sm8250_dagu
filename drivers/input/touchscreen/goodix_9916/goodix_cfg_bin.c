@@ -1,4 +1,4 @@
-/*
+ /*
   * Goodix Touchscreen Driver
   * Copyright (C) 2020 - 2021 Goodix, Inc.
   *
@@ -16,27 +16,27 @@
   */
 #include "goodix_ts_core.h"
 
-#define TS_BIN_VERSION_START_INDEX 5
-#define TS_BIN_VERSION_LEN 4
-#define TS_CFG_BIN_HEAD_RESERVED_LEN 6
-#define TS_CFG_OFFSET_LEN 2
-#define TS_IC_TYPE_NAME_MAX_LEN 15
-#define TS_CFG_BIN_HEAD_LEN                                                    \
-	(sizeof(struct goodix_cfg_bin_head) + TS_CFG_BIN_HEAD_RESERVED_LEN)
-#define TS_PKG_CONST_INFO_LEN (sizeof(struct goodix_cfg_pkg_const_info))
-#define TS_PKG_REG_INFO_LEN (sizeof(struct goodix_cfg_pkg_reg_info))
-#define TS_PKG_HEAD_LEN (TS_PKG_CONST_INFO_LEN + TS_PKG_REG_INFO_LEN)
+#define TS_BIN_VERSION_START_INDEX		5
+#define TS_BIN_VERSION_LEN				4
+#define TS_CFG_BIN_HEAD_RESERVED_LEN	6
+#define TS_CFG_OFFSET_LEN				2
+#define TS_IC_TYPE_NAME_MAX_LEN			15
+#define TS_CFG_BIN_HEAD_LEN		(sizeof(struct goodix_cfg_bin_head) + \
+					TS_CFG_BIN_HEAD_RESERVED_LEN)
+#define TS_PKG_CONST_INFO_LEN	(sizeof(struct goodix_cfg_pkg_const_info))
+#define TS_PKG_REG_INFO_LEN		(sizeof(struct goodix_cfg_pkg_reg_info))
+#define TS_PKG_HEAD_LEN			(TS_PKG_CONST_INFO_LEN + TS_PKG_REG_INFO_LEN)
 
 /*cfg block definitin*/
-#define TS_CFG_BLOCK_PID_LEN 8
-#define TS_CFG_BLOCK_VID_LEN 8
-#define TS_CFG_BLOCK_FW_MASK_LEN 9
-#define TS_CFG_BLOCK_FW_PATCH_LEN 4
-#define TS_CFG_BLOCK_RESERVED_LEN 9
+#define TS_CFG_BLOCK_PID_LEN		8
+#define TS_CFG_BLOCK_VID_LEN		8
+#define TS_CFG_BLOCK_FW_MASK_LEN	9
+#define TS_CFG_BLOCK_FW_PATCH_LEN	4
+#define TS_CFG_BLOCK_RESERVED_LEN	9
 
-#define TS_NORMAL_CFG 0x01
-#define TS_HIGH_SENSE_CFG 0x03
-#define TS_RQST_FW_RETRY_TIMES 2
+#define TS_NORMAL_CFG 				0x01
+#define TS_HIGH_SENSE_CFG 			0x03
+#define TS_RQST_FW_RETRY_TIMES 		2
 
 #pragma pack(1)
 struct goodix_cfg_pkg_reg {
@@ -100,8 +100,8 @@ struct goodix_cfg_bin {
 	struct goodix_cfg_package *cfg_pkgs;
 };
 
-static int goodix_read_cfg_bin(struct device *dev, const char *cfg_name,
-			       struct goodix_cfg_bin *cfg_bin)
+static int goodix_read_cfg_bin(struct device *dev, const char *cfg_name, 
+			struct goodix_cfg_bin *cfg_bin)
 {
 	const struct firmware *firmware = NULL;
 	int ret;
@@ -178,8 +178,7 @@ static int goodix_parse_cfg_bin(struct goodix_cfg_bin *cfg_bin)
 
 	/*allocate memory for cfg packages*/
 	cfg_bin->cfg_pkgs = kzalloc(sizeof(struct goodix_cfg_package) *
-					    cfg_bin->head.pkg_num,
-				    GFP_KERNEL);
+				    cfg_bin->head.pkg_num, GFP_KERNEL);
 	if (!cfg_bin->cfg_pkgs) {
 		ts_err("cfg_pkgs, allocate memory ERROR");
 		return -ENOMEM;
@@ -189,30 +188,19 @@ static int goodix_parse_cfg_bin(struct goodix_cfg_bin *cfg_bin)
 	for (i = 0; i < cfg_bin->head.pkg_num; i++) {
 		/*get cfg pkg length*/
 		if (i == cfg_bin->head.pkg_num - 1) {
-			offset1 = cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN +
-						    i * TS_CFG_OFFSET_LEN] +
-				  (cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN +
-						     i * TS_CFG_OFFSET_LEN + 1]
-				   << 8);
+			offset1 = cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN + i * TS_CFG_OFFSET_LEN] +
+				(cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN + i * TS_CFG_OFFSET_LEN + 1] << 8);
 
-			cfg_bin->cfg_pkgs[i].pkg_len =
-				cfg_bin->bin_data_len - offset1;
+			cfg_bin->cfg_pkgs[i].pkg_len = cfg_bin->bin_data_len - offset1;
 		} else {
-			offset1 = cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN +
-						    i * TS_CFG_OFFSET_LEN] +
-				  (cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN +
-						     i * TS_CFG_OFFSET_LEN + 1]
-				   << 8);
+			offset1 = cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN + i * TS_CFG_OFFSET_LEN] +
+				(cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN + i * TS_CFG_OFFSET_LEN + 1] << 8);
 
-			offset2 = cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN +
-						    i * TS_CFG_OFFSET_LEN + 2] +
-				  (cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN +
-						     i * TS_CFG_OFFSET_LEN + 3]
-				   << 8);
+			offset2 = cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN + i * TS_CFG_OFFSET_LEN + 2] +
+				(cfg_bin->bin_data[TS_CFG_BIN_HEAD_LEN + i * TS_CFG_OFFSET_LEN + 3] << 8);
 
 			if (offset2 <= offset1) {
-				ts_err("offset error,pkg:%d, offset1:%d, offset2:%d",
-				       i, offset1, offset2);
+				ts_err("offset error,pkg:%d, offset1:%d, offset2:%d", i, offset1, offset2);
 				goto exit;
 			}
 
@@ -226,14 +214,12 @@ static int goodix_parse_cfg_bin(struct goodix_cfg_bin *cfg_bin)
 		       TS_PKG_REG_INFO_LEN);
 
 		/*get configuration data*/
-		cfg_bin->cfg_pkgs[i].cfg =
-			&cfg_bin->bin_data[offset1 + TS_PKG_HEAD_LEN];
+		cfg_bin->cfg_pkgs[i].cfg = &cfg_bin->bin_data[offset1 + TS_PKG_HEAD_LEN];
 	}
 
 	/*debug, print pkg information*/
-	ts_info("Driver bin info: ver %s, len %d, pkgs %d",
-		cfg_bin->head.bin_version, cfg_bin->head.bin_len,
-		cfg_bin->head.pkg_num);
+	ts_info("Driver bin info: ver %s, len %d, pkgs %d", cfg_bin->head.bin_version,
+		cfg_bin->head.bin_len, cfg_bin->head.pkg_num);
 
 	return 0;
 exit:
@@ -242,7 +228,7 @@ exit:
 }
 
 static int goodix_get_reg_and_cfg(struct goodix_ts_core *cd, u8 sensor_id,
-				  struct goodix_cfg_bin *cfg_bin)
+			   struct goodix_cfg_bin *cfg_bin)
 {
 	int i;
 	u8 cfg_type;
@@ -251,7 +237,7 @@ static int goodix_get_reg_and_cfg(struct goodix_ts_core *cd, u8 sensor_id,
 
 	if (!cfg_bin->head.pkg_num || !cfg_bin->cfg_pkgs) {
 		ts_err("there is none cfg package, pkg_num:%d",
-		       cfg_bin->head.pkg_num);
+			cfg_bin->head.pkg_num);
 		return -EINVAL;
 	}
 
@@ -260,30 +246,29 @@ static int goodix_get_reg_and_cfg(struct goodix_ts_core *cd, u8 sensor_id,
 		cfg_pkg = &cfg_bin->cfg_pkgs[i];
 		if (sensor_id != cfg_pkg->cnst_info.sensor_id) {
 			ts_info("pkg:%d, sensor id contrast FAILED, bin %d != %d",
-				i, cfg_pkg->cnst_info.sensor_id, sensor_id);
+			       i, cfg_pkg->cnst_info.sensor_id, sensor_id);
 			continue;
 		}
 		cfg_type = cfg_pkg->cnst_info.cfg_type;
 		if (cfg_type >= GOODIX_MAX_CONFIG_GROUP) {
 			ts_err("usupported config type %d",
-			       cfg_pkg->cnst_info.cfg_type);
+				cfg_pkg->cnst_info.cfg_type);
 			goto err_out;
 		}
 
 		cfg_len = cfg_pkg->pkg_len - TS_PKG_CONST_INFO_LEN -
-			  TS_PKG_REG_INFO_LEN;
+			    TS_PKG_REG_INFO_LEN;
 		if (cfg_len > GOODIX_CFG_MAX_SIZE) {
-			ts_err("config len exceed limit %d > %d", cfg_len,
-			       GOODIX_CFG_MAX_SIZE);
+			ts_err("config len exceed limit %d > %d",
+				cfg_len, GOODIX_CFG_MAX_SIZE);
 			goto err_out;
 		}
 		if (cd->ic_configs[cfg_type]) {
 			ts_err("found same type config twice for sensor id %d, skiped",
-			       sensor_id);
+				sensor_id);
 			continue;
 		}
-		cd->ic_configs[cfg_type] =
-			kzalloc(sizeof(struct goodix_ic_config), GFP_KERNEL);
+		cd->ic_configs[cfg_type] = kzalloc(sizeof(struct goodix_ic_config), GFP_KERNEL);
 		if (!cd->ic_configs[cfg_type])
 			goto err_out;
 		cd->ic_configs[cfg_type]->len = cfg_len;
@@ -305,7 +290,7 @@ err_out:
 
 static int goodix_get_config_data(struct goodix_ts_core *cd, u8 sensor_id)
 {
-	struct goodix_cfg_bin cfg_bin = { 0 };
+	struct goodix_cfg_bin cfg_bin = {0};
 	char *cfg_name = cd->board_data.cfg_bin_name;
 	int ret;
 
@@ -345,3 +330,5 @@ int goodix_get_config_proc(struct goodix_ts_core *cd)
 
 	return goodix_get_config_data(cd, cd->fw_version.sensor_id);
 }
+
+

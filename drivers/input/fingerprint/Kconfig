@@ -1,18 +1,18 @@
 #
-# Fingerprint driver configuration
+# Fingerprint sensor configuration
 #
 menuconfig INPUT_FINGERPRINT
-	bool "Fingerprints"
+	bool "Fingerprint sensors"
 	help
-	  Say Y here, and a list of supported fingerprints will be displayed.
+	  Say Y here, and a list of supported fingerprint sensors will be displayed.
 	  This option doesn't affect the kernel.
 
-	  If unsure, say Y.
+	  If unsure, say N.
 
 if INPUT_FINGERPRINT
 
-source "drivers/input/fingerprint/fpc/Kconfig"
 source "drivers/input/fingerprint/fpc_fod/Kconfig"
+source "drivers/input/fingerprint/fpc_tee/Kconfig"
 source "drivers/input/fingerprint/goodix/Kconfig"
 source "drivers/input/fingerprint/goodix_fod/Kconfig"
 

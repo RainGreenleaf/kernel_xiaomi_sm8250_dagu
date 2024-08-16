@@ -44,8 +44,8 @@
 #define USB_VENDOR_TEXAS_INSTRUMENTS		0x0451
 #define USB_PRODUCT_TUSB8041_USB3		0x8140
 #define USB_PRODUCT_TUSB8041_USB2		0x8142
-#define HUB_QUIRK_CHECK_PORT_AUTOSUSPEND	0x01
-#define HUB_QUIRK_DISABLE_AUTOSUSPEND		0x02
+#define HUB_QUIRK_CHECK_PORT_AUTOSUSPEND	BIT(0)
+#define HUB_QUIRK_DISABLE_AUTOSUSPEND		BIT(1)
 
 #define USB_TP_TRANSMISSION_DELAY	40	/* ns */
 #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
@@ -149,7 +149,7 @@ struct usb_hub *usb_hub_to_struct_hub(struct usb_device *hdev)
 
 int usb_device_supports_lpm(struct usb_device *udev)
 {
-	/* Some devices have trouble with LPM so can't support lpm*/
+	/* Some devices have trouble with LPM  so can't support LPM */
 	return 0;
 
 	/* Skip if the device BOS descriptor couldn't be read */
@@ -2195,12 +2195,12 @@ void usb_disconnect(struct usb_device **pdev)
 	dev_info(&udev->dev, "USB disconnect, device number %d\n",
 			udev->devnum);
 
-	if(udev->parent){
+	if (udev->parent) {
 		hub = usb_hub_to_struct_hub(udev->parent);
-		if(hub->asuspend && hub->addr_number == udev->devnum){
+		if (hub->asuspend && hub->addr_number == udev->devnum) {
 			hub->asuspend = 0;
 			hub->addr_number = 0;
-			dev_info(&udev->dev,"usb_disconnect reset asuspend and addr_number\n");
+			dev_info(&udev->dev, "usb_disconnect reset asuspend and addr_number\n");
 		}
 	}
 
@@ -2351,17 +2351,25 @@ static int usb_enumerate_device_otg(struct usb_device *udev)
 			}
 		} else if (desc->bLength == sizeof
 				(struct usb_otg_descriptor)) {
-			/* Set a_alt_hnp_support for legacy otg device */
-			err = usb_control_msg(udev,
-				usb_sndctrlpipe(udev, 0),
-				USB_REQ_SET_FEATURE, 0,
-				USB_DEVICE_A_ALT_HNP_SUPPORT,
-				0, NULL, 0,
-				USB_CTRL_SET_TIMEOUT);
-			if (err < 0)
-				dev_err(&udev->dev,
-					"set a_alt_hnp_support failed: %d\n",
-					err);
+			/*
+			 * We are operating on a legacy OTP device
+			 * These should be told that they are operating
+			 * on the wrong port if we have another port that does
+			 * support HNP
+			 */
+			if (bus->otg_port != 0) {
+				/* Set a_alt_hnp_support for legacy otg device */
+				err = usb_control_msg(udev,
+					usb_sndctrlpipe(udev, 0),
+					USB_REQ_SET_FEATURE, 0,
+					USB_DEVICE_A_ALT_HNP_SUPPORT,
+					0, NULL, 0,
+					USB_CTRL_SET_TIMEOUT);
+				if (err < 0)
+					dev_err(&udev->dev,
+						"set a_alt_hnp_support failed: %d\n",
+						err);
+			}
 		}
 	}
 #endif
@@ -2538,9 +2546,10 @@ int usb_new_device(struct usb_device *udev)
 	/* Tell the world! */
 	announce_device(udev);
 
-	if (udev->parent){
+	if (udev->parent) {
 		temp_hub = usb_hub_to_struct_hub(udev->parent);
-		if(le16_to_cpu(udev->descriptor.idVendor) == 0x0bda && 0x4b79 == le16_to_cpu(udev->descriptor.idProduct)){
+		if (le16_to_cpu(udev->descriptor.idVendor) == 0x0bda &&
+		    le16_to_cpu(udev->descriptor.idProduct) == 0x4b79) {
 			temp_hub->asuspend = 1;
 			temp_hub->addr_number = udev->devnum;
 		}
@@ -4940,8 +4949,8 @@ hub_port_init(struct usb_hub *hub, struct usb_device *udev, int port1,
 	/* notify HCD that we have a device connected and addressed */
 	if (hcd->driver->update_device)
 		hcd->driver->update_device(hcd, udev);
-	/*skip this initial*/
-	if (0)
+	/* skip this initial LPM setup for xiaomi devices */
+	if (!IS_ENABLED(CONFIG_BOARD_XIAOMI))
 		hub_set_initial_usb2_lpm_policy(udev);
 fail:
 	if (retval) {

@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  */
 #define DEBUG
-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+#define pr_fmt(fmt)     KBUILD_MODNAME ": " fmt
 
 #define GOODIX_DRM_INTERFACE_WA
 
@@ -58,32 +58,36 @@
 #include <linux/platform_device.h>
 #endif
 
-#define VER_MAJOR 1
-#define VER_MINOR 2
+#define VER_MAJOR   1
+#define VER_MINOR   2
 #define PATCH_LEVEL 1
 
-#define WAKELOCK_HOLD_TIME 2000 /* in ms */
+#define WAKELOCK_HOLD_TIME 2000	/* in ms */
 #define FP_UNLOCK_REJECTION_TIMEOUT (WAKELOCK_HOLD_TIME - 500)
 
-#define GF_SPIDEV_NAME "goodix,fingerprint"
+#define GF_SPIDEV_NAME			"goodix,fingerprint"
 /*device name after register in charater*/
-#define GF_DEV_NAME "goodix_fp"
-#define GF_INPUT_NAME "uinput-goodix" /*"goodix_fp" */
+#define GF_DEV_NAME				"goodix_fp"
+#define GF_INPUT_NAME			"uinput-goodix"	/*"goodix_fp" */
 
-#define CHRD_DRIVER_NAME "goodix_fp_spi"
-#define CLASS_NAME "goodix_fp"
+#define CHRD_DRIVER_NAME		"goodix_fp_spi"
+#define CLASS_NAME				"goodix_fp"
 
-#define N_SPI_MINORS 32 /* ... up to 256 */
+#define N_SPI_MINORS			32	/* ... up to 256 */
 
-#ifdef CONFIG_MACH_XIAOMI_PSYCHE
+
+#if IS_ENABLED(CONFIG_BOARD_PSYCHE)
+#define MI_FP_3V
 static struct regulator *p_3v0_vreg = NULL;
+static int disable_regulator_3V0(struct regulator *vreg);
+static int enable_regulator_3V0(struct device *dev,struct regulator **pp_vreg);
 
 static int disable_regulator_3V0(struct regulator *vreg)
 {
 	pr_err(" xiaomi put regulator: %s , end it\n", __func__);
-	if (vreg == NULL) {
-		pr_err("vreg is null!");
-		return 0;
+	if(vreg == NULL) {
+            pr_err("vreg is null!");
+	    return 0;
 	}
 	devm_regulator_put(vreg);
 	vreg = NULL;
@@ -103,10 +107,10 @@ static int enable_regulator_3V0(struct device *dev, struct regulator **pp_vreg)
 		dev_err(dev, "fp %s: of vreg successful found\n", __func__);
 	}
 
-	rc = regulator_set_voltage(vreg, 3204000, 3204000);
+        rc = regulator_set_voltage(vreg, 3204000, 3204000);
 
 	if (rc) {
-		dev_err(dev, "xiaomi %s: set voltage failed\n", __func__);
+		dev_err(dev, "xiaomi %s: set voltage failed\n",__func__);
 		return rc;
 	}
 
@@ -138,20 +142,20 @@ static struct wakeup_source *fp_wakelock = NULL;
 static struct gf_dev gf;
 
 struct gf_key_map maps[] = {
-	{ EV_KEY, GF_KEY_INPUT_HOME },
-	{ EV_KEY, GF_KEY_INPUT_MENU },
-	{ EV_KEY, GF_KEY_INPUT_BACK },
-	{ EV_KEY, GF_KEY_INPUT_POWER },
+	{EV_KEY, GF_KEY_INPUT_HOME},
+	{EV_KEY, GF_KEY_INPUT_MENU},
+	{EV_KEY, GF_KEY_INPUT_BACK},
+	{EV_KEY, GF_KEY_INPUT_POWER},
 #if defined(SUPPORT_NAV_EVENT)
-	{ EV_KEY, GF_NAV_INPUT_UP },
-	{ EV_KEY, GF_NAV_INPUT_DOWN },
-	{ EV_KEY, GF_NAV_INPUT_RIGHT },
-	{ EV_KEY, GF_NAV_INPUT_LEFT },
-	{ EV_KEY, GF_KEY_INPUT_CAMERA },
-	{ EV_KEY, GF_NAV_INPUT_CLICK },
-	{ EV_KEY, GF_NAV_INPUT_DOUBLE_CLICK },
-	{ EV_KEY, GF_NAV_INPUT_LONG_PRESS },
-	{ EV_KEY, GF_NAV_INPUT_HEAVY },
+	{EV_KEY, GF_NAV_INPUT_UP},
+	{EV_KEY, GF_NAV_INPUT_DOWN},
+	{EV_KEY, GF_NAV_INPUT_RIGHT},
+	{EV_KEY, GF_NAV_INPUT_LEFT},
+	{EV_KEY, GF_KEY_INPUT_CAMERA},
+	{EV_KEY, GF_NAV_INPUT_CLICK},
+	{EV_KEY, GF_NAV_INPUT_DOUBLE_CLICK},
+	{EV_KEY, GF_NAV_INPUT_LONG_PRESS},
+	{EV_KEY, GF_NAV_INPUT_HEAVY},
 #endif
 };
 
@@ -210,8 +214,8 @@ static long spi_clk_max_rate(struct clk *clk, unsigned long rate)
 		 * if we stepped too far, then start stepping in the other
 		 * direction with half the step size
 		 */
-		if (((cur > rate) && (step_direction > 0)) ||
-		    ((cur < rate) && (step_direction < 0))) {
+		if (((cur > rate) && (step_direction > 0))
+		    || ((cur < rate) && (step_direction < 0))) {
 			step_direction = -step_direction;
 			step_size >>= 1;
 		}
@@ -380,8 +384,8 @@ static void nav_event_input(struct gf_dev *gf_dev, gf_nav_event_t nav_event)
 		break;
 	}
 
-	if ((nav_event != GF_NAV_FINGER_DOWN) &&
-	    (nav_event != GF_NAV_FINGER_UP)) {
+	if ((nav_event != GF_NAV_FINGER_DOWN)
+	    && (nav_event != GF_NAV_FINGER_UP)) {
 		input_report_key(gf_dev->input, nav_input, 1);
 		input_sync(gf_dev->input);
 		input_report_key(gf_dev->input, nav_input, 0);
@@ -404,11 +408,11 @@ static void gf_kernel_key_input(struct gf_dev *gf_dev, struct gf_key *gf_key)
 		key_input = gf_key->key;
 	}
 
-	pr_debug("%s: received key event[%d], key=%d, value=%d\n", __func__,
-		 key_input, gf_key->key, gf_key->value);
+	pr_debug("%s: received key event[%d], key=%d, value=%d\n",
+		 __func__, key_input, gf_key->key, gf_key->value);
 
-	if ((GF_KEY_POWER == gf_key->key || GF_KEY_CAMERA == gf_key->key) &&
-	    (gf_key->value == 1)) {
+	if ((GF_KEY_POWER == gf_key->key || GF_KEY_CAMERA == gf_key->key)
+	    && (gf_key->value == 1)) {
 		input_report_key(gf_dev->input, key_input, 1);
 		input_sync(gf_dev->input);
 		input_report_key(gf_dev->input, key_input, 0);
@@ -429,7 +433,7 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	gf_nav_event_t nav_event = GF_NAV_NONE;
 #endif
 	int retval = 0;
-#ifdef CONFIG_MACH_XIAOMI_PSYCHE
+#if IS_ENABLED(CONFIG_BOARD_PSYCHE)
 	int status = 0;
 #endif
 	u8 netlink_route = NETLINK_TEST;
@@ -440,11 +444,12 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	}
 
 	if (_IOC_DIR(cmd) & _IOC_READ) {
-		retval = !access_ok(VERIFY_WRITE, (void __user *)arg,
-				    _IOC_SIZE(cmd));
+		retval =
+		    !access_ok(VERIFY_WRITE, (void __user *)arg,
+			       _IOC_SIZE(cmd));
 	} else if (_IOC_DIR(cmd) & _IOC_WRITE) {
-		retval = !access_ok(VERIFY_READ, (void __user *)arg,
-				    _IOC_SIZE(cmd));
+		retval =
+		    !access_ok(VERIFY_READ, (void __user *)arg, _IOC_SIZE(cmd));
 	}
 
 	if (retval) {
@@ -452,13 +457,13 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	}
 
 	if (gf_dev->device_available == 0) {
-		if ((cmd == GF_IOC_ENABLE_POWER) ||
-		    (cmd == GF_IOC_DISABLE_POWER)) {
+		if ((cmd == GF_IOC_ENABLE_POWER)
+		    || (cmd == GF_IOC_DISABLE_POWER)) {
 			pr_debug("power cmd\n");
 		} else {
-			pr_debug(
-				"get cmd %d, but sensor is power off currently.\n",
-				_IOC_NR(cmd));
+			pr_debug
+			    ("get cmd %d, but sensor is power off currently.\n",
+			     _IOC_NR(cmd));
 			return -ENODEV;
 		}
 	}
@@ -467,8 +472,8 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	case GF_IOC_INIT:
 		pr_debug("%s GF_IOC_INIT\n", __func__);
 
-		if (copy_to_user((void __user *)arg, (void *)&netlink_route,
-				 sizeof(u8))) {
+		if (copy_to_user
+		    ((void __user *)arg, (void *)&netlink_route, sizeof(u8))) {
 			retval = -EFAULT;
 			break;
 		}
@@ -495,10 +500,10 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		break;
 
 	case GF_IOC_INPUT_KEY_EVENT:
-		if (copy_from_user(&gf_key, (struct gf_key *)arg,
-				   sizeof(struct gf_key))) {
-			pr_debug(
-				"Failed to copy input key event from user to kernel\n");
+		if (copy_from_user
+		    (&gf_key, (struct gf_key *)arg, sizeof(struct gf_key))) {
+			pr_debug
+			    ("Failed to copy input key event from user to kernel\n");
 			retval = -EFAULT;
 			break;
 		}
@@ -510,10 +515,11 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	case GF_IOC_NAV_EVENT:
 		pr_debug("%s GF_IOC_NAV_EVENT\n", __func__);
 
-		if (copy_from_user(&nav_event, (gf_nav_event_t *)arg,
-				   sizeof(gf_nav_event_t))) {
-			pr_debug(
-				"Failed to copy nav event from user to kernel\n");
+		if (copy_from_user
+		    (&nav_event, (gf_nav_event_t *) arg,
+		     sizeof(gf_nav_event_t))) {
+			pr_debug
+			    ("Failed to copy nav event from user to kernel\n");
 			retval = -EFAULT;
 			break;
 		}
@@ -540,9 +546,8 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		if (gf_dev->device_available == 1) {
 			pr_debug("Sensor has already powered-on.\n");
 		} else {
-#ifdef CONFIG_MACH_XIAOMI_PSYCHE
-			status = enable_regulator_3V0(&gf_dev->spi->dev,
-						      &p_3v0_vreg);
+#if IS_ENABLED(CONFIG_BOARD_PSYCHE)
+			status = enable_regulator_3V0(&gf_dev->spi->dev,&p_3v0_vreg);
 			if (status) {
 				pr_err("enable regulator failed and disable it.\n");
 				disable_regulator_3V0(p_3v0_vreg);
@@ -628,8 +633,8 @@ static irqreturn_t gf_irq(int irq, void *handle)
 		__pm_wakeup_event(fp_wakelock, WAKELOCK_HOLD_TIME);
 	sendnlmsg(temp);
 
-	if ((gf_dev->wait_finger_down == true) &&
-	    (gf_dev->device_available == 1) && (gf_dev->fb_black == 1)) {
+	if ((gf_dev->wait_finger_down == true)
+	    && (gf_dev->device_available == 1) && (gf_dev->fb_black == 1)) {
 		key_input = KEY_RIGHT;
 		input_report_key(gf_dev->input, key_input, 1);
 		input_sync(gf_dev->input);
@@ -638,7 +643,7 @@ static irqreturn_t gf_irq(int irq, void *handle)
 		gf_dev->wait_finger_down = false;
 		schedule_work(&gf_dev->work);
 	}
-#elif defined(GF_FASYNC)
+#elif defined (GF_FASYNC)
 	struct gf_dev *gf_dev = &gf;
 
 	if (gf_dev->async) {
@@ -655,7 +660,7 @@ static int gf_open(struct inode *inode, struct file *filp)
 	int rc = 0;
 	int err = 0;
 	mutex_lock(&device_list_lock);
-	list_for_each_entry (gf_dev, &device_list, device_entry) {
+	list_for_each_entry(gf_dev, &device_list, device_entry) {
 		if (gf_dev->devt == inode->i_rdev) {
 			pr_debug("Found\n");
 			status = 0;
@@ -692,6 +697,7 @@ static int gf_open(struct inode *inode, struct file *filp)
 #endif
 
 	if (status == 0) {
+
 #ifdef GF_PW_CTL
 		rc = gpio_request(gf_dev->pwr_gpio, "goodix_pwr");
 
@@ -840,9 +846,9 @@ static int goodix_fb_state_chg_callback(struct notifier_block *nb,
 		return 0;
 	}
 
-	pr_debug(
-		"[info] %s go to the goodix_fb_state_chg_callback value = %d\n",
-		__func__, (int)val);
+	pr_debug
+	    ("[info] %s go to the goodix_fb_state_chg_callback value = %d\n",
+	     __func__, (int)val);
 	gf_dev = container_of(nb, struct gf_dev, notifier);
 
 	if (evdata && evdata->data && val == DRM_EVENT_BLANK && gf_dev) {
@@ -856,7 +862,7 @@ static int goodix_fb_state_chg_callback(struct notifier_block *nb,
 #if defined(GF_NETLINK_ENABLE)
 				temp[0] = GF_NET_EVENT_FB_BLACK;
 				sendnlmsg(temp);
-#elif defined(GF_FASYNC)
+#elif defined (GF_FASYNC)
 
 				if (gf_dev->async) {
 					kill_fasync(&gf_dev->async, SIGIO,
@@ -872,7 +878,7 @@ static int goodix_fb_state_chg_callback(struct notifier_block *nb,
 #if defined(GF_NETLINK_ENABLE)
 				temp[0] = GF_NET_EVENT_FB_UNBLACK;
 				sendnlmsg(temp);
-#elif defined(GF_FASYNC)
+#elif defined (GF_FASYNC)
 
 				if (gf_dev->async) {
 					kill_fasync(&gf_dev->async, SIGIO,
@@ -1000,11 +1006,11 @@ static int gf_probe(struct platform_device *pdev)
 	drm_register_client(&gf_dev->notifier);
 #endif
 	gf_dev->irq = gf_irq_num(gf_dev);
-	/*fp_wakelock = wakeup_source_create("fp_wakelock");*/
-	fp_wakelock =
-		wakeup_source_register(&(gf_dev->spi->dev), "fp_wakelock");
+	fp_wakelock = wakeup_source_register(&(gf_dev->spi->dev),
+					     "fp_wakelock");
 	if (fp_wakelock == NULL)
 		goto error_wakelock;
+
 	pr_debug("version V%d.%d.%02d\n", VER_MAJOR, VER_MINOR, PATCH_LEVEL);
 	return status;
 
@@ -1047,12 +1053,12 @@ static int gf_remove(struct platform_device *pdev)
 #endif
 {
 	struct gf_dev *gf_dev = &gf;
-#ifdef CONFIG_MACH_XIAOMI_PSYCHE
-	disable_regulator_3V0(p_3v0_vreg);
-#endif
 	wakeup_source_unregister(fp_wakelock);
 	fp_wakelock = NULL;
 
+#if IS_ENABLED(CONFIG_BOARD_PSYCHE)
+	disable_regulator_3V0(p_3v0_vreg);
+#endif
 	/* make sure ops on existing fds can abort cleanly */
 	if (gf_dev->irq) {
 		free_irq(gf_dev->irq, gf_dev);
@@ -1080,7 +1086,7 @@ static int gf_remove(struct platform_device *pdev)
 }
 
 static struct of_device_id gx_match_table[] = {
-	{ .compatible = GF_SPIDEV_NAME },
+	{.compatible = GF_SPIDEV_NAME},
 	{},
 };
 

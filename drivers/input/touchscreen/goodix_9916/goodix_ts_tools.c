@@ -1,4 +1,4 @@
-/*
+ /*
   * Goodix Touchscreen Driver
   * Copyright (C) 2020 - 2021 Goodix, Inc.
   *
@@ -26,32 +26,31 @@
 #include <linux/wait.h>
 #include "goodix_ts_core.h"
 
-#define GOODIX_TOOLS_NAME "gtp_tools"
-#define GOODIX_TOOLS_VER_MAJOR 1
-#define GOODIX_TOOLS_VER_MINOR 0
-static const u16 goodix_tools_ver =
-	((GOODIX_TOOLS_VER_MAJOR << 8) + (GOODIX_TOOLS_VER_MINOR));
+#define GOODIX_TOOLS_NAME		"gtp_tools"
+#define GOODIX_TOOLS_VER_MAJOR		1
+#define GOODIX_TOOLS_VER_MINOR		0
+static const u16 goodix_tools_ver = ((GOODIX_TOOLS_VER_MAJOR << 8) +
+			(GOODIX_TOOLS_VER_MINOR));
 
-#define GOODIX_TS_IOC_MAGIC 'G'
-#define NEGLECT_SIZE_MASK (~(_IOC_SIZEMASK << _IOC_SIZESHIFT))
+#define GOODIX_TS_IOC_MAGIC		'G'
+#define NEGLECT_SIZE_MASK		(~(_IOC_SIZEMASK << _IOC_SIZESHIFT))
 
-#define GTP_IRQ_ENABLE _IO(GOODIX_TS_IOC_MAGIC, 0)
-#define GTP_DEV_RESET _IO(GOODIX_TS_IOC_MAGIC, 1)
+#define GTP_IRQ_ENABLE	_IO(GOODIX_TS_IOC_MAGIC, 0)
+#define GTP_DEV_RESET	_IO(GOODIX_TS_IOC_MAGIC, 1)
 #define GTP_SEND_COMMAND (_IOW(GOODIX_TS_IOC_MAGIC, 2, u8) & NEGLECT_SIZE_MASK)
-#define GTP_SEND_CONFIG (_IOW(GOODIX_TS_IOC_MAGIC, 3, u8) & NEGLECT_SIZE_MASK)
-#define GTP_ASYNC_READ (_IOR(GOODIX_TS_IOC_MAGIC, 4, u8) & NEGLECT_SIZE_MASK)
-#define GTP_SYNC_READ (_IOR(GOODIX_TS_IOC_MAGIC, 5, u8) & NEGLECT_SIZE_MASK)
-#define GTP_ASYNC_WRITE (_IOW(GOODIX_TS_IOC_MAGIC, 6, u8) & NEGLECT_SIZE_MASK)
-#define GTP_READ_CONFIG (_IOW(GOODIX_TS_IOC_MAGIC, 7, u8) & NEGLECT_SIZE_MASK)
-#define GTP_ESD_ENABLE _IO(GOODIX_TS_IOC_MAGIC, 8)
-#define GTP_TOOLS_VER (_IOR(GOODIX_TS_IOC_MAGIC, 9, u8) & NEGLECT_SIZE_MASK)
-#define GTP_TOOLS_CTRL_SYNC                                                    \
-	(_IOW(GOODIX_TS_IOC_MAGIC, 10, u8) & NEGLECT_SIZE_MASK)
+#define GTP_SEND_CONFIG	(_IOW(GOODIX_TS_IOC_MAGIC, 3, u8) & NEGLECT_SIZE_MASK)
+#define GTP_ASYNC_READ	(_IOR(GOODIX_TS_IOC_MAGIC, 4, u8) & NEGLECT_SIZE_MASK)
+#define GTP_SYNC_READ	(_IOR(GOODIX_TS_IOC_MAGIC, 5, u8) & NEGLECT_SIZE_MASK)
+#define GTP_ASYNC_WRITE	(_IOW(GOODIX_TS_IOC_MAGIC, 6, u8) & NEGLECT_SIZE_MASK)
+#define GTP_READ_CONFIG	(_IOW(GOODIX_TS_IOC_MAGIC, 7, u8) & NEGLECT_SIZE_MASK)
+#define GTP_ESD_ENABLE	_IO(GOODIX_TS_IOC_MAGIC, 8)
+#define GTP_TOOLS_VER   (_IOR(GOODIX_TS_IOC_MAGIC, 9, u8) & NEGLECT_SIZE_MASK)
+#define GTP_TOOLS_CTRL_SYNC (_IOW(GOODIX_TS_IOC_MAGIC, 10, u8) & NEGLECT_SIZE_MASK)
 
-#define MAX_BUF_LENGTH (16 * 1024)
-#define IRQ_FALG (0x01 << 2)
+#define MAX_BUF_LENGTH		(16*1024)
+#define IRQ_FALG		(0x01 << 2)
 
-#define I2C_MSG_HEAD_LEN 20
+#define I2C_MSG_HEAD_LEN	20
 
 /*
  * struct goodix_tools_dev - goodix tools device struct
@@ -74,6 +73,7 @@ struct goodix_tools_dev {
 	struct goodix_ext_module module;
 } *goodix_tools_dev;
 
+
 /* read data asynchronous,
  * success return data length, otherwise return < 0
  */
@@ -89,10 +89,10 @@ static int async_read(struct goodix_tools_dev *dev, void __user *arg)
 	if (ret)
 		return -EFAULT;
 
-	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8) +
-		   (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
-	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8) +
-		 (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
+	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8)
+			+ (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
+	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8)
+			+ (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
 	if (length > MAX_BUF_LENGTH) {
 		ts_err("buffer too long:%d > %d", length, MAX_BUF_LENGTH);
 		return -EINVAL;
@@ -133,10 +133,10 @@ static int read_config_data(struct goodix_ts_core *ts_core, void __user *arg)
 		ts_err("Copy data from user failed");
 		return -EFAULT;
 	}
-	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8) +
-		   (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
-	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8) +
-		 (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
+	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8)
+		   + (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
+	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8)
+		 + (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
 	ts_info("read config,reg_addr=0x%x, length=%d", reg_addr, length);
 	if (length > MAX_BUF_LENGTH) {
 		ts_err("buffer too long:%d > %d", length, MAX_BUF_LENGTH);
@@ -150,8 +150,7 @@ static int read_config_data(struct goodix_ts_core *ts_core, void __user *arg)
 	/* if reg_addr == 0, read config data with specific flow */
 	if (!reg_addr) {
 		if (ts_core->hw_ops->read_config)
-			ret = ts_core->hw_ops->read_config(ts_core, tmp_buf,
-							   length);
+			ret = ts_core->hw_ops->read_config(ts_core, tmp_buf, length);
 		else
 			ret = -EINVAL;
 	} else {
@@ -189,10 +188,10 @@ static int async_write(struct goodix_tools_dev *dev, void __user *arg)
 		ts_err("Copy data from user failed");
 		return -EFAULT;
 	}
-	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8) +
-		   (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
-	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8) +
-		 (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
+	reg_addr = i2c_msg_head[0] + (i2c_msg_head[1] << 8)
+			+ (i2c_msg_head[2] << 16) + (i2c_msg_head[3] << 24);
+	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8)
+			+ (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
 	if (length > MAX_BUF_LENGTH) {
 		ts_err("buffer too long:%d > %d", length, MAX_BUF_LENGTH);
 		return -EINVAL;
@@ -226,7 +225,7 @@ static int init_cfg_data(struct goodix_ic_config *cfg, void __user *arg)
 {
 	int ret = 0;
 	u32 length;
-	u8 i2c_msg_head[I2C_MSG_HEAD_LEN] = { 0 };
+	u8 i2c_msg_head[I2C_MSG_HEAD_LEN] = {0};
 
 	ret = copy_from_user(&i2c_msg_head, arg, I2C_MSG_HEAD_LEN);
 	if (ret) {
@@ -234,8 +233,8 @@ static int init_cfg_data(struct goodix_ic_config *cfg, void __user *arg)
 		return -EFAULT;
 	}
 
-	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8) +
-		 (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
+	length = i2c_msg_head[4] + (i2c_msg_head[5] << 8)
+			+ (i2c_msg_head[6] << 16) + (i2c_msg_head[7] << 24);
 	if (length > GOODIX_CFG_MAX_SIZE) {
 		ts_err("buffer too long:%d > %d", length, MAX_BUF_LENGTH);
 		return -EINVAL;
@@ -258,7 +257,7 @@ static int init_cfg_data(struct goodix_ic_config *cfg, void __user *arg)
  * Returns >=0 - succeed, else failed
  */
 static long goodix_tools_ioctl(struct file *filp, unsigned int cmd,
-			       unsigned long arg)
+					unsigned long arg)
 {
 	int ret = 0;
 	struct goodix_tools_dev *dev = filp->private_data;
@@ -321,8 +320,7 @@ static long goodix_tools_ioctl(struct file *filp, unsigned int cmd,
 
 		ret = init_cfg_data(temp_cfg, (void __user *)arg);
 		if (!ret && hw_ops->send_config) {
-			ret = hw_ops->send_config(ts_core, temp_cfg->data,
-						  temp_cfg->len);
+			ret = hw_ops->send_config(ts_core, temp_cfg->data, temp_cfg->len);
 			if (ret) {
 				ts_err("Failed send config");
 				ret = -EAGAIN;
@@ -355,7 +353,8 @@ static long goodix_tools_ioctl(struct file *filp, unsigned int cmd,
 			ts_err("Async data write failed");
 		break;
 	case GTP_TOOLS_VER:
-		ret = copy_to_user((u8 *)arg, &goodix_tools_ver, sizeof(u16));
+		ret = copy_to_user((u8 *)arg, &goodix_tools_ver,
+					sizeof(u16));
 		if (ret)
 			ts_err("failed copy driver version info to user");
 		break;
@@ -375,7 +374,7 @@ err_out:
 
 #ifdef CONFIG_COMPAT
 static long goodix_tools_compat_ioctl(struct file *file, unsigned int cmd,
-				      unsigned long arg)
+				unsigned long arg)
 {
 	void __user *arg32 = compat_ptr(arg);
 
@@ -415,7 +414,7 @@ static int goodix_tools_release(struct inode *inode, struct file *filp)
 }
 
 static int goodix_tools_module_init(struct goodix_ts_core *core_data,
-				    struct goodix_ext_module *module)
+			struct goodix_ext_module *module)
 {
 	struct goodix_tools_dev *tools_dev = module->priv_data;
 
@@ -428,7 +427,7 @@ static int goodix_tools_module_init(struct goodix_ts_core *core_data,
 }
 
 static int goodix_tools_module_exit(struct goodix_ts_core *core_data,
-				    struct goodix_ext_module *module)
+		struct goodix_ext_module *module)
 {
 	struct goodix_tools_dev *tools_dev = module->priv_data;
 	ts_debug("tools module unregister");
@@ -440,19 +439,19 @@ static int goodix_tools_module_exit(struct goodix_ts_core *core_data,
 }
 
 static const struct file_operations goodix_tools_fops = {
-	.owner = THIS_MODULE,
-	.open = goodix_tools_open,
-	.release = goodix_tools_release,
-	.unlocked_ioctl = goodix_tools_ioctl,
+	.owner		= THIS_MODULE,
+	.open		= goodix_tools_open,
+	.release	= goodix_tools_release,
+	.unlocked_ioctl	= goodix_tools_ioctl,
 #ifdef CONFIG_COMPAT
 	.compat_ioctl = goodix_tools_compat_ioctl,
 #endif
 };
 
 static struct miscdevice goodix_tools_miscdev = {
-	.minor = MISC_DYNAMIC_MINOR,
-	.name = GOODIX_TOOLS_NAME,
-	.fops = &goodix_tools_fops,
+	.minor	= MISC_DYNAMIC_MINOR,
+	.name	= GOODIX_TOOLS_NAME,
+	.fops	= &goodix_tools_fops,
 };
 
 static struct goodix_ext_module_funcs goodix_tools_module_funcs = {

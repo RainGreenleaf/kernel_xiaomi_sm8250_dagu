@@ -40,8 +40,9 @@
 #include <linux/version.h>
 #include <linux/power_supply.h>
 
+
 #if defined(CONFIG_OF)
-#include <linux/of_gpio.h>
+	#include <linux/of_gpio.h>
 #endif
 
 #ifdef CONFIG_TOUCHSCREEN_XIAOMI_TOUCHFEATURE
@@ -134,38 +135,38 @@ extern uint32_t g_proj_id;
 #endif
 
 #if defined(HX_CONFIG_FB)
-int fb_notifier_callback(struct notifier_block *self, unsigned long event,
-			 void *data);
+int fb_notifier_callback(struct notifier_block *self,
+	unsigned long event, void *data);
 #elif defined(HX_CONFIG_DRM)
-int drm_notifier_callback(struct notifier_block *self, unsigned long event,
-			  void *data);
+int drm_notifier_callback(struct notifier_block *self,
+	unsigned long event, void *data);
 #endif
 
-#define HX_85XX_J_SERIES_PWON "HX85xxJ"
-#define HX_83102D_SERIES_PWON "HX83102D"
-#define HX_83102E_SERIES_PWON "HX83102E"
-#define HX_83102J_SERIES_PWON "HX83102J"
-#define HX_83108A_SERIES_PWON "HX83108A"
-#define HX_83112A_SERIES_PWON "HX83112A"
-#define HX_83112F_SERIES_PWON "HX83112F"
-#define HX_83121A_SERIES_PWON "HX83121A"
+#define HX_85XX_J_SERIES_PWON		"HX85xxJ"
+#define HX_83102D_SERIES_PWON		"HX83102D"
+#define HX_83102E_SERIES_PWON		"HX83102E"
+#define HX_83102J_SERIES_PWON		"HX83102J"
+#define HX_83108A_SERIES_PWON		"HX83108A"
+#define HX_83112A_SERIES_PWON		"HX83112A"
+#define HX_83112F_SERIES_PWON		"HX83112F"
+#define HX_83121A_SERIES_PWON		"HX83121A"
 
-#define HX_TP_BIN_CHECKSUM_SW 1
-#define HX_TP_BIN_CHECKSUM_HW 2
-#define HX_TP_BIN_CHECKSUM_CRC 3
+#define HX_TP_BIN_CHECKSUM_SW		1
+#define HX_TP_BIN_CHECKSUM_HW		2
+#define HX_TP_BIN_CHECKSUM_CRC		3
 
 #define SHIFTBITS 5
 
-#define FW_SIZE_32k 32768
-#define FW_SIZE_60k 61440
-#define FW_SIZE_64k 65536
-#define FW_SIZE_124k 126976
-#define FW_SIZE_128k 131072
-#define FW_SIZE_255k 261120
+#define FW_SIZE_32k		32768
+#define FW_SIZE_60k		61440
+#define FW_SIZE_64k		65536
+#define FW_SIZE_124k	126976
+#define FW_SIZE_128k	131072
+#define FW_SIZE_255k    261120
 
 #define NO_ERR 0
 #define READY_TO_SERVE 1
-#define WORK_OUT 2
+#define WORK_OUT	2
 #define HX_EMBEDDED_FW 3
 #define BUS_FAIL -1
 #define HX_INIT_FAIL -1
@@ -177,13 +178,13 @@ int drm_notifier_callback(struct notifier_block *self, unsigned long event,
 #define LENGTH_FAIL -7
 #define OPEN_FILE_FAIL -8
 #define PROBE_FAIL -9
-#define ERR_WORK_OUT -10
-#define ERR_STS_WRONG -11
-#define ERR_TEST_FAIL -12
+#define ERR_WORK_OUT	-10
+#define ERR_STS_WRONG	-11
+#define ERR_TEST_FAIL	-12
 #define HW_CRC_FAIL 1
 
-#define HX_FINGER_ON 1
-#define HX_FINGER_LEAVE 2
+#define HX_FINGER_ON	1
+#define HX_FINGER_LEAVE	2
 
 #define STYLUS_INFO_SZ 12
 
@@ -216,35 +217,38 @@ enum HX_TS_STATUS {
 	HX_RST_OK,
 };
 
-enum cell_type { CHIP_IS_ON_CELL, CHIP_IS_IN_CELL };
+enum cell_type {
+	CHIP_IS_ON_CELL,
+	CHIP_IS_IN_CELL
+};
 
 #if defined(HX_SMART_WAKEUP)
 #define HX_KEY_DOUBLE_CLICK KEY_WAKEUP
-#define HX_KEY_UP KEY_UP
-#define HX_KEY_DOWN KEY_DOWN
-#define HX_KEY_LEFT KEY_LEFT
-#define HX_KEY_RIGHT KEY_RIGHT
-#define HX_KEY_C KEY_C
-#define HX_KEY_Z KEY_Z
-#define HX_KEY_M KEY_M
-#define HX_KEY_O KEY_O
-#define HX_KEY_S KEY_S
-#define HX_KEY_V KEY_V
-#define HX_KEY_W KEY_W
-#define HX_KEY_E KEY_E
-#define HX_KEY_LC_M 263
-#define HX_KEY_AT 264
-#define HX_KEY_RESERVE 265
-#define HX_KEY_FINGER_GEST 266
-#define HX_KEY_V_DOWN 267
-#define HX_KEY_V_LEFT 268
-#define HX_KEY_V_RIGHT 269
-#define HX_KEY_F_RIGHT 270
-#define HX_KEY_F_LEFT 271
-#define HX_KEY_DF_UP 272
-#define HX_KEY_DF_DOWN 273
-#define HX_KEY_DF_LEFT 274
-#define HX_KEY_DF_RIGHT 275
+#define HX_KEY_UP           KEY_UP
+#define HX_KEY_DOWN         KEY_DOWN
+#define HX_KEY_LEFT         KEY_LEFT
+#define HX_KEY_RIGHT        KEY_RIGHT
+#define HX_KEY_C            KEY_C
+#define HX_KEY_Z            KEY_Z
+#define HX_KEY_M            KEY_M
+#define HX_KEY_O            KEY_O
+#define HX_KEY_S            KEY_S
+#define HX_KEY_V            KEY_V
+#define HX_KEY_W            KEY_W
+#define HX_KEY_E            KEY_E
+#define HX_KEY_LC_M         263
+#define HX_KEY_AT           264
+#define HX_KEY_RESERVE      265
+#define HX_KEY_FINGER_GEST  266
+#define HX_KEY_V_DOWN       267
+#define HX_KEY_V_LEFT       268
+#define HX_KEY_V_RIGHT      269
+#define HX_KEY_F_RIGHT      270
+#define HX_KEY_F_LEFT       271
+#define HX_KEY_DF_UP        272
+#define HX_KEY_DF_DOWN      273
+#define HX_KEY_DF_LEFT      274
+#define HX_KEY_DF_RIGHT     275
 #endif
 
 enum fix_touch_info {
@@ -264,8 +268,8 @@ enum fix_touch_info {
 };
 
 #if defined(HX_ZERO_FLASH)
-#define HX_SPI_OPERATION
-#define HX_0F_DEBUG
+	#define HX_SPI_OPERATION
+	#define HX_0F_DEBUG
 #endif
 struct himax_ic_data {
 	int vendor_fw_ver;
@@ -330,6 +334,7 @@ struct himax_target_stylus_data {
 };
 
 struct himax_target_report_data {
+
 	struct himax_target_point_data *p;
 
 	int finger_on;
@@ -349,8 +354,8 @@ struct himax_report_data {
 	int raw_cnt_max;
 	int raw_cnt_rmd;
 	int touch_info_size;
-	uint8_t finger_num;
-	uint8_t finger_on;
+	uint8_t	finger_num;
+	uint8_t	finger_on;
 	uint8_t *hx_coord_buf;
 	uint8_t hx_state_info[2];
 #if defined(HX_SMART_WAKEUP)
@@ -428,11 +433,11 @@ struct himax_ts_data {
 	atomic_t irq_state;
 	spinlock_t irq_lock;
 
-	/******* SPI-start *******/
-	struct spi_device *spi;
+/******* SPI-start *******/
+	struct spi_device	*spi;
 	int hx_irq;
 	uint8_t *xfer_buff;
-	/******* SPI-end *******/
+/******* SPI-end *******/
 
 	int in_self_test;
 	int suspend_resume_done;
@@ -509,26 +514,26 @@ struct himax_debug {
 	bool is_call_help;
 	void (*fp_ts_dbg_func)(struct himax_ts_data *ts, int start);
 	int (*fp_set_diag_cmd)(struct himax_ic_data *ic_data,
-			       struct himax_report_data *hx_touch_data);
+				struct himax_report_data *hx_touch_data);
 };
 
 enum input_protocol_type {
-	PROTOCOL_TYPE_A = 0x00,
-	PROTOCOL_TYPE_B = 0x01,
+	PROTOCOL_TYPE_A	= 0x00,
+	PROTOCOL_TYPE_B	= 0x01,
 };
 
 #if defined(HX_HIGH_SENSE)
-void himax_set_HSEN_func(uint8_t HSEN_enable);
+	void himax_set_HSEN_func(uint8_t HSEN_enable);
 #endif
 
 #if defined(HX_SMART_WAKEUP)
 void himax_set_SMWP_func(uint8_t SMWP_enable);
 
-#define GEST_PTLG_ID_LEN (4)
-#define GEST_PTLG_HDR_LEN (4)
-#define GEST_PTLG_HDR_ID1 (0xCC)
-#define GEST_PTLG_HDR_ID2 (0x44)
-#define GEST_PT_MAX_NUM (128)
+#define GEST_PTLG_ID_LEN	(4)
+#define GEST_PTLG_HDR_LEN	(4)
+#define GEST_PTLG_HDR_ID1	(0xCC)
+#define GEST_PTLG_HDR_ID2	(0x44)
+#define GEST_PT_MAX_NUM		(128)
 
 extern uint8_t *wake_event_buffer;
 #endif
@@ -541,10 +546,10 @@ extern uint32_t g_hx_chip_inited;
 int himax_chip_common_suspend(struct himax_ts_data *ts);
 int himax_chip_common_resume(struct himax_ts_data *ts);
 
-extern struct filename *(*kp_getname_kernel)(const char *filename);
+extern struct filename* (*kp_getname_kernel)(const char *filename);
 extern void (*kp_putname_kernel)(struct filename *name);
-extern struct file *(*kp_file_open_name)(struct filename *name, int flags,
-					 umode_t mode);
+extern struct file * (*kp_file_open_name)(struct filename *name,
+			int flags, umode_t mode);
 
 struct himax_core_fp;
 extern struct himax_core_fp g_core_fp;
@@ -553,18 +558,18 @@ extern struct himax_ic_data *ic_data;
 extern struct device *g_device;
 
 #if defined(CONFIG_TOUCHSCREEN_HIMAX_DEBUG)
-int himax_debug_init(void);
-int himax_debug_remove(void);
+	int himax_debug_init(void);
+	int himax_debug_remove(void);
 #endif
 
 #if defined(CONFIG_TOUCHSCREEN_HIMAX_INSPECT)
-extern char *g_rslt_data;
-extern void (*fp_himax_self_test_init)(void);
+	extern char *g_rslt_data;
+	extern void (*fp_himax_self_test_init)(void);
 #endif
 
 #if defined(HX_CONFIG_DRM)
 #if defined(HX_CONFIG_DRM_PANEL)
-extern struct drm_panel *active_panel;
+	extern struct drm_panel *active_panel;
 #endif
 #endif
 extern int HX_TOUCH_INFO_POINT_CNT;
@@ -574,7 +579,7 @@ extern bool ic_boot_done;
 int himax_parse_dt(struct himax_ts_data *ts, struct himax_platform_data *pdata);
 
 extern void himax_parse_dt_ic_info(struct himax_ts_data *ts,
-				   struct himax_platform_data *pdata);
+	struct himax_platform_data *pdata);
 
 int himax_report_data(struct himax_ts_data *ts, int ts_path, int ts_status);
 

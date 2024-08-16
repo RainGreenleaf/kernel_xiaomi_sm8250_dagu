@@ -86,6 +86,7 @@ struct akm09970_soc_ctrl {
 	struct akm09970_platform_data pdata;
 };
 
+
 static int akm09970_write_byte(struct i2c_client *client, u8 reg, u8 val)
 {
 	int rc;
@@ -101,8 +102,8 @@ static int akm09970_write_byte(struct i2c_client *client, u8 reg, u8 val)
 	return rc;
 }
 
-static int akm09970_set_reg_bits(struct i2c_client *client, int val, int shift,
-				 u8 mask, u8 reg)
+static int akm09970_set_reg_bits(struct i2c_client *client,
+					int val, int shift, u8 mask, u8 reg)
 {
 	int data;
 
@@ -120,23 +121,21 @@ static int akm09970_set_mode(struct akm09970_soc_ctrl *c_ctrl, uint8_t mode)
 	int rc;
 
 	rc = akm09970_set_reg_bits(c_ctrl->client, mode, AK09970_MODE_POS,
-				   AK09970_MODE_MSK, AK09970_MODE_REG);
+				AK09970_MODE_MSK, AK09970_MODE_REG);
 
 	return rc;
 }
 
 static enum hrtimer_restart hrtimer_handler(struct hrtimer *timer_t)
 {
-	struct akm09970_soc_ctrl *c_ctrl =
-		container_of(timer_t, struct akm09970_soc_ctrl, timer);
+	struct akm09970_soc_ctrl *c_ctrl = container_of(timer_t, struct akm09970_soc_ctrl, timer);
 
 	if (false == c_ctrl->read_flag) {
 		queue_work(c_ctrl->work_queue, &c_ctrl->report_work);
 
 		hrtimer_forward_now(&c_ctrl->timer,
-				    ktime_set(CLEAR_IRQ_TIME / MSEC_PER_SEC,
-					      (CLEAR_IRQ_TIME % MSEC_PER_SEC) *
-						      NSEC_PER_MSEC));
+			ktime_set(CLEAR_IRQ_TIME / MSEC_PER_SEC,
+			(CLEAR_IRQ_TIME % MSEC_PER_SEC) * NSEC_PER_MSEC));
 		return HRTIMER_RESTART;
 	} else {
 		return HRTIMER_NORESTART;
@@ -206,33 +205,28 @@ static int akm09970_active(struct akm09970_soc_ctrl *c_ctrl, bool on)
 
 		if (c_ctrl->measure_freq_hz >= 100)
 			mode = AK09970_MODE_CONTINUOUS_100HZ;
-		else if (c_ctrl->measure_freq_hz >= 50 &&
-			 c_ctrl->measure_freq_hz < 100)
+		else if (c_ctrl->measure_freq_hz >= 50 && c_ctrl->measure_freq_hz < 100)
 			mode = AK09970_MODE_CONTINUOUS_50HZ;
-		else if (c_ctrl->measure_freq_hz >= 20 &&
-			 c_ctrl->measure_freq_hz < 50)
+		else if (c_ctrl->measure_freq_hz >= 20 && c_ctrl->measure_freq_hz < 50)
 			mode = AK09970_MODE_CONTINUOUS_20HZ;
 		else
 			mode = AK09970_MODE_CONTINUOUS_100HZ;
 
 		c_ctrl->measure_range = 0;
 
-		rc = akm09970_write_byte(c_ctrl->client, AK09970_MODE_REG,
-					 (mode | c_ctrl->measure_range));
+		rc = akm09970_write_byte(c_ctrl->client, AK09970_MODE_REG, (mode | c_ctrl->measure_range));
 		if (rc < 0) {
 			pr_err("Failed to set mode and smr\n");
 			akm09970_power_down(c_ctrl);
 			return rc;
 		}
-		pr_debug("reg: 0x%x, data: 0x%x\n", AK09970_MODE_REG,
-			 (mode | c_ctrl->measure_range));
+		pr_debug("reg: 0x%x, data: 0x%x\n", AK09970_MODE_REG, (mode | c_ctrl->measure_range));
 
 		enable_irq(c_ctrl->irq);
 		hrtimer_start(&c_ctrl->timer,
-			      ktime_set(CLEAR_IRQ_TIME / MSEC_PER_SEC,
-					(CLEAR_IRQ_TIME % MSEC_PER_SEC) *
-						NSEC_PER_MSEC),
-			      HRTIMER_MODE_REL);
+			ktime_set(CLEAR_IRQ_TIME / MSEC_PER_SEC,
+			(CLEAR_IRQ_TIME % MSEC_PER_SEC) * NSEC_PER_MSEC),
+			HRTIMER_MODE_REL);
 		c_ctrl->read_flag = false;
 		pr_debug("Enable irq successfully\n");
 	} else if (atomic_read(&c_ctrl->power_enabled) && !on) {
@@ -258,9 +252,7 @@ static int akm09970_read_data(struct akm09970_soc_ctrl *c_ctrl)
 {
 	int rc = 0;
 
-	rc = i2c_smbus_read_i2c_block_data(c_ctrl->client, AK09970_REG_ST_XYZ,
-					   AKM_SENSOR_DATA_SIZE,
-					   c_ctrl->chip_data);
+	rc = i2c_smbus_read_i2c_block_data(c_ctrl->client, AK09970_REG_ST_XYZ, AKM_SENSOR_DATA_SIZE, c_ctrl->chip_data);
 	if (rc < 0) {
 		pr_err("read data failed!\n");
 		return rc;
@@ -325,16 +317,14 @@ static int akm09970_open(struct inode *inp, struct file *filp)
 	return rc;
 }
 
-static ssize_t akm09970_write(struct file *filp, const char *buf, size_t len,
-			      loff_t *fseek)
+static ssize_t akm09970_write(struct file *filp, const char *buf, size_t len, loff_t *fseek)
 {
 	int rc = 0;
 
 	return rc;
 }
 
-static ssize_t akm09970_read(struct file *filp, char *buf, size_t len,
-			     loff_t *fseek)
+static ssize_t akm09970_read(struct file *filp, char *buf, size_t len, loff_t *fseek)
 {
 	int rc = 0;
 
@@ -357,8 +347,7 @@ static unsigned int akm09970_poll(struct file *filp, poll_table *wait)
 	return mask;
 }
 
-static long akm09970_ioctl(struct file *filp, unsigned int cmd,
-			   unsigned long arg)
+static long akm09970_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	int rc = 0;
 	int i = 0;
@@ -375,19 +364,16 @@ static long akm09970_ioctl(struct file *filp, unsigned int cmd,
 	}
 
 	if (_IOC_DIR(cmd) & _IOC_READ)
-		rc = !access_ok(VERIFY_WRITE, (void __user *)arg,
-				_IOC_SIZE(cmd));
+		rc = !access_ok(VERIFY_WRITE, (void __user *)arg, _IOC_SIZE(cmd));
 	else if (_IOC_DIR(cmd) & _IOC_WRITE)
-		rc = !access_ok(VERIFY_READ, (void __user *)arg,
-				_IOC_SIZE(cmd));
+		rc = !access_ok(VERIFY_READ, (void __user *)arg, _IOC_SIZE(cmd));
 	if (rc) {
 		pr_err("CMD access failed\n");
 		return -EFAULT;
 	}
 
 	if (_IOC_DIR(cmd) & _IOC_WRITE) {
-		if (copy_from_user(&c_ctrl->pdata, (void __user *)arg,
-				   sizeof(struct akm09970_platform_data))) {
+		if (copy_from_user(&c_ctrl->pdata, (void __user *)arg, sizeof(struct akm09970_platform_data))) {
 			pr_err("Copy data from user space failed\n");
 			return -EFAULT;
 		}
@@ -395,13 +381,11 @@ static long akm09970_ioctl(struct file *filp, unsigned int cmd,
 
 	switch (cmd) {
 	case AKM_IOC_SET_ACTIVE:
-		pr_debug("c_ctrl->pdata.sensor_state = %d\n",
-			 c_ctrl->pdata.sensor_state);
+		pr_debug("c_ctrl->pdata.sensor_state = %d\n", c_ctrl->pdata.sensor_state);
 		rc = akm09970_active(c_ctrl, c_ctrl->pdata.sensor_state);
 		break;
 	case AKM_IOC_SET_MODE:
-		pr_debug("c_ctrl->pdata.sensor_mode = %d\n",
-			 c_ctrl->pdata.sensor_mode);
+		pr_debug("c_ctrl->pdata.sensor_mode = %d\n", c_ctrl->pdata.sensor_mode);
 		c_ctrl->measure_freq_hz = c_ctrl->pdata.sensor_mode;
 		//rc = akm09970_set_mode(pctrl, mode);
 		break;
@@ -424,8 +408,7 @@ static long akm09970_ioctl(struct file *filp, unsigned int cmd,
 	}
 
 	if (_IOC_DIR(cmd) & _IOC_READ) {
-		if (copy_to_user((void __user *)arg, &c_ctrl->pdata,
-				 sizeof(struct akm09970_platform_data))) {
+		if (copy_to_user((void __user *)arg, &c_ctrl->pdata, sizeof(struct akm09970_platform_data))) {
 			pr_err("Copy data to user space failed\n");
 			return -EFAULT;
 		}
@@ -435,8 +418,7 @@ static long akm09970_ioctl(struct file *filp, unsigned int cmd,
 }
 
 #ifdef CONFIG_COMPAT
-static long akm09970_compat_ioctl(struct file *filp, unsigned int cmd,
-				  unsigned long arg)
+static long akm09970_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	return akm09970_ioctl(filp, cmd, (unsigned long)compat_ptr(arg));
 }
@@ -455,6 +437,7 @@ static const struct file_operations akm09970_fops = {
 	.poll = akm09970_poll,
 };
 
+
 static int akm09970_check_device_id(struct akm09970_soc_ctrl *c_ctrl)
 {
 	int rc = 0;
@@ -463,14 +446,13 @@ static int akm09970_check_device_id(struct akm09970_soc_ctrl *c_ctrl)
 	if (rc < 0)
 		return rc;
 
-	rc = i2c_smbus_read_i2c_block_data(c_ctrl->client, AK09970_REG_WIA,
-					   AKM_SENSOR_INFO_SIZE,
-					   c_ctrl->chip_info);
+	rc = i2c_smbus_read_i2c_block_data(c_ctrl->client, AK09970_REG_WIA, AKM_SENSOR_INFO_SIZE, c_ctrl->chip_info);
 	if (rc < 0)
 		goto exit;
 
+
 	if ((c_ctrl->chip_info[0] != AK09970_WIA1_VALUE) ||
-	    (c_ctrl->chip_info[1] != AK09970_WIA2_VALUE)) {
+			(c_ctrl->chip_info[1] != AK09970_WIA2_VALUE)) {
 		pr_err("Check device id failed\n");
 		rc = -ENXIO;
 	}
@@ -481,36 +463,27 @@ exit:
 	return rc;
 }
 
-static ssize_t akm09970_chip_rev_show(struct device *dev,
-				      struct device_attribute *attr, char *buf)
+static ssize_t akm09970_chip_rev_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct akm09970_soc_ctrl *c_ctrl = dev_get_drvdata(dev);
 
-	return snprintf(buf, PAGE_SIZE, "%x,%x\n", (char)c_ctrl->chip_info[0],
-			(char)c_ctrl->chip_info[1]);
+	return snprintf(buf, PAGE_SIZE, "%x,%x\n", (char)c_ctrl->chip_info[0], (char)c_ctrl->chip_info[1]);
 }
 static DEVICE_ATTR(chip_rev, S_IRUGO, akm09970_chip_rev_show, NULL);
 
-static ssize_t akm09970_debug_show(struct device *dev,
-				   struct device_attribute *attr, char *buf)
+static ssize_t akm09970_debug_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct akm09970_soc_ctrl *c_ctrl = dev_get_drvdata(dev);
 	short hall_data[3];
 
-	hall_data[0] =
-		(short)((c_ctrl->chip_data[2] << 8) | c_ctrl->chip_data[3]);
-	hall_data[1] =
-		(short)((c_ctrl->chip_data[4] << 8) | c_ctrl->chip_data[5]);
-	hall_data[2] =
-		(short)((c_ctrl->chip_data[6] << 8) | c_ctrl->chip_data[7]);
+	hall_data[0] = (short)((c_ctrl->chip_data[2] << 8) | c_ctrl->chip_data[3]);
+	hall_data[1] = (short)((c_ctrl->chip_data[4] << 8) | c_ctrl->chip_data[5]);
+	hall_data[2] = (short)((c_ctrl->chip_data[6] << 8) | c_ctrl->chip_data[7]);
 
-	return snprintf(buf, PAGE_SIZE, "X:%d, Y:%d, Z:%d\n", hall_data[0],
-			hall_data[1], hall_data[2]);
+	return snprintf(buf, PAGE_SIZE, "X:%d, Y:%d, Z:%d\n", hall_data[0], hall_data[1], hall_data[2]);
 }
 
-static ssize_t akm09970_debug_store(struct device *dev,
-				    struct device_attribute *attr,
-				    const char *buf, size_t count)
+static ssize_t akm09970_debug_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	unsigned int enable;
 	int ret = 0;
@@ -528,8 +501,7 @@ static ssize_t akm09970_debug_store(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(debug, S_IRUGO | S_IWUSR, akm09970_debug_show,
-		   akm09970_debug_store);
+static DEVICE_ATTR(debug, S_IRUGO | S_IWUSR, akm09970_debug_show, akm09970_debug_store);
 
 static struct device_attribute *akm_attrs[] = {
 	&dev_attr_chip_rev,
@@ -550,8 +522,7 @@ static int akm09970_regulator_init(struct akm09970_soc_ctrl *c_ctrl, bool on)
 
 		if (regulator_count_voltages(c_ctrl->vdd) > 0) {
 			rc = regulator_set_voltage(c_ctrl->vdd,
-						   AKM09970_VDD_MIN_UV,
-						   AKM09970_VDD_MAX_UV);
+				AKM09970_VDD_MIN_UV, AKM09970_VDD_MAX_UV);
 			if (rc) {
 				pr_err("Regulator set failed vdd rc=%d\n", rc);
 				regulator_put(c_ctrl->vdd);
@@ -560,8 +531,7 @@ static int akm09970_regulator_init(struct akm09970_soc_ctrl *c_ctrl, bool on)
 		}
 	} else {
 		if (regulator_count_voltages(c_ctrl->vdd) > 0)
-			regulator_set_voltage(c_ctrl->vdd, 0,
-					      AKM09970_VDD_MAX_UV);
+			regulator_set_voltage(c_ctrl->vdd, 0, AKM09970_VDD_MAX_UV);
 
 		regulator_put(c_ctrl->vdd);
 	}
@@ -573,27 +543,23 @@ static int akm09970_gpio_config(struct akm09970_soc_ctrl *c_ctrl)
 {
 	int32_t rc = 0;
 
-	rc = gpio_request_one(c_ctrl->gpio_reset, GPIOF_OUT_INIT_LOW,
-			      "akm09970-reset");
+	rc = gpio_request_one(c_ctrl->gpio_reset, GPIOF_OUT_INIT_LOW, "akm09970-reset");
 	if (rc < 0) {
-		pr_err("Failed to request power enable GPIO %d\n",
-		       c_ctrl->gpio_reset);
+		pr_err("Failed to request power enable GPIO %d\n", c_ctrl->gpio_reset);
 		goto reset_gpio_req_err;
 	}
 	gpio_direction_output(c_ctrl->gpio_reset, 0);
 
 	rc = gpio_request(c_ctrl->gpio_irq, "akm09970-irq");
 	if (rc < 0) {
-		pr_err("Failed to request power enable GPIO %d\n",
-		       c_ctrl->gpio_irq);
+		pr_err("Failed to request power enable GPIO %d\n", c_ctrl->gpio_irq);
 		goto irq_gpio_req_err;
 	} else {
 		gpio_direction_input(c_ctrl->gpio_irq);
 		c_ctrl->irq = gpio_to_irq(c_ctrl->gpio_irq);
-		rc = request_threaded_irq(c_ctrl->irq, NULL,
-					  akm09970_irq_handler,
-					  IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-					  "akm09970_irq", c_ctrl);
+		rc = request_threaded_irq(c_ctrl->irq, NULL, akm09970_irq_handler,
+			IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+			"akm09970_irq", c_ctrl);
 		if (rc < 0) {
 			pr_err("Unable to request irq\n");
 			goto irq_req_err;
@@ -618,16 +584,17 @@ reset_gpio_req_err:
 	return rc;
 }
 
+
 static int akm09970_pinctrl_select(struct akm09970_soc_ctrl *c_ctrl, bool state)
 {
 	int rc = 0;
-	struct pinctrl_state *pins_state = state ? (c_ctrl->gpio_state_active) :
-						   (c_ctrl->gpio_state_suspend);
+	struct pinctrl_state *pins_state =
+		state ? (c_ctrl->gpio_state_active) : (c_ctrl->gpio_state_suspend);
 
 	rc = pinctrl_select_state(c_ctrl->pinctrl, pins_state);
 	if (rc < 0)
 		pr_err("Failed to select pins state %s\n",
-		       state ? "active" : "suspend");
+			state ? "active" : "suspend");
 
 	return rc;
 }
@@ -670,33 +637,28 @@ err_pinctrl_get:
 	return rc;
 }
 
-static int akm09970_parse_dt(struct device *dev,
-			     struct akm09970_soc_ctrl *c_ctrl)
+static int akm09970_parse_dt(struct device *dev, struct akm09970_soc_ctrl *c_ctrl)
 {
 	int rc = 0;
 
-	c_ctrl->gpio_reset = of_get_named_gpio_flags(dev->of_node,
-						     "akm,gpio-reset", 0, NULL);
+	c_ctrl->gpio_reset = of_get_named_gpio_flags(dev->of_node, "akm,gpio-reset", 0, NULL);
 	if (!gpio_is_valid(c_ctrl->gpio_reset)) {
 		pr_err("Invalid gpio reset pin %d\n", c_ctrl->gpio_reset);
 		return -EINVAL;
 	}
 
-	c_ctrl->gpio_irq =
-		of_get_named_gpio_flags(dev->of_node, "akm,gpio-irq", 0, NULL);
+	c_ctrl->gpio_irq = of_get_named_gpio_flags(dev->of_node, "akm,gpio-irq", 0, NULL);
 	if (!gpio_is_valid(c_ctrl->gpio_irq)) {
 		pr_err("Invalid gpio irq pin %d\n", c_ctrl->gpio_irq);
 		return -EINVAL;
 	}
 
-	pr_err("gpio_reset = %d, gpio_irq = %d\n", c_ctrl->gpio_reset,
-	       c_ctrl->gpio_irq);
+	pr_err("gpio_reset = %d, gpio_irq = %d\n", c_ctrl->gpio_reset, c_ctrl->gpio_irq);
 
 	return rc;
 }
 
-static int akm09970_probe(struct i2c_client *client,
-			  const struct i2c_device_id *id)
+static int akm09970_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
 	int rc = 0;
 	struct akm09970_soc_ctrl *c_ctrl = NULL;
@@ -709,8 +671,7 @@ static int akm09970_probe(struct i2c_client *client,
 	}
 
 	/* Allocate memory for driver data */
-	c_ctrl = devm_kzalloc(&client->dev, sizeof(struct akm09970_soc_ctrl),
-			      GFP_KERNEL);
+	c_ctrl = devm_kzalloc(&client->dev, sizeof(struct akm09970_soc_ctrl), GFP_KERNEL);
 	if (!c_ctrl) {
 		pr_err("Alloc memory failed\n");
 		return -ENOMEM;
@@ -737,8 +698,7 @@ static int akm09970_probe(struct i2c_client *client,
 		if (c_ctrl->pinctrl) {
 			rc = akm09970_pinctrl_select(c_ctrl, true);
 			if (rc < 0) {
-				pr_err("Failed to select default pinstate %d\n",
-				       rc);
+				pr_err("Failed to select default pinstate %d\n", rc);
 				goto err_select_pinctrl;
 			}
 		}
@@ -764,9 +724,8 @@ static int akm09970_probe(struct i2c_client *client,
 
 	hrtimer_init(&c_ctrl->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	c_ctrl->timer.function = hrtimer_handler;
-	c_ctrl->work_queue =
-		alloc_workqueue("akm09970_poll_work_queue",
-				WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_HIGHPRI, 1);
+	c_ctrl->work_queue = alloc_workqueue("akm09970_poll_work_queue",
+		WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_HIGHPRI, 1);
 	INIT_WORK(&c_ctrl->report_work, akm09970_dev_work_queue);
 
 	c_ctrl->chr_class = class_create(THIS_MODULE, AKM09970_CLASS_NAME);
@@ -782,9 +741,8 @@ static int akm09970_probe(struct i2c_client *client,
 		goto err_destroy_class;
 	}
 
-	c_ctrl->chr_dev =
-		device_create(c_ctrl->chr_class, NULL, c_ctrl->dev_num, c_ctrl,
-			      AKM09970_DRV_NAME);
+	c_ctrl->chr_dev = device_create(c_ctrl->chr_class, NULL,
+					c_ctrl->dev_num, c_ctrl, AKM09970_DRV_NAME);
 	if (IS_ERR(c_ctrl->chr_dev)) {
 		pr_err("Failed to create char device\n");
 		rc = PTR_ERR(c_ctrl->chr_dev);
@@ -804,13 +762,14 @@ static int akm09970_probe(struct i2c_client *client,
 	if (rc < 0)
 		pr_err("Failed to create debug file: %d\n", rc);
 
-	rc = device_create_file(c_ctrl->chr_dev, akm_attrs[1]);
-	if (rc < 0)
-		pr_err("Failed to create debug file: %d\n", rc);
+        rc = device_create_file(c_ctrl->chr_dev, akm_attrs[1]);
+        if (rc < 0)
+                pr_err("Failed to create debug file: %d\n", rc);
 
 	pr_info("Probe exit\n");
 
 	return 0;
+
 
 err_destroy_device:
 	if (c_ctrl->chr_dev)
@@ -886,17 +845,15 @@ static int akm09970_remove(struct i2c_client *client)
 }
 
 static const struct i2c_device_id akm09970_id[] = {
-	{ AKM09970_DRV_NAME, 0 },
+	{AKM09970_DRV_NAME, 0},
 	{},
 };
 
 MODULE_DEVICE_TABLE(i2c, akm09970_id);
 
 static struct of_device_id akm09970_match_table[] = {
-	{
-		.compatible = "akm,akm09970",
-	},
-	{},
+	{ .compatible = "akm,akm09970", },
+	{ },
 };
 
 static struct i2c_driver akm09970_driver = {

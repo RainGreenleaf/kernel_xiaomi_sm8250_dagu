@@ -123,8 +123,10 @@ static bool hx83121_sense_off(bool check_en)
 	int ret = 0;
 
 	do {
-		if (cnt == 0 || (tmp_data[0] != 0xA5 && tmp_data[0] != 0x00 &&
-				 tmp_data[0] != 0x87)) {
+		if (cnt == 0
+		|| (tmp_data[0] != 0xA5
+		&& tmp_data[0] != 0x00
+		&& tmp_data[0] != 0x87)) {
 			tmp_addr[3] = 0x90;
 			tmp_addr[2] = 0x00;
 			tmp_addr[1] = 0x00;
@@ -147,7 +149,7 @@ static bool hx83121_sense_off(bool check_en)
 
 		if (tmp_data[0] != 0x05) {
 			I("%s: Do not need wait FW, Status = 0x%02X!\n",
-			  __func__, tmp_data[0]);
+				__func__, tmp_data[0]);
 			break;
 		}
 
@@ -156,8 +158,8 @@ static bool hx83121_sense_off(bool check_en)
 		tmp_addr[1] = 0x00;
 		tmp_addr[0] = 0x5C;
 		hx83121_register_read(tmp_addr, tmp_data, DATA_LEN_4);
-		I("%s: cnt = %d, data[0] = 0x%02X!\n", __func__, cnt,
-		  tmp_data[0]);
+		I("%s: cnt = %d, data[0] = 0x%02X!\n", __func__,
+			cnt, tmp_data[0]);
 	} while (tmp_data[0] != 0x87 && (++cnt < 50) && check_en == true);
 
 	cnt = 0;
@@ -181,8 +183,8 @@ static bool hx83121_sense_off(bool check_en)
 		tmp_addr[1] = 0x00;
 		tmp_addr[0] = 0xA8;
 		hx83121_register_read(tmp_addr, tmp_data, ADDR_LEN_4);
-		I("%s: Check enter_save_mode data[0]=%X\n", __func__,
-		  tmp_data[0]);
+		I("%s: Check enter_save_mode data[0]=%X\n",
+			__func__, tmp_data[0]);
 
 		if (tmp_data[0] == 0x0C) {
 			/**
@@ -231,14 +233,13 @@ static bool hx83121_sense_off(bool check_en)
 
 static void hx83121a_sense_on(uint8_t FlashMode)
 {
-	uint8_t tmp_data[DATA_LEN_4] = { 0 };
+	uint8_t tmp_data[DATA_LEN_4] = {0};
 	int ret = 0;
 
 	I("Enter %s\n", __func__);
 	g_core_fp.fp_interface_on();
 	g_core_fp.fp_register_write(pfw_op->addr_ctrl_fw_isr,
-				    pfw_op->data_clear,
-				    sizeof(pfw_op->data_clear));
+		pfw_op->data_clear, sizeof(pfw_op->data_clear));
 	usleep_range(10000, 11000);
 	if (!FlashMode) {
 #ifdef HX_RST_PIN_FUNC
@@ -247,18 +248,21 @@ static void hx83121a_sense_on(uint8_t FlashMode)
 		g_core_fp.fp_system_reset();
 #endif
 	} else {
+
 		ret = himax_bus_write(pic_op->adr_i2c_psw_lb[0], NULL, tmp_data,
-				      1);
+			1);
 		if (ret < 0) {
-			E("%s: cmd=%x bus access fail!\n", __func__,
-			  pic_op->adr_i2c_psw_lb[0]);
+			E("%s: cmd=%x bus access fail!\n",
+			__func__,
+			pic_op->adr_i2c_psw_lb[0]);
 		}
 
 		ret = himax_bus_write(pic_op->adr_i2c_psw_ub[0], NULL, tmp_data,
-				      1);
+			1);
 		if (ret < 0) {
-			E("%s: cmd=%x bus access fail!\n", __func__,
-			  pic_op->adr_i2c_psw_ub[0]);
+			E("%s: cmd=%x bus access fail!\n",
+			__func__,
+			pic_op->adr_i2c_psw_ub[0]);
 		}
 	}
 }
@@ -271,27 +275,28 @@ static bool hx83121a_sense_off(bool check_en)
 	int ret = 0;
 
 	do {
-		if (cnt == 0 || (tmp_data[0] != 0xA5 && tmp_data[0] != 0x00 &&
-				 tmp_data[0] != 0x87))
+		if (cnt == 0
+		|| (tmp_data[0] != 0xA5
+		&& tmp_data[0] != 0x00
+		&& tmp_data[0] != 0x87))
 			g_core_fp.fp_register_write(pfw_op->addr_ctrl_fw_isr,
-						    pfw_op->data_fw_stop,
-						    DATA_LEN_4);
+				pfw_op->data_fw_stop, DATA_LEN_4);
 		usleep_range(10000, 10001);
 
 		/* check fw status */
 		g_core_fp.fp_register_read(pic_op->addr_cs_central_state,
-					   tmp_data, ADDR_LEN_4);
+			tmp_data, ADDR_LEN_4);
 
 		if (tmp_data[0] != 0x05) {
 			I("%s: Do not need wait FW, Status = 0x%02X!\n",
-			  __func__, tmp_data[0]);
+					__func__, tmp_data[0]);
 			break;
 		}
 
 		g_core_fp.fp_register_read(pfw_op->addr_ctrl_fw_isr, tmp_data,
-					   4);
-		I("%s: cnt = %d, data[0] = 0x%02X!\n", __func__, cnt,
-		  tmp_data[0]);
+			4);
+		I("%s: cnt = %d, data[0] = 0x%02X!\n", __func__,
+				cnt, tmp_data[0]);
 	} while (tmp_data[0] != 0x87 && (++cnt < 35) && check_en == true);
 
 	cnt = 0;
@@ -325,8 +330,8 @@ static bool hx83121a_sense_off(bool check_en)
 		tmp_addr[1] = 0x00;
 		tmp_addr[0] = 0xA8;
 		g_core_fp.fp_register_read(tmp_addr, tmp_data, ADDR_LEN_4);
-		I("%s: Check enter_save_mode data[0]=%X\n", __func__,
-		  tmp_data[0]);
+		I("%s: Check enter_save_mode data[0]=%X\n",
+				__func__, tmp_data[0]);
 
 		if (tmp_data[0] == 0x0C) {
 			/**
@@ -370,14 +375,15 @@ static bool hx83121a_read_event_stack(uint8_t *buf, uint8_t length)
 
 	if (private_ts->debug_log_level & BIT(2)) {
 		getnstimeofday(&t_end);
-		t_delta.tv_nsec =
-			(t_end.tv_sec * 1000000000 + t_end.tv_nsec) -
-			(t_start.tv_sec * 1000000000 + t_start.tv_nsec); /*ns*/
+		t_delta.tv_nsec = (t_end.tv_sec * 1000000000 + t_end.tv_nsec)
+					- (t_start.tv_sec
+					* 1000000000
+					+ t_start.tv_nsec); /*ns*/
 
-		i2c_speed =
-			(len * 9 * 1000000 / (int)t_delta.tv_nsec) * 13 / 10;
+		i2c_speed = (len * 9 * 1000000
+			/ (int)t_delta.tv_nsec) * 13 / 10;
 		private_ts->bus_speed = (int)i2c_speed;
-	}
+		}
 	return 1;
 }
 
@@ -387,14 +393,17 @@ static void himax_hx83121a_reg_re_init(void)
 	private_ts->ic_notouch_frame = hx83121a_notouch_frame;
 
 	himax_parse_assign_cmd(hx83121a_fw_addr_raw_out_sel,
-			       pfw_op->addr_raw_out_sel,
-			       sizeof(pfw_op->addr_raw_out_sel));
-	himax_parse_assign_cmd(hx83121a_data_df_rx, (pdriver_op)->data_df_rx,
-			       sizeof((pdriver_op)->data_df_rx));
-	himax_parse_assign_cmd(hx83121a_data_df_tx, (pdriver_op)->data_df_tx,
-			       sizeof((pdriver_op)->data_df_tx));
-	himax_parse_assign_cmd(hx83121a_ic_cmd_incr4, pic_op->data_incr4,
-			       sizeof(pic_op->data_incr4));
+			pfw_op->addr_raw_out_sel,
+			sizeof(pfw_op->addr_raw_out_sel));
+	himax_parse_assign_cmd(hx83121a_data_df_rx,
+			(pdriver_op)->data_df_rx,
+			sizeof((pdriver_op)->data_df_rx));
+	himax_parse_assign_cmd(hx83121a_data_df_tx,
+			(pdriver_op)->data_df_tx,
+			sizeof((pdriver_op)->data_df_tx));
+	himax_parse_assign_cmd(hx83121a_ic_cmd_incr4,
+			pic_op->data_incr4,
+			sizeof(pic_op->data_incr4));
 }
 
 static void himax_hx83121a_func_re_init(void)
@@ -447,11 +456,12 @@ static bool hx83121_chip_detect(void)
 			return ret_data;
 		}
 		I("%s:Read driver IC ID = %X,%X,%X\n", __func__, tmp_data[3],
-		  tmp_data[2], tmp_data[1]); /*83,10,2X*/
+			tmp_data[2], tmp_data[1]); /*83,10,2X*/
 
-		if (tmp_data[3] == 0x83 && tmp_data[2] == 0x12 &&
-		    (tmp_data[1] == 0x1a)) {
-			strlcpy(private_ts->chip_name, HX_83121A_SERIES_PWON,
+		if (tmp_data[3] == 0x83 && tmp_data[2] == 0x12
+		&& (tmp_data[1] == 0x1a)) {
+			strlcpy(private_ts->chip_name,
+				HX_83121A_SERIES_PWON,
 				30);
 
 			(ic_data)->ic_adc_num = hx83121a_data_adc_num;
@@ -482,6 +492,7 @@ static bool hx83121_chip_detect(void)
 		E("Please check 1.VCCD,VCCA,VSP,VSN\n");
 		E("2. LCM_RST,TP_RST\n");
 		E("3. Power On Sequence\n");
+
 	}
 
 	return ret_data;
