@@ -304,7 +304,7 @@ EXPORT_SYMBOL(mipi_dsi_host_register);
 static int mipi_dsi_remove_device_fn(struct device *dev, void *priv)
 {
 	struct mipi_dsi_device *dsi = to_mipi_dsi_device(dev);
-
+	mipi_dsi_detach(dsi);
 	mipi_dsi_device_unregister(dsi);
 
 	return 0;
@@ -330,6 +330,7 @@ int mipi_dsi_attach(struct mipi_dsi_device *dsi)
 
 	if (!ops || !ops->attach)
 		return -ENOSYS;
+	return ops->attach(dsi->host, dsi);
 }
 EXPORT_SYMBOL(mipi_dsi_attach);
 
