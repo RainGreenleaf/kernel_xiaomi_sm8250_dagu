@@ -622,6 +622,15 @@ static inline bool pm_suspended_storage(void)
 }
 #endif /* CONFIG_PM_SLEEP */
 
+/*
+ * Check if the gfp flags allow compaction - GFP_NOIO is a really
+ * tricky context because the migration might require IO.
+ */
+static inline bool gfp_compaction_allowed(gfp_t gfp_mask)
+{
+	return IS_ENABLED(CONFIG_COMPACTION) && (gfp_mask & __GFP_IO);
+}
+
 #if (defined(CONFIG_MEMORY_ISOLATION) && defined(CONFIG_COMPACTION)) || defined(CONFIG_CMA)
 /* The below functions must be run on a range from a single zone. */
 extern int alloc_contig_range(unsigned long start, unsigned long end,
@@ -632,6 +641,10 @@ extern void free_contig_range(unsigned long pfn, unsigned nr_pages);
 #ifdef CONFIG_CMA
 /* CMA stuff */
 extern void init_cma_reserved_pageblock(struct page *page);
+#endif
+
+#ifdef CONFIG_EMERGENCY_MEMORY
+extern void emergency_mm_init(void);
 #endif
 
 #endif /* __LINUX_GFP_H */
